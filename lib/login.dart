@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:new_ngelesin/api_response_model/login_siswa_response.dart';
 import 'package:new_ngelesin/main.dart';
 import 'package:new_ngelesin/register.dart';
 
@@ -149,5 +150,10 @@ class _LoginFormState extends State<LoginForm> {
         ),
       ),
     );
+  }
+
+  Future<LoginSiswaResponse> loginSiswaRequest(String email, String password){
+    String url = "https://apingelesin.com/dev/api/web/index.php?r=v1/siswa/login";
+
   }
 }
