@@ -31,17 +31,33 @@ class LoginSiswaResponse {
     this.data,
   });
 
-  factory LoginSiswaResponse.fromJson(Map<String, dynamic> json) => LoginSiswaResponse(
-    app: json["app"],
-    version: json["version"],
-    release: json["release"],
-    datetime: DateTime.parse(json["datetime"]),
-    timestamp: json["timestamp"],
-    status: json["status"],
-    code: json["code"],
-    message: json["message"],
-    data: Data.fromJson(json["data"]),
-  );
+  factory LoginSiswaResponse.fromJson(Map<String, dynamic> json) {
+    if(json["data"]==null){
+      return LoginSiswaResponse(
+        app: json["app"],
+        version: json["version"],
+        release: json["release"],
+        datetime: DateTime.parse(json["datetime"]),
+        timestamp: json["timestamp"],
+        status: json["status"],
+        code: json["code"],
+        message: json["message"],
+        //data: Data.fromJson(json["data"]),
+      );
+    }else{
+      return LoginSiswaResponse(
+        app: json["app"],
+        version: json["version"],
+        release: json["release"],
+        datetime: DateTime.parse(json["datetime"]),
+        timestamp: json["timestamp"],
+        status: json["status"],
+        code: json["code"],
+        message: json["message"],
+        data: Data.fromJson(json["data"]),
+      );
+    }
+  }
 
   Map<String, dynamic> toJson() => {
     "app": app,
