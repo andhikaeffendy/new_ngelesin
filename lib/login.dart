@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:new_ngelesin/api_response_model/login_siswa_response.dart';
 import 'package:new_ngelesin/main.dart';
 import 'package:new_ngelesin/register.dart';
+import 'package:new_ngelesin/register_murid.dart';
 import 'global_variable/account_information.dart' as account_info;
 
 import 'lupa_password.dart';
@@ -173,7 +174,12 @@ class _LoginFormState extends State<LoginForm> {
             ),
           ),
         ),
-      ),
+      ),bottomNavigationBar: RaisedButton(
+      onPressed: (){},
+      color: Colors.blue,
+      textColor: Colors.white,
+      child: Text("Login Guru Disini"),
+    )
     );
   }
 
