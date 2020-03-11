@@ -9,6 +9,8 @@ import 'package:new_ngelesin/musik_page.dart';
 import 'package:new_ngelesin/olahraga.dart';
 import 'package:new_ngelesin/pilihan_guru.dart';
 import 'package:new_ngelesin/tanya_soal_page.dart';
+import 'package:new_ngelesin/api_response_model/banner_response.dart';
+import 'package:dio/dio.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -16,21 +18,35 @@ class HomePage extends StatelessWidget {
     Widget image_slider_caralous = Container(
       height: 160.0,
       margin: EdgeInsets.symmetric(vertical: 0),
-      child: Carousel(
-        boxFit: BoxFit.fill,
-        images: [
-          NetworkImage(
-              'https://66.media.tumblr.com/7b1790aa4b0e76318f62da5d4a0dd69f/tumblr_pf7xynYOGR1t2c4f8o2_250.png'),
-          NetworkImage(
-              'https://66.media.tumblr.com/7b1790aa4b0e76318f62da5d4a0dd69f/tumblr_pf7xynYOGR1t2c4f8o2_250.png'),
-          NetworkImage(
-              'https://66.media.tumblr.com/7b1790aa4b0e76318f62da5d4a0dd69f/tumblr_pf7xynYOGR1t2c4f8o2_250.png'),
-        ],
-        autoplay: true,
-        indicatorBgPadding: 6.0,
-        dotBgColor: Colors.transparent,
-        dotSize: 4.0,
+      child: FutureBuilder(
+        future: bannerRequest(),
+        builder: (context, snapshot){
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                  "Something wrong with message: ${snapshot.error.toString()}"),
+            );
+          } else if (snapshot.connectionState == ConnectionState.done) {
+            BannerResponse bannerResponse = snapshot.data;
+            var images = new List(bannerResponse.data.length);
+            for (var i = 0; i < bannerResponse.data.length; i++)
+              images[i] = NetworkImage(
+                  bannerResponse.data[i].gambar);
+            return Carousel(
+              boxFit: BoxFit.fill,
+              images: images,
+              autoplay: true,
+              indicatorBgPadding: 6.0,
+              dotBgColor: Colors.transparent,
+              dotSize: 4.0,
 
+            );
+          } else {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
       ),
     );
 
@@ -336,5 +352,18 @@ class HomePage extends StatelessWidget {
             ],
           ),
         ));
+  }
+
+  Future<BannerResponse> bannerRequest() async {
+    String url = "https://apingelesin.com/app/api/web/index.php?r=v1/home/banners";
+    Dio dio = new Dio();
+    Response response;
+
+    response = await dio.get(url);
+    print(response.toString());
+
+    BannerResponse bannerResponse = bannerResponseFromJson(response.toString());
+
+    return bannerResponse;
   }
 }
