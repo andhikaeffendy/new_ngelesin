@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_verification_code_input/flutter_verification_code_input.dart';
 import 'package:new_ngelesin/verification.dart';
+import 'list_kota.dart';
+import 'list_kecamatan.dart';
+import 'list_provinsi.dart';
 
 class RegisterGuru extends StatefulWidget {
   @override
@@ -122,117 +125,6 @@ class listDropDown {
   const listDropDown(this.name);
 
   final String name;
-}
-
-class listProvinsi extends StatefulWidget {
-  @override
-  _listProvinsiState createState() => _listProvinsiState();
-}
-
-class _listProvinsiState extends State<listProvinsi> {
-
-  List mProvinsi = [
-    'Bandung',
-    'Jakarta',
-    'Surabaya',
-    'Ambon',
-    'Makassar',
-    'Medan',
-    'Jogjakarta',
-    'Bali',
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        child: ListView.builder(
-            itemCount: mProvinsi.length,
-            itemBuilder: (BuildContext context, int index){
-              final provinsi = mProvinsi[index].toString();
-              return Card(
-                child: ListTile(
-                  title: Text(provinsi),
-                ),
-              );
-            }),
-      ),
-    );
-  }
-}
-
-class ListKecamatan extends StatefulWidget {
-  @override
-  _ListKecamatanState createState() => _ListKecamatanState();
-}
-
-class _ListKecamatanState extends State<ListKecamatan> {
-
-  List mKecamatan = [
-    'Bandung',
-    'Jakarta',
-    'Surabaya',
-    'Ambon',
-    'Makassar',
-    'Medan',
-    'Jogjakarta',
-    'Bali',
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        child: ListView.builder(
-            itemCount: mKecamatan.length,
-            itemBuilder: (BuildContext context, int index){
-              final provinsi = mKecamatan[index].toString();
-              return Card(
-                child: ListTile(
-                  title: Text(provinsi),
-                ),
-              );
-            }),
-      ),
-    );
-  }
-}
-
-class ListKota extends StatefulWidget {
-  @override
-  _ListKotaState createState() => _ListKotaState();
-}
-
-class _ListKotaState extends State<ListKota> {
-
-  List mDaerah = [
-    'Bandung',
-    'Jakarta',
-    'Surabaya',
-    'Ambon',
-    'Makassar',
-    'Medan',
-    'Jogjakarta',
-    'Bali',
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        child: ListView.builder(
-            itemCount: mDaerah.length,
-            itemBuilder: (BuildContext context, int index){
-              final provinsi = mDaerah[index].toString();
-              return Card(
-                child: ListTile(
-                  title: Text(provinsi),
-                ),
-              );
-            }),
-      ),
-    );
-  }
 }
 
 
