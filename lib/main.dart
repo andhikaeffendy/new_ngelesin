@@ -4,8 +4,8 @@ import 'package:new_ngelesin/settings_page.dart';
 import 'akun_page.dart';
 import 'booking_page.dart';
 import 'home_page.dart';
-import 'login.dart';
-void main() => runApp(Login());
+import 'login_murid.dart';
+void main() => runApp(LoginMurid());
 
 class MainApp extends StatefulWidget {
   @override
@@ -20,7 +20,7 @@ class MainAppState extends State<MainApp> {
     HomePage(),
     BookingPage(),
     AkunPage(),
-    SettingsPage(),
+    SettingsMurid(),
   ];
 
   @override

@@ -11,6 +11,14 @@ class RegisterGuru extends StatefulWidget {
 }
 
 class _RegisterGuruState extends State<RegisterGuru> {
+
+  String txtProvinsi = '';
+  String txtKota = '';
+  String txtKecamatan = '';
+  final TextEditingController valueProvinsi = TextEditingController();
+  final TextEditingController valueKota = TextEditingController();
+  final TextEditingController valueKecamatan = TextEditingController();
+
   listDropDown selectedJK;
   List<listDropDown> jenisKelamin = <listDropDown>[
     const listDropDown('Pria'),
@@ -19,6 +27,11 @@ class _RegisterGuruState extends State<RegisterGuru> {
 
   @override
   Widget build(BuildContext context) {
+
+    valueProvinsi.text = txtProvinsi;
+    valueKota.text = txtKota;
+    valueKecamatan.text = txtKecamatan;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -77,19 +90,49 @@ class _RegisterGuruState extends State<RegisterGuru> {
                 padding: const EdgeInsets.all(8.0),
               ),
               TextField(
-                onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-                    builder: (BuildContext context) => new listProvinsi())),
-                decoration: InputDecoration(labelText: "Provinsi"),
+                controller: valueProvinsi,
+                enableInteractiveSelection: true,
+                readOnly: true,
+                onTap: () {
+                  FocusScope.of(context).requestFocus(new FocusNode());
+                  _navigateAndDisplaySelection(context, () => listProvinsi());
+                },
+                decoration: InputDecoration(
+                  labelText: 'Provinsi',
+                ),
               ),
               TextField(
-                onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-                    builder: (BuildContext context) => new ListKota())),
-                decoration: InputDecoration(labelText: "Kota"),
+                controller: valueKota,
+                enableInteractiveSelection: true,
+                readOnly: true,
+                enabled: valueProvinsi.text.isEmpty ? false : true,
+                onTap: () {
+                  FocusScope.of(context).requestFocus(new FocusNode());
+                  valueProvinsi.text.isEmpty
+                      ? showAlert("Pilih Provinsi Terlebih dahulu", context)
+                      : _navigateAndDisplaySelection(context, () => ListKota());
+                },
+                decoration: InputDecoration(
+                  labelText: 'Kota',
+                ),
               ),
               TextField(
-                onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-                    builder: (BuildContext context) => new ListKecamatan())),
-                decoration: InputDecoration(labelText: "Kecamatan"),
+                controller: valueKecamatan,
+                enableInteractiveSelection: true,
+                readOnly: true,
+                enabled: valueKota.text.isEmpty ? false : true,
+                onTap: () {
+                  FocusScope.of(context).requestFocus(new FocusNode());
+                  setState(() {
+                    valueKota.text.isEmpty
+                        ? showAlert("Pilih Kota Terlebih dahulu", context)
+                        : _navigateAndDisplaySelection(
+                        context, () => ListKecamatan());
+                  });
+                },
+                decoration: InputDecoration(
+                  labelText: 'Kecamatan',
+                ),
               ),
               TextField(
                 keyboardType: TextInputType.text,
@@ -119,6 +162,49 @@ class _RegisterGuruState extends State<RegisterGuru> {
       ),
     );
   }
+
+  void _navigateAndDisplaySelection(
+      BuildContext context, Widget Function() page) async {
+    // Navigator.push returns a Future that completes after calling
+    // Navigator.pop on the Selection Screen.
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => page()),
+    );
+
+    print(page().toString() + " ANJENG");
+    setState(() {
+      if (page().toString() == "listProvinsi") {
+        txtProvinsi = result;
+      } else if (page().toString() == "ListKota") {
+        print("TRUE");
+        txtKota = result;
+      } else if (page().toString() == "ListKecamatan") {
+        txtKecamatan = result;
+      }
+    });
+  }
+
+  Future<void> showAlert(String message, BuildContext context) {
+    return showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Oops!! Something Wrong!!"),
+            content: Text(message),
+            actions: [
+              FlatButton(
+                child: Text("Close"),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        });
+  }
+
 }
 
 class listDropDown {
