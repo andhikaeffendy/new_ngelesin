@@ -36,11 +36,12 @@ class _listProvinsiState extends State<listProvinsi> {
                   itemCount: allProvince.length,
                   itemBuilder: (BuildContext context, int index) {
                     final Datum province = allProvince[index];
-                    globTemp.provId = province.id;
                     return Card(
                       child: ListTile(
                         title: Text(province.provinsi),
-                        onTap: () {Navigator.pop(context,province.provinsi.toString());},
+                        onTap: () {
+                          globTemp.provId = province.id;
+                          Navigator.pop(context,province.provinsi.toString());},
                       ),
                     );
                   });
