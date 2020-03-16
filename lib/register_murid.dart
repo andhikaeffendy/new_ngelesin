@@ -1,9 +1,12 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_verification_code_input/flutter_verification_code_input.dart';
 import 'package:new_ngelesin/list_kecamatan.dart';
 import 'package:new_ngelesin/list_kota.dart';
 import 'package:new_ngelesin/list_provinsi.dart';
 import 'package:new_ngelesin/verification.dart';
+
+import 'global_variable/temp_var.dart' as globTemp;
+import 'api_response_model/regis_siswa_response.dart';
 
 class RegisterMurid extends StatefulWidget {
   @override
@@ -17,6 +20,13 @@ class _RegisterMuridState extends State<RegisterMurid> {
   final TextEditingController valueProvinsi = TextEditingController();
   final TextEditingController valueKota = TextEditingController();
   final TextEditingController valueKecamatan = TextEditingController();
+  final TextEditingController valueNama = TextEditingController();
+  final TextEditingController valueEmail = TextEditingController();
+  final TextEditingController valueHP = TextEditingController();
+  final TextEditingController valuePass = TextEditingController();
+  final TextEditingController valueConfirmPass = TextEditingController();
+  final TextEditingController valueAlamatLengkap = TextEditingController();
+
 
   listDropDown selectedSekolah;
   listDropDown selectedJK;
@@ -57,6 +67,7 @@ class _RegisterMuridState extends State<RegisterMurid> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               TextField(
+                controller: valueNama,
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(labelText: 'Nama Lengkap'),
               ),
@@ -65,6 +76,7 @@ class _RegisterMuridState extends State<RegisterMurid> {
               ),
               TextField(
                 keyboardType: TextInputType.emailAddress,
+                controller: valueEmail,
                 decoration: InputDecoration(
                   labelText: 'Email',
                 ),
@@ -73,6 +85,7 @@ class _RegisterMuridState extends State<RegisterMurid> {
                 padding: const EdgeInsets.all(8.0),
               ),
               TextField(
+                controller: valueHP,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(labelText: 'No. Handphone'),
               ),
@@ -195,14 +208,17 @@ class _RegisterMuridState extends State<RegisterMurid> {
                 ),
               ),
               TextField(
+                controller: valueAlamatLengkap,
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(labelText: "Alamat Lengkap"),
               ),
               TextField(
+                controller: valuePass,
                 obscureText: true,
                 decoration: InputDecoration(labelText: "Password"),
               ),
               TextField(
+                controller: valueConfirmPass,
                 obscureText: true,
                 decoration: InputDecoration(labelText: "Ulangi Password"),
               ),
@@ -229,12 +245,10 @@ class _RegisterMuridState extends State<RegisterMurid> {
       MaterialPageRoute(builder: (context) => page()),
     );
 
-    print(page().toString() + " ANJENG");
     setState(() {
       if (page().toString() == "listProvinsi") {
         txtProvinsi = result;
       } else if (page().toString() == "ListKota") {
-        print("TRUE");
         txtKota = result;
       } else if (page().toString() == "ListKecamatan") {
         txtKecamatan = result;
@@ -261,6 +275,37 @@ class _RegisterMuridState extends State<RegisterMurid> {
           );
         });
   }
+
+  Future<RegisSiswaResponse> regisSiswaRequest() async {
+    String url =
+        "http://apingelesin.com/dev/api/web/index.php?r=v1/siswa/registrasi";
+    Dio dio = new Dio();
+    Response response;
+
+    FormData formData =
+    new FormData.fromMap({
+      "email": valueEmail.text,
+      "password": valuePass.text,
+      "confirm_password" : valueConfirmPass.text,
+      "nama_lengkap" : valueNama.text,
+      "hp" : valueHP.text,
+      "master_provinsi_id" : globTemp.provId,
+      "master_kota_id" : globTemp.kotaId,
+      "master_kecamatan_id" : globTemp.kecId,
+      "tb_kategori_id" : 12,
+      "alamat_lengkap" : valueAlamatLengkap.text,
+      "jenis_kelamin" : 2,
+      "know_from" : 3});
+
+    response = await dio.post(url, data: formData);
+    print("Ini Response : " + response.toString());
+
+    RegisSiswaResponse regisSiswaResponse =
+    regisSiswaResponseFromJson(response.toString());
+
+    return regisSiswaResponse;
+  }
+
 }
 
 class listDropDown {
