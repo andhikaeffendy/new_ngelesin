@@ -4,7 +4,6 @@ import 'package:new_ngelesin/api_response_model/login_siswa_response.dart';
 import 'package:new_ngelesin/login_guru.dart';
 import 'package:new_ngelesin/main.dart';
 import 'package:new_ngelesin/register.dart';
-import 'package:new_ngelesin/register_murid.dart';
 import 'global_variable/account_information.dart' as account_info;
 
 import 'lupa_password.dart';
@@ -186,8 +185,7 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
         ));
   }
 
-  Future<LoginSiswaResponse> loginSiswaRequest(
-      String email, String password) async {
+  Future<LoginSiswaResponse> loginSiswaRequest(String email, String password) async {
     String url =
         "https://apingelesin.com/app/api/web/index.php?r=v1/siswa/login";
     Dio dio = new Dio();

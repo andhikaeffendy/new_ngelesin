@@ -1,4 +1,7 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'api_response_model/all_province_response.dart';
+import 'global_variable/temp_var.dart' as globTemp;
 
 class listProvinsi extends StatefulWidget {
   @override
@@ -21,18 +24,45 @@ class _listProvinsiState extends State<listProvinsi> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        child: ListView.builder(
-            itemCount: mProvinsi.length,
-            itemBuilder: (BuildContext context, int index) {
-              final provinsi = mProvinsi[index].toString();
-              return Card(
-                child: ListTile(
-                  title: Text(provinsi),
-                  onTap: () {Navigator.pop(context,mProvinsi[index].toString());},
-                ),
-              );
-            }),
+        child: FutureBuilder(
+          future: provinceRequest(),
+          builder: (context, snapshot){
+            if(snapshot.data == null){
+              return Container();
+            }else{
+              AllProvinceResponse provinceResponse = snapshot.data;
+              List allProvince = provinceResponse.data;
+              return ListView.builder(
+                  itemCount: allProvince.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final Datum province = allProvince[index];
+                    globTemp.provId = province.id;
+                    return Card(
+                      child: ListTile(
+                        title: Text(province.provinsi),
+                        onTap: () {Navigator.pop(context,province.provinsi.toString());},
+                      ),
+                    );
+                  });
+            }
+          },
+        ),
       ),
     );
   }
+
+  Future<AllProvinceResponse> provinceRequest() async {
+    String url = "http://apingelesin.com/app/api/web/index.php?r=v1/home/provinsi";
+    Dio dio = new Dio();
+    Response response;
+
+    response = await dio.get(url);
+    print(response.toString());
+
+    AllProvinceResponse allProvinceResponse = allProvinceResponseFromJson(response.toString());
+
+    return allProvinceResponse;
+  }
 }
+
+
