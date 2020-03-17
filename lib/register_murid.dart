@@ -227,8 +227,26 @@ class _RegisterMuridState extends State<RegisterMurid> {
         ),
       ),
       bottomNavigationBar: RaisedButton(
-        onPressed: () => Navigator.of(context).push(new MaterialPageRoute(
-            builder: (BuildContext context) => new Verification())),
+        onPressed: (){
+          return FutureBuilder(
+            future: regisSiswaRequest().then((task){
+              if(task.status=="success"){
+                Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Verification()));
+              }
+            }),
+            builder: (context, snapshot){
+              if(snapshot.data == null){
+                print("Ini Status Snapshot : " + snapshot.toString());
+                return Container();
+              }else{
+                RegisSiswaResponse response = snapshot.data;
+                print("Ini Status Registrasi : " + response.status);
+                print("Ini Message Registrasi : " + response.message);
+                return null;
+              }
+            },
+          );
+        },
         color: Colors.blue,
         textColor: Colors.white,
         child: Text("REGISTER"),
@@ -278,7 +296,7 @@ class _RegisterMuridState extends State<RegisterMurid> {
 
   Future<RegisSiswaResponse> regisSiswaRequest() async {
     String url =
-        "http://apingelesin.com/dev/api/web/index.php?r=v1/siswa/registrasi";
+        "https://apingelesin.com/app/api/web/index.php?r=v1/siswa/registrasi";
     Dio dio = new Dio();
     Response response;
 
@@ -292,13 +310,19 @@ class _RegisterMuridState extends State<RegisterMurid> {
       "master_provinsi_id" : globTemp.provId,
       "master_kota_id" : globTemp.kotaId,
       "master_kecamatan_id" : globTemp.kecId,
-      "tb_kategori_id" : 12,
+      //masih static
+      "tb_kategori_id" : 1,
       "alamat_lengkap" : valueAlamatLengkap.text,
-      "jenis_kelamin" : 2,
-      "know_from" : 3});
+      //masih static
+      "jenis_kelamin" : 1,
+      //masih static
+      "know_from" : 1,
+    });
 
-    response = await dio.post(url, data: formData);
+
+    response = await dio.post(url, data: formData );
     print("Ini Response : " + response.toString());
+    print("Ini Response Stat : " + response.statusMessage );
 
     RegisSiswaResponse regisSiswaResponse =
     regisSiswaResponseFromJson(response.toString());

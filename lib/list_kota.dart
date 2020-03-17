@@ -60,7 +60,6 @@ class _ListKotaState extends State<ListKota> {
     Response response;
 
     response = await dio.get(url);
-    print(response.toString());
 
     ListKotaResponse kotaResponse = listKotaResponseFromJson(response.toString());
 

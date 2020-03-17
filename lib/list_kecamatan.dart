@@ -58,7 +58,6 @@ class _ListKecamatanState extends State<ListKecamatan> {
     Response response;
 
     response = await dio.get(url);
-    print(response.toString());
 
     ListKecamatanResponse kotaResponse = listKecamatanResponseFromJson(response.toString());
 

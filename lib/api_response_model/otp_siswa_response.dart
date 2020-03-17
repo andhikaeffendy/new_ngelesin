@@ -31,18 +31,34 @@ class OtpSiswaResponse {
     this.data,
   });
 
-  factory OtpSiswaResponse.fromJson(Map<String, dynamic> json) => OtpSiswaResponse(
-    app: json["app"],
-    version: json["version"],
-    release: json["release"],
-    datetime: DateTime.parse(json["datetime"]),
-    timestamp: json["timestamp"],
-    status: json["status"],
-    code: json["code"],
-    message: json["message"],
-    data: Data.fromJson(json["data"]),
-  );
+  factory OtpSiswaResponse.fromJson(Map<String, dynamic> json){
+    if(json["status"]=="fail"){
+      return OtpSiswaResponse(
+        app: json["app"],
+        version: json["version"],
+        release: json["release"],
+        datetime: DateTime.parse(json["datetime"]),
+        timestamp: json["timestamp"],
+        status: json["status"],
+        code: json["code"],
+        message: json["message"],
+      );
+    }else{
+      return OtpSiswaResponse(
+        app: json["app"],
+        version: json["version"],
+        release: json["release"],
+        datetime: DateTime.parse(json["datetime"]),
+        timestamp: json["timestamp"],
+        status: json["status"],
+        code: json["code"],
+        message: json["message"],
+        data: Data.fromJson(json["data"]),
+      );
+    }
 
+
+  }
   Map<String, dynamic> toJson() => {
     "app": app,
     "version": version,

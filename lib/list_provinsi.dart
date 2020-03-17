@@ -58,7 +58,6 @@ class _listProvinsiState extends State<listProvinsi> {
     Response response;
 
     response = await dio.get(url);
-    print(response.toString());
 
     AllProvinceResponse allProvinceResponse = allProvinceResponseFromJson(response.toString());
 
