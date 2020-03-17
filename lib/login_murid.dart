@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:new_ngelesin/api_response_model/list_all_mapel_response.dart';
 import 'package:new_ngelesin/api_response_model/login_siswa_response.dart';
 import 'package:new_ngelesin/login_guru.dart';
 import 'package:new_ngelesin/main.dart';
 import 'package:new_ngelesin/register.dart';
 import 'global_variable/account_information.dart' as account_info;
+import 'global_variable/temp_var.dart' as globalTemp;
 
 import 'lupa_password.dart';
 
@@ -75,6 +77,7 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
                 .then((task) {
               if (task.status == "success") {
                 print("masuk sukses");
+                getMapelRequest();
                 account_info.loginSiswaResponseData = task;
                 Navigator.of(context).push(new MaterialPageRoute(
                     builder: (BuildContext context) => new MainApp()));
@@ -201,5 +204,19 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
         loginSiswaResponseFromJson(response.toString());
 
     return loginSiswaResponse;
+  }
+
+  getMapelRequest() async {
+    String url = "http://apingelesin.com/app/api/web/index.php?r=v1/home/mapel";
+    Dio dio = new Dio();
+    Response response;
+
+    response = await dio.get(url);
+    print(response.toString());
+
+    ListAllMapelResponse mapelResponse =
+    listAllMapelResponseFromJson(response.toString());
+
+    globalTemp.listAllMapel = mapelResponse;
   }
 }

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:new_ngelesin/api_response_model/list_all_mapel_response.dart';
 import 'package:new_ngelesin/pilihan_guru.dart';
+import 'global_variable/temp_var.dart' as globTemp;
+
 
 class KeterampilanPage extends StatefulWidget {
   @override
@@ -10,23 +13,7 @@ class _KeterampilanPageState extends State<KeterampilanPage> {
   int _pilihan = -1;
   String _selectedValue;
 
-  final List<RadioGroup> _radioList = [
-    RadioGroup(index: 1, text: "Make Up (Keterampilan)"),
-    RadioGroup(index: 2, text: "Website Course (Keterampilan)"),
-    RadioGroup(index: 3, text: "Vlogging (Keterampilan)"),
-    RadioGroup(index: 4, text: "Desain Grafis (Keterampilan)"),
-    RadioGroup(index: 5, text: "Menyetir (Keterampilan)"),
-    RadioGroup(index: 6, text: "Menjahit (Keterampilan)"),
-    RadioGroup(index: 7, text: "Desain Interior (Keterampilan)"),
-    RadioGroup(index: 8, text: "Barista (Keterampilan)"),
-    RadioGroup(index: 9, text: "Programming (Keterampilan)"),
-    RadioGroup(index: 10, text: "Memasak (Keterampilan)"),
-    RadioGroup(index: 11, text: "Handycraft (Keterampilan)"),
-    RadioGroup(index: 12, text: "Drafting & 3D Modeling (Keterampilan)"),
-    RadioGroup(index: 13, text: "Eyelash Extension (Keterampilan)"),
-    RadioGroup(index: 14, text: "Administrasi Bisnis (Keterampilan)"),
-    RadioGroup(index: 15, text: "Lain-lain (Keterampilan)"),
-  ];
+  final List<Datum> _radioList = globTemp.listAllMapel.getKeterampilanList();
 
   @override
   Widget build(BuildContext context) {
@@ -68,18 +55,18 @@ class _KeterampilanPageState extends State<KeterampilanPage> {
                     .map((radio) => Row(
                   children: <Widget>[
                     Radio(
-                      value: radio.index,
+                      value: radio.id,
                       groupValue: _pilihan,
                       materialTapTargetSize:
                       MaterialTapTargetSize.shrinkWrap,
                       onChanged: (value) {
                         setState(() {
                           _pilihan = value;
-                          _selectedValue = radio.text;
+                          _selectedValue = radio.nama;
                         });
                       },
                     ),
-                    Text(radio.text),
+                    Text(radio.nama),
                   ],
                 ))
                     .toList()),
@@ -95,10 +82,4 @@ class _KeterampilanPageState extends State<KeterampilanPage> {
       ),
     );
   }
-}
-
-class RadioGroup {
-  final int index;
-  final String text;
-  RadioGroup({this.index, this.text});
 }

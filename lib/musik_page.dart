@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:new_ngelesin/api_response_model/list_all_mapel_response.dart';
 import 'package:new_ngelesin/pilihan_guru.dart';
+import 'global_variable/temp_var.dart' as globTemp;
 
 class MusikPage extends StatefulWidget {
   @override
@@ -10,16 +12,7 @@ class _MusikPageState extends State<MusikPage> {
   int _pilihan = -1;
   String _selectedValue;
 
-  final List<RadioGroup> _radioList = [
-    RadioGroup(index: 1, text: "Perkusi (Musik)"),
-    RadioGroup(index: 2, text: "Gitar (Musik)"),
-    RadioGroup(index: 3, text: "Bass (Musik)"),
-    RadioGroup(index: 4, text: "Vocal (Musik)"),
-    RadioGroup(index: 5, text: "Piano (Musik)"),
-    RadioGroup(index: 6, text: "Drum (Musik)"),
-    RadioGroup(index: 7, text: "Biola (Musik)"),
-    RadioGroup(index: 8, text: "Saxophone (Musik)"),
-  ];
+  final List<Datum> _radioList = globTemp.listAllMapel.getMusikList();
 
   @override
   Widget build(BuildContext context) {
@@ -61,18 +54,18 @@ class _MusikPageState extends State<MusikPage> {
                     .map((radio) => Row(
                   children: <Widget>[
                     Radio(
-                      value: radio.index,
+                      value: radio.id,
                       groupValue: _pilihan,
                       materialTapTargetSize:
                       MaterialTapTargetSize.shrinkWrap,
                       onChanged: (value) {
                         setState(() {
                           _pilihan = value;
-                          _selectedValue = radio.text;
+                          _selectedValue = radio.nama;
                         });
                       },
                     ),
-                    Text(radio.text),
+                    Text(radio.nama),
                   ],
                 ))
                     .toList()),
@@ -90,8 +83,3 @@ class _MusikPageState extends State<MusikPage> {
   }
 }
 
-class RadioGroup {
-  final int index;
-  final String text;
-  RadioGroup({this.index, this.text});
-}

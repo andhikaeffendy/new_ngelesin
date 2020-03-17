@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:new_ngelesin/api_response_model/list_all_mapel_response.dart';
 import 'package:new_ngelesin/pilihan_guru.dart';
+import 'global_variable/temp_var.dart' as globTemp;
 
 class AnakPage extends StatefulWidget {
   @override
@@ -10,13 +12,7 @@ class _AnakPageState extends State<AnakPage> {
   int _pilihan = -1;
   String _selectedValue;
 
-  final List<RadioGroup> _radioList = [
-    RadioGroup(index: 1, text: "Balet (Anak)"),
-    RadioGroup(index: 2, text: "Tari Tradisional (Anak)"),
-    RadioGroup(index: 3, text: "Calistung (Anak)"),
-    RadioGroup(index: 4, text: "Bahasa Inggris (Anak)"),
-    RadioGroup(index: 5, text: "Menggambar (Anak)"),
-  ];
+  final List<Datum> _radioList = globTemp.listAllMapel.getAnakList();
 
   @override
   Widget build(BuildContext context) {
@@ -58,18 +54,18 @@ class _AnakPageState extends State<AnakPage> {
                     .map((radio) => Row(
                   children: <Widget>[
                     Radio(
-                      value: radio.index,
+                      value: radio.id,
                       groupValue: _pilihan,
                       materialTapTargetSize:
                       MaterialTapTargetSize.shrinkWrap,
                       onChanged: (value) {
                         setState(() {
                           _pilihan = value;
-                          _selectedValue = radio.text;
+                          _selectedValue = radio.nama;
                         });
                       },
                     ),
-                    Text(radio.text),
+                    Text(radio.nama),
                   ],
                 ))
                     .toList()),
@@ -85,10 +81,4 @@ class _AnakPageState extends State<AnakPage> {
       ),
     );
   }
-}
-
-class RadioGroup {
-  final int index;
-  final String text;
-  RadioGroup({this.index, this.text});
 }

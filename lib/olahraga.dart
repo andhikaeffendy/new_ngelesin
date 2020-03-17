@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:new_ngelesin/api_response_model/list_all_mapel_response.dart';
 import 'package:new_ngelesin/pilihan_guru.dart';
+import 'global_variable/temp_var.dart' as globTemp;
+
 
 class OlahragaPage extends StatefulWidget {
   @override
@@ -10,17 +13,7 @@ class _OlahragaPageState extends State<OlahragaPage> {
   int _pilihan = -1;
   String _selectedValue;
 
-  final List<RadioGroup> _radioList = [
-    RadioGroup(index: 1, text: "Sepak Bola (Olahraga)"),
-    RadioGroup(index: 2, text: "Voli (Olahraga)"),
-    RadioGroup(index: 3, text: "Futsal (Olahraga)"),
-    RadioGroup(index: 4, text: "Renang (Olahraga)"),
-    RadioGroup(index: 5, text: "Basket (Olahraga)"),
-    RadioGroup(index: 6, text: "Badminton (Olahraga)"),
-    RadioGroup(index: 7, text: "Tenis (Olahraga)"),
-    RadioGroup(index: 8, text: "Muaythai (Olahraga)"),
-    RadioGroup(index: 9, text: "Boxing (Olahraga)"),
-  ];
+  final List<Datum> _radioList = globTemp.listAllMapel.getOlahragalList();
 
   @override
   Widget build(BuildContext context) {
@@ -62,18 +55,18 @@ class _OlahragaPageState extends State<OlahragaPage> {
                     .map((radio) => Row(
                   children: <Widget>[
                     Radio(
-                      value: radio.index,
+                      value: radio.id,
                       groupValue: _pilihan,
                       materialTapTargetSize:
                       MaterialTapTargetSize.shrinkWrap,
                       onChanged: (value) {
                         setState(() {
                           _pilihan = value;
-                          _selectedValue = radio.text;
+                          _selectedValue = radio.nama;
                         });
                       },
                     ),
-                    Text(radio.text),
+                    Text(radio.nama),
                   ],
                 ))
                     .toList()),
@@ -89,10 +82,4 @@ class _OlahragaPageState extends State<OlahragaPage> {
       ),
     );
   }
-}
-
-class RadioGroup {
-  final int index;
-  final String text;
-  RadioGroup({this.index, this.text});
 }

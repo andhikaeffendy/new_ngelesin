@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:new_ngelesin/api_response_model/list_all_mapel_response.dart';
 import 'package:new_ngelesin/pilihan_guru.dart';
+import 'global_variable/temp_var.dart' as globTemp;
 
 class LainnyaPage extends StatefulWidget {
   @override
@@ -10,11 +12,7 @@ class _LainnyaPageState extends State<LainnyaPage> {
   int _pilihan = -1;
   String _selectedValue;
 
-  final List<RadioGroup> _radioList = [
-    RadioGroup(index: 1, text: "Mengaji (Lain-lain)"),
-    RadioGroup(index: 2, text: "Dance Kontemporer (Lain-lain)"),
-    RadioGroup(index: 3, text: "Pendidikan Agama Islam (Lain-lain)"),
-  ];
+  final List<Datum> _radioList = globTemp.listAllMapel.getLainList();
 
   @override
   Widget build(BuildContext context) {
@@ -56,18 +54,18 @@ class _LainnyaPageState extends State<LainnyaPage> {
                     .map((radio) => Row(
                   children: <Widget>[
                     Radio(
-                      value: radio.index,
+                      value: radio.id,
                       groupValue: _pilihan,
                       materialTapTargetSize:
                       MaterialTapTargetSize.shrinkWrap,
                       onChanged: (value) {
                         setState(() {
                           _pilihan = value;
-                          _selectedValue = radio.text;
+                          _selectedValue = radio.nama;
                         });
                       },
                     ),
-                    Text(radio.text),
+                    Text(radio.nama),
                   ],
                 ))
                     .toList()),

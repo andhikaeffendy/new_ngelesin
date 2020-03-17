@@ -54,6 +54,78 @@ class ListAllMapelResponse {
     "message": message,
     "data": List<dynamic>.from(data.map((x) => x.toJson())),
   };
+
+  List<Datum> getAkademikList(){
+    List<Datum> akademikList = List<Datum>();
+    for(var i = 0; i<data.length;i++){
+      if(data[i].tbKategoriId == 1 || data[i].tbKategoriId == 19 || data[i].tbKategoriId == 18){
+        akademikList.add(data[i]);
+      }
+    }
+    return akademikList;
+  }
+
+
+
+  List<Datum> getOlahragalList(){
+    List<Datum> newList = List<Datum>();
+    for(var i = 0; i<data.length;i++){
+      if(data[i].tbKategoriId == 16){
+        newList.add(data[i]);
+      }
+    }
+    return newList;
+  }
+
+  List<Datum> getBahasaList(){
+    List<Datum> newList = List<Datum>();
+    for(var i = 0; i<data.length;i++){
+      if(data[i].tbKategoriId == 26){
+        newList.add(data[i]);
+      }
+    }
+    return newList;
+  }
+
+  List<Datum> getKeterampilanList(){
+    List<Datum> newList = List<Datum>();
+    for(var i = 0; i<data.length;i++){
+      if(data[i].tbKategoriId == 27){
+        newList.add(data[i]);
+      }
+    }
+    return newList;
+  }
+
+  List<Datum> getAnakList(){
+    List<Datum> newList = List<Datum>();
+    for(var i = 0; i<data.length;i++){
+      if(data[i].tbKategoriId == 28){
+        newList.add(data[i]);
+      }
+    }
+    return newList;
+  }
+
+  List<Datum> getMusikList(){
+    List<Datum> newList = List<Datum>();
+    for(var i = 0; i<data.length;i++){
+      if(data[i].tbKategoriId == 29){
+        newList.add(data[i]);
+      }
+    }
+    return newList;
+  }
+
+  List<Datum> getLainList(){
+    List<Datum> newList = List<Datum>();
+    for(var i = 0; i<data.length;i++){
+      if(data[i].tbKategoriId == 32){
+        newList.add(data[i]);
+      }
+    }
+    return newList;
+  }
 }
 
 class Datum {

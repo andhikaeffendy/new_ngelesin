@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:new_ngelesin/api_response_model/list_all_mapel_response.dart';
 import 'package:new_ngelesin/pilihan_guru.dart';
+import 'global_variable/temp_var.dart' as globTemp;
 
 class BahasaPage extends StatefulWidget {
   @override
@@ -10,19 +12,7 @@ class _BahasaPageState extends State<BahasaPage> {
   int _pilihan = -1;
   String _selectedValue;
 
-  final List<RadioGroup> _radioList = [
-    RadioGroup(index: 1, text: "Inggris (Bahasa)"),
-    RadioGroup(index: 2, text: "IELTS (Bahasa)"),
-    RadioGroup(index: 3, text: "TOEFL (Bahasa)"),
-    RadioGroup(index: 4, text: "Indonesia (Bahasa)"),
-    RadioGroup(index: 5, text: "Mandarin (Bahasa)"),
-    RadioGroup(index: 6, text: "Korea (Bahasa)"),
-    RadioGroup(index: 7, text: "Jepang (Bahasa)"),
-    RadioGroup(index: 8, text: "Jerman (Bahasa)"),
-    RadioGroup(index: 9, text: "Jepang (Bahasa)"),
-    RadioGroup(index: 10, text: "Prancis (Bahasa)"),
-    RadioGroup(index: 11, text: "Arab (Bahasa)"),
-  ];
+  final List<Datum> _radioList = globTemp.listAllMapel.getBahasaList();
 
   @override
   Widget build(BuildContext context) {
@@ -64,18 +54,18 @@ class _BahasaPageState extends State<BahasaPage> {
                     .map((radio) => Row(
                   children: <Widget>[
                     Radio(
-                      value: radio.index,
+                      value: radio.id,
                       groupValue: _pilihan,
                       materialTapTargetSize:
                       MaterialTapTargetSize.shrinkWrap,
                       onChanged: (value) {
                         setState(() {
                           _pilihan = value;
-                          _selectedValue = radio.text;
+                          _selectedValue = radio.nama;
                         });
                       },
                     ),
-                    Text(radio.text),
+                    Text(radio.nama),
                   ],
                 ))
                     .toList()),
@@ -91,10 +81,4 @@ class _BahasaPageState extends State<BahasaPage> {
       ),
     );
   }
-}
-
-class RadioGroup {
-  final int index;
-  final String text;
-  RadioGroup({this.index, this.text});
 }
