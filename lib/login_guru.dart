@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:new_ngelesin/login_murid.dart';
+import 'package:new_ngelesin/main.dart';
 import 'package:new_ngelesin/register.dart';
 
 import 'lupa_password.dart';
@@ -64,7 +65,10 @@ class _LoginFormGuruState extends State<LoginFormGuru> {
       child: MaterialButton(
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(16.0, 18.0, 16.0, 18.0),
-        onPressed: () {},
+        onPressed: () => Navigator.of(context).push(
+            new MaterialPageRoute(
+                builder: (BuildContext context) =>
+                new MainApp())),
         child: Text('Login',
             textAlign: TextAlign.center,
             style: new TextStyle(
