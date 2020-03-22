@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:new_ngelesin/settings_page.dart';
+import 'package:new_ngelesin/setting_guru.dart';
 import 'akun_page.dart';
 import 'booking_page.dart';
 import 'home_page.dart';
@@ -20,7 +20,7 @@ class MainAppState extends State<MainApp> {
     HomePage(),
     BookingPage(),
     AkunPage(),
-    SettingsMurid(),
+    SettingGuru(),
   ];
 
   @override
