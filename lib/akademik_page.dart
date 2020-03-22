@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:new_ngelesin/api_response_model/list_all_mapel_response.dart';
-import 'package:new_ngelesin/pilihan_guru.dart';
+import 'package:new_ngelesin/cari_daerah.dart';
 import 'global_variable/temp_var.dart' as globTemp;
 
 class AkademikPage extends StatefulWidget {
@@ -74,7 +74,7 @@ class _AkademikPageState extends State<AkademikPage> {
       ),
       bottomNavigationBar: RaisedButton(
         onPressed: () => Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext) => new PilihanGuru())),
+            MaterialPageRoute(builder: (BuildContext) => new CariDaerah())),
         color: Colors.blue,
         textColor: Colors.white,
         child: Text("SELANJUTNYA"),
