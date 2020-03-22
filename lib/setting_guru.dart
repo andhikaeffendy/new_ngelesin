@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:new_ngelesin/biaya_les.dart';
 import 'package:new_ngelesin/kelola_jadwal.dart';
 import 'package:new_ngelesin/les_pay_murid.dart';
 import 'package:new_ngelesin/riwayat_les_murid.dart';
@@ -36,7 +37,7 @@ class _SettingGuruState extends State<SettingGuru> {
               leading: Icon(Icons.mode_edit),
               title: Text("Lihat Biaya Les"),
               onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-                  builder: (BuildContext context) => new TentangKamiMurid())),
+                  builder: (BuildContext context) => new BiayaLes())),
             ),ListTile(
               leading: Icon(Icons.history),
               title: Text("Riwayat Mengajar"),

@@ -398,6 +398,14 @@ class _KelolaJadwalState extends State<KelolaJadwal> {
         ),
       ),
     ),
+        bottomNavigationBar: RaisedButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          color: Colors.blue,
+          textColor: Colors.white,
+          child: Text("SIMPAN JADWAL"),
+        )
     );
   }
 }
