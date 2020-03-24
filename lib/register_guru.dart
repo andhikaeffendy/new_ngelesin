@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_verification_code_input/flutter_verification_code_input.dart';
 import 'package:new_ngelesin/verification_guru.dart';
 import 'api_response_model/regis_guru_response.dart';
 import 'list_kota.dart';
@@ -173,8 +172,8 @@ class _RegisterGuruState extends State<RegisterGuru> {
       bottomNavigationBar: RaisedButton(
         onPressed: () {
           return FutureBuilder(
-            future: regisSiswaRequest().then((task){
-              if(task.status=="success"){
+            future: registerGuruRequest().then((task){
+              if(task.code=="200"){
                 Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Verification()));
               }
             }),
@@ -240,7 +239,7 @@ class _RegisterGuruState extends State<RegisterGuru> {
         });
   }
 
-  Future<RegisGuruResponse> regisSiswaRequest() async {
+  Future<RegisGuruResponse> registerGuruRequest() async {
     String url =
         "http://apingelesin.com/app/api/web/index.php?r=v1/guru/registrasi";
     Dio dio = new Dio();

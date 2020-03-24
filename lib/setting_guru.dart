@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:new_ngelesin/biaya_les.dart';
 import 'package:new_ngelesin/kelola_jadwal.dart';
-import 'package:new_ngelesin/les_pay_murid.dart';
 import 'package:new_ngelesin/login_guru.dart';
-import 'package:new_ngelesin/riwayat_les_murid.dart';
 import 'package:new_ngelesin/setting_biaya_les.dart';
 import 'package:new_ngelesin/syarat_dan_ketentuan.dart';
-import 'package:new_ngelesin/tagihan_murid.dart';
 import 'package:new_ngelesin/tentang_kami_murid.dart';
-import 'package:new_ngelesin/topup_saldo_murid.dart';
 
 class SettingGuru extends StatefulWidget {
   @override
@@ -67,7 +63,7 @@ class _SettingGuruState extends State<SettingGuru> {
               leading: Icon(Icons.exit_to_app),
               title: Text("Keluar"),
               onTap: (){
-                print('keluar');
+                print('keluar guru');
                 Navigator.of(context).push(new MaterialPageRoute(
                     builder: (BuildContext context) => new LoginGuru()));
               },

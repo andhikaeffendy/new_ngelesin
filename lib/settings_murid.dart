@@ -60,7 +60,7 @@ class _SettingsMuridState extends State<SettingsMurid> {
               leading: Icon(Icons.exit_to_app),
               title: Text("Keluar"),
               onTap: (){
-                print('keluar');
+                print('keluar murid');
                 Navigator.of(context).push(new MaterialPageRoute(
                   builder: (BuildContext context) => new LoginMurid()));
                 },
