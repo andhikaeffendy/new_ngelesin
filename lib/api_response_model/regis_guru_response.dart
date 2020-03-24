@@ -1,14 +1,14 @@
 // To parse this JSON data, do
 //
-//     final loginGuruResponse = loginGuruResponseFromJson(jsonString);
+//     final regisGuruResponse = regisGuruResponseFromJson(jsonString);
 
 import 'dart:convert';
 
-LoginGuruResponse loginGuruResponseFromJson(String str) => LoginGuruResponse.fromJson(json.decode(str));
+RegisGuruResponse regisGuruResponseFromJson(String str) => RegisGuruResponse.fromJson(json.decode(str));
 
-String loginGuruResponseToJson(LoginGuruResponse data) => json.encode(data.toJson());
+String regisGuruResponseToJson(RegisGuruResponse data) => json.encode(data.toJson());
 
-class LoginGuruResponse {
+class RegisGuruResponse {
   String app;
   String version;
   String release;
@@ -19,7 +19,7 @@ class LoginGuruResponse {
   String message;
   Data data;
 
-  LoginGuruResponse({
+  RegisGuruResponse({
     this.app,
     this.version,
     this.release,
@@ -31,7 +31,7 @@ class LoginGuruResponse {
     this.data,
   });
 
-  factory LoginGuruResponse.fromJson(Map<String, dynamic> json) => LoginGuruResponse(
+  factory RegisGuruResponse.fromJson(Map<String, dynamic> json) => RegisGuruResponse(
     app: json["app"],
     version: json["version"],
     release: json["release"],
@@ -64,9 +64,9 @@ class Data {
   String namaLengkap;
   String hp;
   int jenisKelamin;
-  dynamic masterProvinsi;
-  dynamic masterKota;
-  dynamic masterKecamatan;
+  int masterProvinsi;
+  int masterKota;
+  int masterKecamatan;
   dynamic fotoProfil;
   dynamic pekerjaan;
   String pendidikanTerakhir;
@@ -89,6 +89,7 @@ class Data {
   int isDelete;
   DateTime createdDate;
   dynamic updatedDate;
+  String passwordHash;
 
   Data({
     this.id,
@@ -123,6 +124,7 @@ class Data {
     this.isDelete,
     this.createdDate,
     this.updatedDate,
+    this.passwordHash,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -158,6 +160,7 @@ class Data {
     isDelete: json["is_delete"],
     createdDate: DateTime.parse(json["created_date"]),
     updatedDate: json["updated_date"],
+    passwordHash: json["passwordHash"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -193,5 +196,6 @@ class Data {
     "is_delete": isDelete,
     "created_date": createdDate.toIso8601String(),
     "updated_date": updatedDate,
+    "passwordHash": passwordHash,
   };
 }

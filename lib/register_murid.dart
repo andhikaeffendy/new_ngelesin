@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:new_ngelesin/list_kecamatan.dart';
 import 'package:new_ngelesin/list_kota.dart';
 import 'package:new_ngelesin/list_provinsi.dart';
-import 'package:new_ngelesin/verification.dart';
+import 'package:new_ngelesin/verification_murid.dart';
 
 import 'global_variable/temp_var.dart' as globTemp;
 import 'api_response_model/regis_siswa_response.dart';
