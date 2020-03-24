@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:new_ngelesin/api_response_model/list_all_mapel_response.dart';
 import 'package:new_ngelesin/api_response_model/login_siswa_response.dart';
+import 'package:new_ngelesin/api_response_model/profile_siswa_response.dart';
 import 'package:new_ngelesin/login_guru.dart';
 import 'package:new_ngelesin/main.dart';
 import 'package:new_ngelesin/register.dart';
@@ -78,6 +79,7 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
               if (task.status == "success") {
                 print("masuk sukses");
                 getMapelRequest();
+                getProfileRequest(task.data.token, task.data.email, passwordEditTextController.text);
                 account_info.loginSiswaResponseData = task;
                 Navigator.of(context).push(new MaterialPageRoute(
                     builder: (BuildContext context) => new MainApp()));
@@ -189,8 +191,7 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
   }
 
   Future<LoginSiswaResponse> loginSiswaRequest(String email, String password) async {
-    String url =
-        "https://apingelesin.com/app/api/web/index.php?r=v1/siswa/login";
+    String url = "https://apingelesin.com/app/api/web/index.php?r=v1/siswa/login";
     Dio dio = new Dio();
     Response response;
 
@@ -218,5 +219,31 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
     listAllMapelResponseFromJson(response.toString());
 
     globalTemp.listAllMapel = mapelResponse;
+  }
+
+  getProfileRequest(String token, String email, String password) async {
+    String url = "http://apingelesin.com/app/api/web/index.php?r=v1/siswa/profile";
+
+    var dio = Dio();
+    dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (RequestOptions options) async {
+            var customHeaders = {
+              'content-type': 'application/json',
+              'email': email,
+              'password': password,
+            };
+            options.headers.addAll(customHeaders);
+            return options;
+          }
+        )
+    );
+
+    Response response = await dio.get(url);
+    print("GET PROFILE REQUEST : " + response.data.toString());
+    ProfileSiswaResponse profileSiswaResponse;
+    profileSiswaResponse = profileSiswaResponseFromJson(response.toString());
+
+    account_info.profileSiswaResponse = profileSiswaResponse;
   }
 }
