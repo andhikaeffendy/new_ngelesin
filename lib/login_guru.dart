@@ -6,7 +6,7 @@ import 'package:new_ngelesin/register.dart';
 
 import 'api_response_model/list_all_mapel_response.dart';
 import 'api_response_model/login_guru_response.dart';
-import 'lupa_password.dart';
+import 'lupa_password_guru.dart';
 import 'global_variable/temp_var.dart' as globalTemp;
 import 'global_variable/account_information.dart' as account_info;
 
