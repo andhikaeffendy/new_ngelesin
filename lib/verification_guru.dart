@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_verification_code_input/flutter_verification_code_input.dart';
-import 'package:new_ngelesin/api_response_model/otp_siswa_response.dart';
+import 'package:new_ngelesin/api_response_model/otp_guru_response.dart';
 
 
 class Verification extends StatefulWidget {
@@ -79,9 +79,9 @@ class _VerificationState extends State<Verification> {
     );
   }
 
-  Future<OtpSiswaResponse> otpSiswaRequest() async {
+  Future<OtpGuruResponse> otpSiswaRequest() async {
     String url =
-        "http://apingelesin.com/app/api/web/index.php?r=v1/siswa/otp";
+        "http://apingelesin.com/app/api/web/index.php?r=v1/guru/otp";
     Dio dio = new Dio();
     Response response;
 
@@ -92,9 +92,9 @@ class _VerificationState extends State<Verification> {
     response = await dio.post(url, data: formData);
     print("Ini Response : " + response.toString());
 
-    OtpSiswaResponse otpSiswaResponse =
-    otpSiswaResponseFromJson(response.toString());
+    OtpGuruResponse otpGuruResponse =
+    otpGuruResponseFromJson(response.toString());
 
-    return otpSiswaResponse;
+    return otpGuruResponse;
   }
 }

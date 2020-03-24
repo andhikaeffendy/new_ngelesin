@@ -64,9 +64,9 @@ class Data {
   String namaLengkap;
   String hp;
   int jenisKelamin;
-  dynamic masterProvinsi;
-  dynamic masterKota;
-  dynamic masterKecamatan;
+  int masterProvinsi;
+  int masterKota;
+  int masterKecamatan;
   dynamic fotoProfil;
   dynamic pekerjaan;
   String pendidikanTerakhir;
@@ -84,11 +84,12 @@ class Data {
   String kodeOtp;
   dynamic saldo;
   int status;
-  dynamic cancelPoint;
-  dynamic playerId;
+  int cancelPoint;
+  String playerId;
   int isDelete;
   DateTime createdDate;
-  dynamic updatedDate;
+  DateTime updatedDate;
+  String passwordHash;
 
   Data({
     this.id,
@@ -123,6 +124,7 @@ class Data {
     this.isDelete,
     this.createdDate,
     this.updatedDate,
+    this.passwordHash,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -157,7 +159,8 @@ class Data {
     playerId: json["player_id"],
     isDelete: json["is_delete"],
     createdDate: DateTime.parse(json["created_date"]),
-    updatedDate: json["updated_date"],
+    updatedDate: DateTime.parse(json["updated_date"]),
+    passwordHash: json["passwordHash"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -192,6 +195,7 @@ class Data {
     "player_id": playerId,
     "is_delete": isDelete,
     "created_date": createdDate.toIso8601String(),
-    "updated_date": updatedDate,
+    "updated_date": updatedDate.toIso8601String(),
+    "passwordHash": passwordHash,
   };
 }

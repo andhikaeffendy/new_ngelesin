@@ -1,9 +1,15 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:new_ngelesin/login_murid.dart';
 import 'package:new_ngelesin/main.dart';
 import 'package:new_ngelesin/register.dart';
 
+import 'api_response_model/list_all_mapel_response.dart';
+import 'api_response_model/login_guru_response.dart';
 import 'lupa_password.dart';
+import 'global_variable/temp_var.dart' as globalTemp;
+import 'global_variable/account_information.dart' as account_info;
+
 
 class LoginGuru extends StatelessWidget {
   // This widget is the root of your application.
@@ -65,10 +71,26 @@ class _LoginFormGuruState extends State<LoginFormGuru> {
       child: MaterialButton(
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(16.0, 18.0, 16.0, 18.0),
-        onPressed: () => Navigator.of(context).push(
-            new MaterialPageRoute(
-                builder: (BuildContext context) =>
-                new MainApp())),
+        onPressed: () {
+          FutureBuilder(
+            future: loginSiswaRequest(emailEditTextController.text,
+                passwordEditTextController.text)
+                .then((task) {
+              if (task.status == "success") {
+                print("masuk sukses");
+                getMapelRequest();
+                account_info.loginGuruResponse = task;
+                Navigator.of(context).push(new MaterialPageRoute(
+                    builder: (BuildContext context) => new MainApp()));
+              } else {
+                print("masuk sini, salah");
+              }
+            }),
+            builder: (context, snapshot) {
+              return null;
+            },
+          );
+        },
         child: Text('Login',
             textAlign: TextAlign.center,
             style: new TextStyle(
@@ -165,5 +187,37 @@ class _LoginFormGuruState extends State<LoginFormGuru> {
           textColor: Colors.white,
           child: Text("Login Murid Disini"),
         ));
+  }
+
+  Future<LoginGuruResponse> loginSiswaRequest(String email, String password) async {
+    String url =
+        "http://apingelesin.com/dev/api/web/index.php?r=v1/guru/login";
+    Dio dio = new Dio();
+    Response response;
+
+    FormData formData =
+    new FormData.fromMap({"email": email, "password": password});
+
+    response = await dio.post(url, data: formData);
+    print(response.toString());
+
+    LoginGuruResponse loginGuruResponse =
+    loginGuruResponseFromJson(response.toString());
+
+    return loginGuruResponse;
+  }
+
+  getMapelRequest() async {
+    String url = "http://apingelesin.com/app/api/web/index.php?r=v1/home/mapel";
+    Dio dio = new Dio();
+    Response response;
+
+    response = await dio.get(url);
+    print(response.toString());
+
+    ListAllMapelResponse mapelResponse =
+    listAllMapelResponseFromJson(response.toString());
+
+    globalTemp.listAllMapel = mapelResponse;
   }
 }
