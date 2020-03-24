@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:new_ngelesin/biaya_les.dart';
 import 'package:new_ngelesin/kelola_jadwal.dart';
 import 'package:new_ngelesin/les_pay_murid.dart';
+import 'package:new_ngelesin/login_guru.dart';
 import 'package:new_ngelesin/riwayat_les_murid.dart';
 import 'package:new_ngelesin/setting_biaya_les.dart';
 import 'package:new_ngelesin/syarat_dan_ketentuan.dart';
@@ -65,7 +66,11 @@ class _SettingGuruState extends State<SettingGuru> {
             ),ListTile(
               leading: Icon(Icons.exit_to_app),
               title: Text("Keluar"),
-              onTap: (){},
+              onTap: (){
+                print('keluar');
+                Navigator.of(context).push(new MaterialPageRoute(
+                    builder: (BuildContext context) => new LoginGuru()));
+              },
             ),
           ],
         ),

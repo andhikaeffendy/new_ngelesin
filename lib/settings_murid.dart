@@ -6,6 +6,8 @@ import 'package:new_ngelesin/tagihan_murid.dart';
 import 'package:new_ngelesin/tentang_kami_murid.dart';
 import 'package:new_ngelesin/topup_saldo_murid.dart';
 
+import 'login_murid.dart';
+
 class SettingsMurid extends StatefulWidget {
   @override
   _SettingsMuridState createState() => _SettingsMuridState();
@@ -57,7 +59,11 @@ class _SettingsMuridState extends State<SettingsMurid> {
             ),ListTile(
               leading: Icon(Icons.exit_to_app),
               title: Text("Keluar"),
-              onTap: (){},
+              onTap: (){
+                print('keluar');
+                Navigator.of(context).push(new MaterialPageRoute(
+                  builder: (BuildContext context) => new LoginMurid()));
+                },
             ),
           ],
         ),
