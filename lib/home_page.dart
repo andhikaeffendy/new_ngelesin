@@ -2,7 +2,9 @@ import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:new_ngelesin/akademik_page.dart';
 import 'package:new_ngelesin/anak_page.dart';
+import 'package:new_ngelesin/api_response_model/kategori_response.dart';
 import 'package:new_ngelesin/bahasa_page.dart';
+import 'package:new_ngelesin/kategori_page.dart';
 import 'package:new_ngelesin/keterampilan_page.dart';
 import 'package:new_ngelesin/lainnya_page.dart';
 import 'package:new_ngelesin/musik_page.dart';
@@ -63,295 +65,108 @@ class HomePage extends StatelessWidget {
               image_slider_caralous,
               Padding(
                 padding: const EdgeInsets.all(0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Align(
-                      alignment: Alignment.center,
-                      child: new Container(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            new Column(
-                              children: <Widget>[
-                                new Container(
-                                  width: 70.0,
-                                  height: 70.0,
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image: NetworkImage(
-                                              "https://apingelesin.com/app/uploads/kategori/Akademik356a192b7913b04c54574d18c28d46e6395428ab.png"))),
-                                  child: FlatButton(
-                                    onPressed: () => Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (BuildContext) =>
-                                            new AkademikPage())),
-                                    padding: const EdgeInsets.all(8.0),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 8.0),
-                                  child: Text(
-                                    "Akademik",
-                                    style: new TextStyle(fontSize: 14.0),
-                                  ),
-                                )
-                              ],
-                            ),
-                            new Column(
-                              children: <Widget>[
-                                new Container(
-                                  width: 70.0,
-                                  height: 70.0,
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image: NetworkImage(
-                                              "https://apingelesin.com/app/uploads/kategori/bahasada4b9237bacccdf19c0760cab7aec4a8359010b0.png"))),
-                                  child: FlatButton(
-                                    onPressed: () => Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (BuildContext) =>
-                                            new BahasaPage())),
-                                    padding: const EdgeInsets.all(8.0),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 8.0),
-                                  child: Text(
-                                    "Bahasa",
-                                    style: new TextStyle(fontSize: 14.0),
-                                  ),
-                                )
-                              ],
-                            ),
-                            new Column(
-                              children: <Widget>[
-                                new Container(
-                                  width: 70.0,
-                                  height: 70.0,
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image: NetworkImage(
-                                              "https://apingelesin.com/app/uploads/kategori/olahraga77de68daecd823babbb58edb1c8e14d7106e83bb.png"))),
-                                  child: FlatButton(
-                                    onPressed: () => Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (BuildContext) =>
-                                            new OlahragaPage())),
-                                    padding: const EdgeInsets.all(8.0),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 8.0),
-                                  child: Text(
-                                    "Olahraga",
-                                    style: new TextStyle(fontSize: 14.0),
-                                  ),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.center,
-                      child: new Container(
-                        padding: const EdgeInsets.only(top: 10.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            new Column(
-                              children: <Widget>[
-                                new Container(
-                                  width: 70.0,
-                                  height: 70.0,
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image: NetworkImage(
-                                              "https://apingelesin.com/app/uploads/kategori/keterampilan1b6453892473a467d07372d45eb05abc2031647a.png"))),
-                                  child: FlatButton(
-                                    onPressed: () => Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (BuildContext) =>
-                                            new KeterampilanPage())),
-                                    padding: const EdgeInsets.all(8.0),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 8.0),
-                                  child: Text(
-                                    "Keterampilan",
-                                    style: new TextStyle(fontSize: 14.0),
-                                  ),
-                                )
-                              ],
-                            ),
-                            new Column(
-                              children: <Widget>[
-                                new Container(
-                                  width: 70.0,
-                                  height: 70.0,
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image: NetworkImage(
-                                              "https://apingelesin.com/app/uploads/kategori/anakac3478d69a3c81fa62e60f5c3696165a4e5e6ac4.png"))),
-                                  child: FlatButton(
-                                    onPressed: () => Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (BuildContext) =>
-                                            new AnakPage())),
-                                    padding: const EdgeInsets.all(8.0),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 8.0),
-                                  child: Text(
-                                    "Anak-anak",
-                                    style: new TextStyle(fontSize: 14.0),
-                                  ),
-                                )
-                              ],
-                            ),
-                            new Column(
-                              children: <Widget>[
-                                new Container(
-                                  width: 70.0,
-                                  height: 70.0,
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image: NetworkImage(
-                                              "https://apingelesin.com/app/uploads/kategori/musikc1dfd96eea8cc2b62785275bca38ac261256e278.png"))),
-                                  child: FlatButton(
-                                    onPressed: () => Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (BuildContext) =>
-                                            new MusikPage())),
-                                    padding: const EdgeInsets.all(8.0),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 8.0),
-                                  child: Text(
-                                    "Musik",
-                                    style: new TextStyle(fontSize: 14.0),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.center,
-                      child: new Container(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            new Column(
-                              children: <Widget>[
-                                new Container(
-                                  width: 70.0,
-                                  height: 70.0,
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image: NetworkImage(
-                                              "https://apingelesin.com/app/uploads/kategori/lainnya902ba3cda1883801594b6e1b452790cc53948fda.png"))),
-                                  child: FlatButton(
-                                    onPressed: () => Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (BuildContext) =>
-                                            new LainnyaPage())),
-                                    padding: const EdgeInsets.all(8.0),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 8.0),
-                                  child: Text(
-                                    "Lainnya",
-                                    style: new TextStyle(fontSize: 14.0),
-                                  ),
-                                )
-                              ],
-                            ),
-                            new Column(
-                              children: <Widget>[
-                                new Container(
-                                  width: 70.0,
-                                  height: 70.0,
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image: NetworkImage(
-                                              "https://apingelesin.com/app/uploads/kategori/soal2b1d5781111d84f7b3fe45a0852e59758cd7a87e5.png"))),
-                                  child: FlatButton(
-                                    onPressed: () => Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (BuildContext) =>
-                                            new TanyaSoalPage())),
-                                    padding: const EdgeInsets.all(8.0),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 8.0),
-                                  child: Text(
-                                    "Tanya Soal",
-                                    style: new TextStyle(fontSize: 14.0),
-                                  ),
-                                )
-                              ],
-                            ),
-                            new Column(
-                              children: <Widget>[
-                                new Container(
-                                  width: 70.0,
-                                  height: 70.0,
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image: NetworkImage(
-                                              "https://apingelesin.com/app/uploads/kategori/help17ba0791499db908433b80f37c5fbc89b870084b.png"))),
-                                  child: FlatButton(
-                                    onPressed: () => Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (BuildContext) =>
-                                            new AkademikPage())),
-                                    padding: const EdgeInsets.all(8.0),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 8.0),
-                                  child: Text(
-                                    "Help Center",
-                                    style: new TextStyle(fontSize: 14.0),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
+                child: FutureBuilder(
+                  future: kategoriRequest(),
+                  builder: (context, snapshot){
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      KategoriResponse kategoriResponse = snapshot.data;
+                      return generateKategori(context, kategoriResponse.data);
+                    } else {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
                 ),
               )
             ],
           ),
         ));
+  }
+
+  Column generateKategori(BuildContext context, List<Kategori> listKategori){
+    List<Widget> kategories = new List();
+
+    int total_row = (listKategori.length / 3).ceil();
+
+    for(int i=0;i<total_row;i++){
+      if(3*i+2 < listKategori.length) {
+        kategories.add(generateAlign(context, listKategori[3*i], listKategori[3*i+1], listKategori[3*i+2]));
+      } else if (3*i+1 < listKategori.length){
+        kategories.add(generateAlign(context, listKategori[3*i], listKategori[3*i+1], null));
+      } else {
+        kategories.add(generateAlign(context, listKategori[3*i], null, null));
+      }
+    }
+    return new Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children:kategories
+    );
+  }
+
+  Align generateAlign(BuildContext context, Kategori kategori1, Kategori kategori2, Kategori kategori3 ){
+    List<Widget> result = new List();
+    if(kategori1 != null) {
+      result.add(generateColumn(context, kategori1));
+    }
+    if(kategori2 != null) {
+      result.add(generateColumn(context, kategori2));
+    }
+    if(kategori3 != null) {
+      result.add(generateColumn(context, kategori3));
+    }
+
+    return new Align(
+      alignment: Alignment.center,
+      child: new Container(
+        padding: const EdgeInsets.only(top: 20.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: result,
+        ),
+      ),
+    );
+  }
+
+  Column generateColumn(BuildContext context, Kategori kategori){
+    return new Column(
+      children: <Widget>[
+        new Container(
+          width: 70.0,
+          height: 70.0,
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: NetworkImage(
+                      kategori.gambar))),
+          child: FlatButton(
+            onPressed: () {
+              if(kategori.nama == "Tanya Soal") {
+                Navigator.of(context, rootNavigator: true).push(
+                    MaterialPageRoute(
+                        builder: (BuildContext) =>
+                        new TanyaSoalPage()));
+              } else if(kategori.nama == "Help Center"){
+              } else {
+                Navigator.of(context, rootNavigator: true).push(
+                    MaterialPageRoute(
+                        builder: (BuildContext) =>
+                        new KategoriPage(kategori: kategori)));
+              }
+            },
+            padding: const EdgeInsets.all(8.0),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(top: 8.0),
+          child: Text(
+            kategori.nama,
+            style: new TextStyle(fontSize: 14.0),
+          ),
+        )
+      ],
+    );
   }
 
   Future<BannerResponse> bannerRequest() async {
@@ -365,5 +180,18 @@ class HomePage extends StatelessWidget {
     BannerResponse bannerResponse = bannerResponseFromJson(response.toString());
 
     return bannerResponse;
+  }
+
+  Future<KategoriResponse> kategoriRequest() async {
+    String url = "https://apingelesin.com/app/api/web/index.php?r=v1/home/kategori";
+    Dio dio = new Dio();
+    Response response;
+
+    response = await dio.get(url);
+    print(response.toString());
+
+    KategoriResponse kategoriResponse = kategoriResponseFromJson(response.toString());
+
+    return kategoriResponse;
   }
 }

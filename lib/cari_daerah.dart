@@ -1,17 +1,22 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:new_ngelesin/api_response_model/search_area_response.dart';
+import 'package:new_ngelesin/api_response_model/search_area_v2_response.dart';
 import 'package:new_ngelesin/pilihan_guru.dart';
 
 void main() => runApp(CariDaerah());
 
 class CariDaerah extends StatefulWidget {
+  final int mapel;
+
+  CariDaerah({Key key, @required this.mapel}) : super(key: key);
+
   @override
   _CariDaerahState createState() => _CariDaerahState();
 }
 
 class _CariDaerahState extends State<CariDaerah> {
-  List<String> litems = ["tingkiwingki", "dipsi", "lala", "poo"];
+  List<Area> areas = List<Area>();
 
   TextEditingController searchText = TextEditingController();
 
@@ -24,13 +29,15 @@ class _CariDaerahState extends State<CariDaerah> {
       body: Column(
         children: <Widget>[
           TextField(
-            onSubmitted: (text){
-              FutureBuilder(
-                future: makeRequest(text),
-                builder: (context, snapshot){
-                  return null;
-                },
-              );
+            onChanged: (text){
+              makeRequestV2(text).then((task) {
+                if (task.status == "success") {
+                  setState(() {
+                    areas.clear();
+                    areas.addAll(task.data);
+                  });
+                }
+              });
             },
             controller: searchText,
             decoration: InputDecoration(
@@ -40,15 +47,21 @@ class _CariDaerahState extends State<CariDaerah> {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: litems.length,
+              itemCount: areas.length,
               itemBuilder: (BuildContext context, int index){
                 return Card(
                   child: ListTile(
                     leading: Icon(Icons.location_on),
                     dense: true,
-                    title: Text(litems[index]),
-                    onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-                        builder: (BuildContext context) => new PilihanGuru())),
+                    title: Text(areas[index].nama),
+                    subtitle: Text(areas[index].type),
+                    onTap: () {
+                      if(areas[index].launched == "1") {
+                        Navigator.of(context).push(new MaterialPageRoute(
+                            builder: (
+                                BuildContext context) => new PilihanGuru(area: areas[index])));
+                      }
+                    },
                   ),
                 );
               },
@@ -79,5 +92,27 @@ class _CariDaerahState extends State<CariDaerah> {
     searchAreaResponseFromJson(response.toString());
 
     return searchAreaResponse;
+  }
+
+  Future<SearchAreaV2Response> makeRequestV2(String keyword) async {
+    String url =
+        "http://apingelesin.com/app/api/web/index.php?r=v2/home/search-area";
+    Dio dio = new Dio();
+    Response response;
+
+    FormData formData =
+    new FormData.fromMap({
+      "keyword" : keyword,
+    });
+
+
+    response = await dio.post(url, data: formData );
+    print("Ini Response : " + response.toString());
+    print("Ini Response Stat : " + response.statusMessage );
+
+    SearchAreaV2Response searchAreaV2Response =
+    searchAreaV2ResponseFromJson(response.toString());
+
+    return searchAreaV2Response;
   }
 }

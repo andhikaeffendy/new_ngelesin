@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:new_ngelesin/api_response_model/search_area_v2_response.dart';
 import 'package:new_ngelesin/profile.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 class PilihanGuru extends StatelessWidget {
+  final Area area;
+
+  PilihanGuru({Key key, @required this.area}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build

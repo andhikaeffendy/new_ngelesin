@@ -1,27 +1,56 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:new_ngelesin/setting_guru.dart';
+import 'package:new_ngelesin/settings_murid.dart';
 import 'akun_page.dart';
 import 'booking_page.dart';
 import 'home_page.dart';
 import 'login_murid.dart';
-void main() => runApp(LoginMurid());
+import 'global_variable/account_information.dart' as account_info;
 
-class MainApp extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return MainAppState();
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  if(account_info.loginGuruResponse != null){
+    runApp(MainApp(role: "guru"));
+  } else if(account_info.loginSiswaResponseData != null){
+    runApp(MainApp(role: "murid"));
+  } else {
+    runApp(LoginMurid());
   }
 }
 
-class MainAppState extends State<MainApp> {
+class MainApp extends StatefulWidget {
+  final String role;
+
+  MainApp({Key key, @required this.role}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    var pageOptions;
+    if(role == "guru") {
+      pageOptions = [
+        HomePage(),
+        BookingPage(),
+        AkunPage(),
+        SettingGuru(),
+      ];
+    } else {
+      pageOptions = [
+        HomePage(),
+        BookingPage(),
+        AkunPage(),
+        SettingsMurid(),
+      ];
+    }
+    return MainAppState(pageOptions: pageOptions);
+  }
+}
+
+class MainAppState extends State<MainApp>{
   int _selectedPage = 0;
-  final _pageOptions = [
-    HomePage(),
-    BookingPage(),
-    AkunPage(),
-    SettingGuru(),
-  ];
+  final pageOptions;
+
+  MainAppState({@required this.pageOptions}) : super();
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +68,7 @@ class MainAppState extends State<MainApp> {
             textAlign: TextAlign.center, style: new TextStyle(color: Colors.black),
           ),
         ),
-        body: _pageOptions[_selectedPage],
+        body: pageOptions[_selectedPage],
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           currentIndex: _selectedPage,

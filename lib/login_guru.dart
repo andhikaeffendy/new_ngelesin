@@ -81,7 +81,7 @@ class _LoginFormGuruState extends State<LoginFormGuru> {
                 getMapelRequest();
                 account_info.loginGuruResponse = task;
                 Navigator.of(context).push(new MaterialPageRoute(
-                    builder: (BuildContext context) => new MainApp()));
+                    builder: (BuildContext context) => new MainApp(role: "guru")));
               } else {
                 print("masuk sini, salah");
               }
