@@ -244,6 +244,9 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
     ProfileSiswaResponse profileSiswaResponse;
     profileSiswaResponse = profileSiswaResponseFromJson(response.toString());
 
+    account_info.email = email;
+    account_info.password = password;
+
     account_info.profileSiswaResponse = profileSiswaResponse;
   }
 }
