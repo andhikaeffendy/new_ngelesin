@@ -9,6 +9,9 @@ class _TopupSaldoMuridState extends State<TopupSaldoMurid> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Topup Saldo'),
+      ),
       body: Container(
           child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

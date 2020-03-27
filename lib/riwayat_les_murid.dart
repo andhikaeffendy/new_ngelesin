@@ -9,6 +9,9 @@ class _RiwayatLesMuridState extends State<RiwayatLesMurid> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Riwayat Les'),
+      ),
       body: Container(
         child: Center(
           child: Column(
