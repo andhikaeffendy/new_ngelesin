@@ -1,9 +1,17 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:new_ngelesin/api_response_model/list_guru_response.dart';
+import 'package:new_ngelesin/api_response_model/profile_guru_response.dart';
 import 'package:new_ngelesin/booking_pilihan.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
+import 'global_variable/account_information.dart' as account_info;
 
 class Profile extends StatelessWidget {
-  Widget _buildStarItem(String label, double bintang) {
+  final Guru guru;
+
+  Profile({Key key, @required this.guru}) : super(key: key);
+
+  Widget _buildStarItem(String label, double bintang, int suara) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -19,7 +27,7 @@ class Profile extends StatelessWidget {
           spacing: 0.0,
         ),
         Text(
-          '( 0 Suara )',
+          '( '+ suara.toString() +' Suara )',
           style: new TextStyle(
               color: Colors.black, fontSize: 12.0, fontWeight: FontWeight.w300),
         ),
@@ -59,82 +67,19 @@ class Profile extends StatelessWidget {
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Align(
-                    alignment: Alignment.topCenter,
-                    child: Container(
-                      width: 120.0,
-                      height: 100.0,
-                      decoration: new BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: new DecorationImage(
-                              fit: BoxFit.fill,
-                              image: new NetworkImage(
-                                  "https://steamuserimages-a.akamaihd.net/ugc/961971654931781317/B8CF9F6ED4DD4582B2B646EE2AB3DA64F79A43C3/?imw=637&imh=358&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=true"))),
-                    )),
-                new Text(
-                  'Eka Sriwulandari',
-                  style: new TextStyle(fontSize: 12.0, color: Colors.black),
-                  textAlign: TextAlign.center,
-                ),
-                new Container(
-                  margin: EdgeInsets.only(top: 8.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      _buildStatItem("Pendidikan",
-                          "Psikologi Universitas Kristen Maranatha, Sekolah Dance Bridge Dance Academy"),
-                      _buildStarItem("Rating", 3.5),
-                    ],
-                  ),
-                ),
-                new Container(
-                  padding: EdgeInsets.all(20.0),
-                  child: new Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        'Pengalaman Bekerja:',
-                        style: new TextStyle(color: Colors.red, fontSize: 14.0),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
-                      ),
-                      Text(
-                        'Pengajar dance di gereja rehobot, pengajar dance GKI anugrah (anak kecil)',
-                        style:
-                        new TextStyle(color: Colors.black, fontSize: 14.0),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 16.0),
-                      ),
-                      Text(
-                        'Pengalaman Organisasi:',
-                        style: new TextStyle(color: Colors.red, fontSize: 14.0),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 8.0),
-                      ),
-                      Text(
-                        'Ketua pementasan dance GKI Anugrah, pengurus dance di GKI Anugrah, staff senat media '
-                            'Universitas Kristen Maranatha, Prestasi : finalis 5 dancer terbaik di DBL,'
-                            ' juara 1 lomba dance antar sekolah BPK Penabur bandung, juara 3 lomba dance sekota bandung',
-                        style:
-                        new TextStyle(color: Colors.black, fontSize: 14.0),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+            child: FutureBuilder(
+              future: profilGuru(),
+              builder: (context, snapshot){
+                if (snapshot.connectionState == ConnectionState.done) {
+                  ProfileGuruResponse profileGuruResponse = snapshot.data;
+                  return generateProfil(profileGuruResponse.data);
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            )
           ),
         ),
       ),
@@ -148,5 +93,113 @@ class Profile extends StatelessWidget {
             child: Text('Atur Jadwal'),
           )),
     );
+  }
+
+  Column generateProfil(Data data){
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              width: 120.0,
+              height: 100.0,
+              decoration: new BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: new DecorationImage(
+                      fit: BoxFit.fill,
+                      image: new NetworkImage(
+                          guru.foto_profil))),
+            )),
+        new Text(
+          guru.nama_guru,
+          style: new TextStyle(fontSize: 12.0, color: Colors.black),
+          textAlign: TextAlign.center,
+        ),
+        new Container(
+          margin: EdgeInsets.only(top: 8.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              _buildStatItem("Pendidikan",
+                  guru.pendidikan_terakhir),
+              _buildStarItem("Rating", guru.rating_guru.toDouble(), guru.suara),
+            ],
+          ),
+        ),
+        new Container(
+          padding: EdgeInsets.all(20.0),
+          child: new Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                'Pengalaman Bekerja:',
+                style: new TextStyle(color: Colors.red, fontSize: 14.0),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
+              ),
+              Text(
+                data.pekerjaan.pekerjaan,
+                style:
+                new TextStyle(color: Colors.black, fontSize: 14.0),
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: 16.0),
+              ),
+              Text(
+                'Pengalaman Organisasi:',
+                style: new TextStyle(color: Colors.red, fontSize: 14.0),
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: 8.0),
+              ),
+              Text(
+                "data.profil.pengalaman_organisasi",
+                style:
+                new TextStyle(color: Colors.black, fontSize: 14.0),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<ProfileGuruResponse> profilGuru() async {
+    String url =
+        "http://apingelesin.com/app/api/web/index.php?r=v1/booking2/data-pengajar";
+    Dio dio = new Dio();
+    dio.interceptors.add(
+        InterceptorsWrapper(
+            onRequest: (RequestOptions options) async {
+              var customHeaders = {
+                'content-type': 'application/json',
+                'email': account_info.email,
+                'password': account_info.password,
+              };
+              options.headers.addAll(customHeaders);
+              return options;
+            }
+        )
+    );
+    Response response;
+
+    response = await dio.get(url, queryParameters: {
+      "id_guru": guru.tb_guru_id
+    });
+    print("Ini Response : " + response.toString());
+    print("Ini Response Stat : " + response.statusMessage );
+
+    ProfileGuruResponse profileGuruResponse =
+    profileGuruResponseFromJson(response.toString());
+
+    return profileGuruResponse;
   }
 }

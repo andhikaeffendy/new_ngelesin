@@ -12,11 +12,14 @@ class CariDaerah extends StatefulWidget {
   CariDaerah({Key key, @required this.mapel}) : super(key: key);
 
   @override
-  _CariDaerahState createState() => _CariDaerahState();
+  _CariDaerahState createState() => _CariDaerahState(mapel: mapel);
 }
 
 class _CariDaerahState extends State<CariDaerah> {
+  final int mapel;
   List<Area> areas = List<Area>();
+
+  _CariDaerahState({@required this.mapel}) : super();
 
   TextEditingController searchText = TextEditingController();
 
@@ -59,7 +62,7 @@ class _CariDaerahState extends State<CariDaerah> {
                       if(areas[index].launched == "1") {
                         Navigator.of(context).push(new MaterialPageRoute(
                             builder: (
-                                BuildContext context) => new PilihanGuru(area: areas[index])));
+                                BuildContext context) => new PilihanGuru(area: areas[index], mapel: mapel)));
                       }
                     },
                   ),
