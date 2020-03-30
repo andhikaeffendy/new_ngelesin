@@ -10,8 +10,9 @@ import "package:intl/intl.dart";
 class PilihanGuru extends StatelessWidget {
   final Area area;
   final int mapel;
+  final String mapel_name;
 
-  PilihanGuru({Key key, @required this.area, @required this.mapel}) : super(key: key);
+  PilihanGuru({Key key, @required this.area, @required this.mapel, @required this.mapel_name}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +52,7 @@ class PilihanGuru extends StatelessWidget {
     List<Widget> result = new List();
 
     for(int i=0;i<gurus.length;i++)
-      result.add(new ListGuru(guru: gurus[i]));
+      result.add(new ListGuru(guru: gurus[i], mapel_name: mapel_name));
 
     return result;
   }
@@ -91,7 +92,8 @@ class PilihanGuru extends StatelessWidget {
 
 class ListGuru extends StatelessWidget {
   Guru guru;
-  ListGuru({this.guru});
+  String mapel_name;
+  ListGuru({this.guru, this.mapel_name});
 
   var currency = new NumberFormat("###,###,###.#");
 
@@ -99,7 +101,7 @@ class ListGuru extends StatelessWidget {
   Widget build(BuildContext context) {
     return new GestureDetector(
       onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-        builder: (BuildContext context) => new Profile(guru: guru))),
+        builder: (BuildContext context) => new Profile(guru: guru, mapel_name: mapel_name))),
       child: Container(
         padding: EdgeInsets.all(8.0),
         child: new Center(

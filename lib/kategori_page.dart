@@ -104,7 +104,7 @@ class _KategoriPageState extends State<KategoriPage> {
           if(_pilihan!=-1)
             Navigator.push(context,
               MaterialPageRoute(
-                  builder: (BuildContext) => new CariDaerah(mapel: _pilihan)));
+                  builder: (BuildContext) => new CariDaerah(mapel: _pilihan, mapel_name: _selectedValue)));
         },
         color: Colors.blue,
         textColor: Colors.white,

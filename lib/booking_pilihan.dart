@@ -1,17 +1,35 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:new_ngelesin/api_response_model/list_guru_response.dart';
+import 'package:new_ngelesin/api_response_model/list_jam_mapel_response.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
+import 'global_variable/account_information.dart' as account_info;
 
 class BookingPilihan extends StatefulWidget {
+  final Guru guru;
+  final String mapel_name;
+
+  BookingPilihan({Key key, @required this.guru, @required this.mapel_name}) : super(key: key);
+
   @override
-  _BookingPilihanState createState() => _BookingPilihanState();
+  _BookingPilihanState createState() => _BookingPilihanState(guru: this.guru, mapel_name: this.mapel_name);
 }
 
 class _BookingPilihanState extends State<BookingPilihan> {
+  final Guru guru;
+  final String mapel_name;
+
   int selectedMurid;
   int selectedPembayaran;
 
   TimeOfDay time;
-  DateTime selectedDate = DateTime.now();
+  DateTime selectedDate;
+
+  List<JamMapel> jamMapels = new List();
+  JamMapel selectedJadwal;
+
+  _BookingPilihanState({@required this.guru, @required this.mapel_name}) : super();
 
   Future<Null> selectTime(BuildContext context) async {
     final TimeOfDay t =
@@ -24,15 +42,63 @@ class _BookingPilihanState extends State<BookingPilihan> {
   }
 
   Future<Null> _selectDate(BuildContext context) async {
+    var initial = selectedDate != null ? selectedDate : DateTime.now().add(new Duration(days: 1));
+
     final DateTime picked = await showDatePicker(
         context: context,
-        initialDate: selectedDate,
-        firstDate: DateTime(2015, 8),
+        initialDate: initial,
+        firstDate: DateTime.now(),
         lastDate: DateTime(2101));
-    if (picked != null && picked != selectedDate)
+    if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
+        selectedJadwal = null;
       });
+      pilJamMapel().then((task) {
+        if (task.status == "success") {
+          setState(() {
+            jamMapels = task.data;
+          });
+        }
+      });
+    }
+  }
+
+  Future<ListJamMapelResponse> pilJamMapel() async {
+    String url =
+        "http://apingelesin.com/app/api/web/index.php?r=v1/booking2/jam-mapel2";
+    Dio dio = new Dio();
+    dio.interceptors.add(
+        InterceptorsWrapper(
+            onRequest: (RequestOptions options) async {
+              var customHeaders = {
+                'content-type': 'application/json',
+                'email': account_info.email,
+                'password': account_info.password,
+              };
+              options.headers.addAll(customHeaders);
+              return options;
+            }
+        )
+    );
+    Response response;
+
+    var hari = selectedDate.weekday;
+    var tgl = new DateFormat("yyyy-MM-dd").format(selectedDate);
+
+    response = await dio.get(url, queryParameters: {
+      "hari": hari,
+      "tb_guru_id": guru.tb_guru_id,
+      "tb_guru_mapel_id": guru.tb_guru_mapel_id,
+      "tgl": tgl,
+    });
+    print("Ini Response : " + response.toString());
+    print("Ini Response Stat : " + response.statusMessage );
+
+    ListJamMapelResponse listJamMapelResponse =
+    listJamMapelResponseFromJson(response.toString());
+
+    return listJamMapelResponse;
   }
 
   setSelectedMurid(int val) {
@@ -75,7 +141,7 @@ class _BookingPilihanState extends State<BookingPilihan> {
                 children: <Widget>[
                   new Image(
                     image: NetworkImage(
-                        'https://66.media.tumblr.com/7b1790aa4b0e76318f62da5d4a0dd69f/tumblr_pf7xynYOGR1t2c4f8o2_250.png'),
+                        guru.foto_profil),
                     width: 100.0,
                     height: 150.0,
                   ),
@@ -87,7 +153,7 @@ class _BookingPilihanState extends State<BookingPilihan> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           new Text(
-                            'Eka Sriwulandari',
+                            guru.nama_guru,
                             style: new TextStyle(
                                 fontSize: 16.0, color: Colors.black),
                           ),
@@ -96,7 +162,7 @@ class _BookingPilihanState extends State<BookingPilihan> {
                               SmoothStarRating(
                                 allowHalfRating: false,
                                 starCount: 5,
-                                rating: 3,
+                                rating: guru.rating_guru.toDouble(),
                                 size: 20.0,
                                 color: Colors.yellow,
                                 borderColor: Colors.yellow,
@@ -105,7 +171,7 @@ class _BookingPilihanState extends State<BookingPilihan> {
                               Padding(
                                 padding: EdgeInsets.only(left: 8.0),
                               ),
-                              new Text('0 Suara')
+                              new Text(guru.suara.toString()  +' Suara')
                             ],
                           ),
                           new Wrap(
@@ -113,7 +179,7 @@ class _BookingPilihanState extends State<BookingPilihan> {
                               new Container(
                                 width: 180.0,
                                 child: new Text(
-                                  'Psikologi Universitas Kristen Maranatha. Sekolah Dance Bridge Dance Academy',
+                                  guru.pendidikan_terakhir,
                                   style: new TextStyle(
                                       color: Colors.black, fontSize: 12.0),
                                   textAlign: TextAlign.start,
@@ -121,7 +187,7 @@ class _BookingPilihanState extends State<BookingPilihan> {
                               )
                             ],
                           ),
-                          new Text('Matematika SD',
+                          new Text(mapel_name,
                               style: new TextStyle(
                                   fontSize: 16.0, color: Colors.red))
                         ],
@@ -136,7 +202,7 @@ class _BookingPilihanState extends State<BookingPilihan> {
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
                   Text('Pilih tanggal : '),
-                  Text("${selectedDate.toLocal()}".split(' ')[0]),
+                  Text(selectedDate != null ? "${selectedDate.toLocal()}".split(' ')[0] : ""),
                   Spacer(),
                   IconButton(
                     icon: Icon(Icons.arrow_forward_ios),
@@ -152,12 +218,14 @@ class _BookingPilihanState extends State<BookingPilihan> {
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
                   Text("Jam : "),
-                  Text(" ${time.hour}:${time.minute}"),
+                  Text(selectedJadwal != null ? selectedJadwal.jadwal() : ""),
                   Spacer(),
                   IconButton(
                     icon: Icon(Icons.arrow_forward_ios),
                     alignment: Alignment.centerRight,
-                    onPressed: _pickTime,
+                    onPressed: () {
+                      showJadwal(context);
+                    },
                   )
                 ],
               ),
@@ -475,6 +543,42 @@ class _BookingPilihanState extends State<BookingPilihan> {
             ),
           );
         });
+  }
+
+  void showJadwal(BuildContext context){
+    List<Widget> result = new List();
+    for(int i=0; i< jamMapels.length; i++) {
+      JamMapel jamMapel = jamMapels[i];
+      result.add(new SimpleDialogOption(
+        child: new Card(
+          child: ListTile(
+            title: Text(jamMapel.jadwal()),
+            subtitle: Text(
+                jamMapel.status_jam, style: TextStyle(color: Colors.red)),
+            onTap: () {
+              if (jamMapel.status_jam == "")
+                setState(() {
+                  selectedJadwal = jamMapel;
+                });
+              Navigator.of(context).pop();
+            },
+          ),
+        ),
+      )
+      );
+    }
+
+    SimpleDialog dialog = new SimpleDialog(
+      title: Text('Pilih Jam : '),
+      children: result,
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return dialog;
+      },
+    );
   }
 
   void paint(Canvas canvas, Size size) {

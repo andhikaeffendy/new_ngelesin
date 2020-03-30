@@ -8,18 +8,20 @@ void main() => runApp(CariDaerah());
 
 class CariDaerah extends StatefulWidget {
   final int mapel;
+  final String mapel_name;
 
-  CariDaerah({Key key, @required this.mapel}) : super(key: key);
+  CariDaerah({Key key, @required this.mapel, @required this.mapel_name}) : super(key: key);
 
   @override
-  _CariDaerahState createState() => _CariDaerahState(mapel: mapel);
+  _CariDaerahState createState() => _CariDaerahState(mapel: mapel, mapel_name: mapel_name);
 }
 
 class _CariDaerahState extends State<CariDaerah> {
   final int mapel;
+  final String mapel_name;
   List<Area> areas = List<Area>();
 
-  _CariDaerahState({@required this.mapel}) : super();
+  _CariDaerahState({@required this.mapel, @required this.mapel_name}) : super();
 
   TextEditingController searchText = TextEditingController();
 
@@ -62,7 +64,7 @@ class _CariDaerahState extends State<CariDaerah> {
                       if(areas[index].launched == "1") {
                         Navigator.of(context).push(new MaterialPageRoute(
                             builder: (
-                                BuildContext context) => new PilihanGuru(area: areas[index], mapel: mapel)));
+                                BuildContext context) => new PilihanGuru(area: areas[index], mapel: mapel, mapel_name: mapel_name)));
                       }
                     },
                   ),

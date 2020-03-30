@@ -8,8 +8,9 @@ import 'global_variable/account_information.dart' as account_info;
 
 class Profile extends StatelessWidget {
   final Guru guru;
+  final String mapel_name;
 
-  Profile({Key key, @required this.guru}) : super(key: key);
+  Profile({Key key, @required this.guru, @required this.mapel_name}) : super(key: key);
 
   Widget _buildStarItem(String label, double bintang, int suara) {
     return Column(
@@ -87,7 +88,7 @@ class Profile extends StatelessWidget {
           padding: EdgeInsets.all(20.0),
           child: RaisedButton(
             onPressed: () => Navigator.of(context).push(new MaterialPageRoute(
-                builder: (BuildContext context) => new BookingPilihan())),
+                builder: (BuildContext context) => new BookingPilihan(guru: this.guru, mapel_name: this.mapel_name))),
             color: Colors.blue,
             textColor: Colors.white,
             child: Text('Atur Jadwal'),
@@ -161,7 +162,7 @@ class Profile extends StatelessWidget {
                 padding: EdgeInsets.only(bottom: 8.0),
               ),
               Text(
-                "data.profil.pengalaman_organisasi",
+                data.profil.pengalaman_organisasi,
                 style:
                 new TextStyle(color: Colors.black, fontSize: 14.0),
               ),
@@ -174,7 +175,7 @@ class Profile extends StatelessWidget {
 
   Future<ProfileGuruResponse> profilGuru() async {
     String url =
-        "http://apingelesin.com/app/api/web/index.php?r=v1/booking2/data-pengajar";
+        "http://apingelesin.com/app/api/web/index.php?r=booking/data-pengajar";
     Dio dio = new Dio();
     dio.interceptors.add(
         InterceptorsWrapper(

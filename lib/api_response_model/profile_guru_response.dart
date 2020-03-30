@@ -9,70 +9,50 @@ ProfileGuruResponse profileGuruResponseFromJson(String str) => ProfileGuruRespon
 String profileGuruResponseToJson(ProfileGuruResponse data) => json.encode(data.toJson());
 
 class ProfileGuruResponse {
-  String app;
-  String version;
-  String release;
-  DateTime datetime;
-  int timestamp;
-  String status;
-  String code;
-  String message;
+  bool status;
+  int kode;
+  String pesan;
   Data data;
 
   ProfileGuruResponse({
-    this.app,
-    this.version,
-    this.release,
-    this.datetime,
-    this.timestamp,
     this.status,
-    this.code,
-    this.message,
+    this.kode,
+    this.pesan,
     this.data,
   });
 
   factory ProfileGuruResponse.fromJson(Map<String, dynamic> json) => ProfileGuruResponse(
-    app: json["app"],
-    version: json["version"],
-    release: json["release"],
-    datetime: DateTime.parse(json["datetime"]),
-    timestamp: json["timestamp"],
     status: json["status"],
-    code: json["code"],
-    message: json["message"],
+    kode: json["kode"],
+    pesan: json["pesan"],
     data: Data.fromJson(json["data"]),
   );
 
   Map<String, dynamic> toJson() => {
-    "app": app,
-    "version": version,
-    "release": release,
-    "datetime": datetime.toIso8601String(),
-    "timestamp": timestamp,
     "status": status,
-    "code": code,
-    "message": message,
+    "kode": kode,
+    "pesan": pesan,
     "data": data.toJson(),
   };
 }
 
 class Data {
   Pekerjaan pekerjaan;
-//  Profil profil;
+  Profil profil;
 
   Data({
     this.pekerjaan,
-//    this.profil,
+    this.profil,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
     pekerjaan: Pekerjaan.fromJson(json["pekerjaan"]),
-//    profil: Profil.fromJson(json["profil"]),
+    profil: Profil.fromJson(json["profil"]),
   );
 
   Map<String, dynamic> toJson() => {
     "pekerjaan": pekerjaan.toJson(),
-//    "profil": profil.toJson(),
+    "profil": profil.toJson(),
   };
 }
 
