@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:new_ngelesin/api_response_model/riwayat_mengajar.dart';
 import 'package:new_ngelesin/biaya_les.dart';
 import 'package:new_ngelesin/kelola_jadwal.dart';
 import 'package:new_ngelesin/login_guru.dart';
@@ -42,7 +43,7 @@ class _SettingGuruState extends State<SettingGuru> {
                 leading: Icon(Icons.history),
                 title: Text("Riwayat Mengajar"),
                 onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-                    builder: (BuildContext context) => new TentangKamiMurid())),
+                    builder: (BuildContext context) => new RiwayatMengajar())),
               ),ListTile(
                 leading: Icon(Icons.receipt),
                 title: Text("Pendapatan Les"),

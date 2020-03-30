@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_verification_code_input/flutter_verification_code_input.dart';
@@ -10,8 +12,35 @@ class Verification extends StatefulWidget {
 }
 
 class _VerificationState extends State<Verification> {
+
+
+  Timer _timer;
+  int _start = 10;
+  void startTimer() {
+    const oneSec = const Duration(seconds: 1);
+    _timer = new Timer.periodic(
+      oneSec,
+          (Timer timer) => setState(
+            () {
+          if (_start < 1) {
+            timer.cancel();
+          } else {
+            _start = _start - 1;
+          }
+        },
+      ),
+    );
+  }
+
   @override
+
   String kode_otp;
+
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -43,6 +72,12 @@ class _VerificationState extends State<Verification> {
                   kode_otp = value;
                   print(value);
                 },
+              ),
+              SizedBox(
+                height: 24.0,
+              ),Text(
+                '$_start',
+                style: TextStyle(fontSize: 44.0,color: Colors.blue, fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -97,4 +132,6 @@ class _VerificationState extends State<Verification> {
 
     return otpSiswaResponse;
   }
+
+
 }
