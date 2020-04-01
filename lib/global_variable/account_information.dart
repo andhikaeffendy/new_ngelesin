@@ -7,5 +7,6 @@ LoginGuruResponse loginGuruResponse;
 
 String email;
 String password;
+String role;
 
 ProfileSiswaResponse profileSiswaResponse;

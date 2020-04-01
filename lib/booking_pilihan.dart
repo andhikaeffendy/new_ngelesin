@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:new_ngelesin/api_response_model/list_guru_response.dart';
 import 'package:new_ngelesin/api_response_model/list_jam_mapel_response.dart';
+import 'package:new_ngelesin/api_response_model/simpan_booking_response.dart';
+import 'package:new_ngelesin/main.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'global_variable/account_information.dart' as account_info;
 
@@ -17,29 +19,27 @@ class BookingPilihan extends StatefulWidget {
 }
 
 class _BookingPilihanState extends State<BookingPilihan> {
+  final voucher = TextEditingController();
   final Guru guru;
   final String mapel_name;
+  final formatDate = new DateFormat("dd-MMM-yyyy");
+  final formatDate2 = new DateFormat("yyyy-MM-dd");
+  final currency = new NumberFormat("###,###,###.#");
 
   int selectedMurid;
   int selectedPembayaran;
 
-  TimeOfDay time;
   DateTime selectedDate;
 
   List<JamMapel> jamMapels = new List();
   JamMapel selectedJadwal;
 
-  _BookingPilihanState({@required this.guru, @required this.mapel_name}) : super();
+  String alamat;
+  int selectedAlamat;
 
-  Future<Null> selectTime(BuildContext context) async {
-    final TimeOfDay t =
-        await showTimePicker(context: context, initialTime: time);
-    if (time != null) {
-      setState(() {
-        time = t;
-      });
-    }
-  }
+  bool isVisible = false;
+
+  _BookingPilihanState({@required this.guru, @required this.mapel_name}) : super();
 
   Future<Null> _selectDate(BuildContext context) async {
     var initial = selectedDate != null ? selectedDate : DateTime.now().add(new Duration(days: 1));
@@ -84,7 +84,7 @@ class _BookingPilihanState extends State<BookingPilihan> {
     Response response;
 
     var hari = selectedDate.weekday;
-    var tgl = new DateFormat("yyyy-MM-dd").format(selectedDate);
+    var tgl = formatDate2.format(selectedDate);
 
     response = await dio.get(url, queryParameters: {
       "hari": hari,
@@ -112,12 +112,17 @@ class _BookingPilihanState extends State<BookingPilihan> {
       selectedPembayaran = val;
     });
   }
+  setSelectedAlamat(int val) {
+    setState(() {
+      selectedAlamat = val;
+    });
+    showInputAlamat(context);
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    time = TimeOfDay.now();
     selectedMurid = 0;
     selectedPembayaran = 0;
   }
@@ -229,9 +234,60 @@ class _BookingPilihanState extends State<BookingPilihan> {
                   )
                 ],
               ),
-              Container(
-                child: TextFormField(
-                  decoration: InputDecoration(labelText: 'Lokasi'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  Text("Lokasi : "),
+                  Text(alamat != null ? alamat : ""),
+                  Spacer(),
+                  IconButton(
+                    icon: Icon(Icons.arrow_forward_ios),
+                    alignment: Alignment.centerRight,
+                    onPressed: () {
+                      setState(() {
+                        isVisible = true;
+                      });
+                    },
+                  )
+                ],
+              ),
+              Visibility(
+                visible: isVisible,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Radio(
+                          value: 1,
+                          groupValue: selectedAlamat,
+                          activeColor: Colors.blueAccent,
+                          onChanged: (val) {
+                            setSelectedAlamat(val);
+                          },
+                        ),
+                        Text('Rumah saya (sesuai alamat)'),
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Radio(
+                          value: 2,
+                          groupValue: selectedAlamat,
+                          activeColor: Colors.blueAccent,
+                          onChanged: (val) {
+                            setSelectedAlamat(val);
+                          },
+                        ),
+                        Text('Lokasi lain'),
+                      ],
+                    ),
+                  ],
                 ),
               ),
               SizedBox(
@@ -257,7 +313,6 @@ class _BookingPilihanState extends State<BookingPilihan> {
                         groupValue: selectedMurid,
                         activeColor: Colors.blueAccent,
                         onChanged: (val) {
-                          print("Radio $val");
                           setSelectedMurid(val);
                         },
                       ),
@@ -273,7 +328,6 @@ class _BookingPilihanState extends State<BookingPilihan> {
                         groupValue: selectedMurid,
                         activeColor: Colors.blueAccent,
                         onChanged: (val) {
-                          print("Radio $val");
                           setSelectedMurid(val);
                         },
                       ),
@@ -289,7 +343,6 @@ class _BookingPilihanState extends State<BookingPilihan> {
                         groupValue: selectedMurid,
                         activeColor: Colors.blueAccent,
                         onChanged: (val) {
-                          print("Radio $val");
                           setSelectedMurid(val);
                         },
                       ),
@@ -305,7 +358,6 @@ class _BookingPilihanState extends State<BookingPilihan> {
                         groupValue: selectedMurid,
                         activeColor: Colors.blueAccent,
                         onChanged: (val) {
-                          print("Radio $val");
                           setSelectedMurid(val);
                         },
                       ),
@@ -341,6 +393,7 @@ class _BookingPilihanState extends State<BookingPilihan> {
                   new Container(
                       width: 250.0,
                       child: TextField(
+                        controller: voucher,
                         obscureText: true,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
@@ -364,11 +417,10 @@ class _BookingPilihanState extends State<BookingPilihan> {
                         groupValue: selectedPembayaran,
                         activeColor: Colors.blueAccent,
                         onChanged: (val) {
-                          print("Radio $val");
-                          setSelectedMurid(val);
+                          setSelectedPembayaran(val);
                         },
                       ),
-                      Text('Saldo saya : Rp. 0'),
+                      Text('Saldo saya : Rp. '+currency.format(int.parse(account_info.profileSiswaResponse.data.saldo))),
                     ],
                   ),
                   Row(
@@ -379,8 +431,7 @@ class _BookingPilihanState extends State<BookingPilihan> {
                         groupValue: selectedPembayaran,
                         activeColor: Colors.blueAccent,
                         onChanged: (val) {
-                          print("Radio $val");
-                          setSelectedMurid(val);
+                          setSelectedPembayaran(val);
                         },
                       ),
                       Text('Tunai'),
@@ -402,8 +453,8 @@ class _BookingPilihanState extends State<BookingPilihan> {
   }
 
   //alertDialog untuk detail booking
-  void _showAlertDialog() {
-    showDialog(
+  void _showAlertDialog() async {
+    bool submit = await showDialog(
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
@@ -433,7 +484,7 @@ class _BookingPilihanState extends State<BookingPilihan> {
                     ),
                   ),
                   Container(
-                    child: Text('31-Mar-2020',
+                    child: Text(formatDate.format(selectedDate),
                         style: TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.red)),
                   ),
@@ -447,7 +498,7 @@ class _BookingPilihanState extends State<BookingPilihan> {
                     ),
                   ),
                   Container(
-                    child: Text('Matematika SD',
+                    child: Text(mapel_name,
                         style: TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.red)),
                   ),
@@ -461,7 +512,7 @@ class _BookingPilihanState extends State<BookingPilihan> {
                     ),
                   ),
                   Container(
-                    child: Text('Riska yunitasari',
+                    child: Text(guru.nama_guru,
                         style: TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.red)),
                   ),
@@ -475,7 +526,7 @@ class _BookingPilihanState extends State<BookingPilihan> {
                     ),
                   ),
                   Container(
-                    child: Text('1',
+                    child: Text(selectedMurid.toString(),
                         style: TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.red)),
                   ),
@@ -494,7 +545,7 @@ class _BookingPilihanState extends State<BookingPilihan> {
                       ),
                       Container(
                         child: Text(
-                          'Rp. 75.000',
+                          "Rp. " + currency.format(int.parse(guru.biaya)),
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.red,
@@ -521,7 +572,7 @@ class _BookingPilihanState extends State<BookingPilihan> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       GestureDetector(
-                        onTap: () => Navigator.of(context).pop(),
+                        onTap: () => Navigator.of(context).pop(false),
                         child: Text('BATAL',
                             style: TextStyle(
                                 color: Colors.red,
@@ -529,7 +580,7 @@ class _BookingPilihanState extends State<BookingPilihan> {
                                 fontWeight: FontWeight.bold)),
                       ),
                       GestureDetector(
-                        onTap: () => Navigator.of(context).pop(),
+                        onTap: () => Navigator.of(context).pop(true),
                         child: Text('PROSES',
                             style: TextStyle(
                                 color: Colors.red,
@@ -543,6 +594,13 @@ class _BookingPilihanState extends State<BookingPilihan> {
             ),
           );
         });
+    if(submit)
+      simpanBookingRequest().then((task) {
+        if (task.status == "success") {
+          Navigator.of(context).push(new MaterialPageRoute(
+              builder: (BuildContext context) => new MainApp(role: account_info.role)));
+        }
+      });
   }
 
   void showJadwal(BuildContext context){
@@ -581,6 +639,43 @@ class _BookingPilihanState extends State<BookingPilihan> {
     );
   }
 
+  void showInputAlamat(BuildContext context){
+    final address = TextEditingController();
+
+    SimpleDialog dialog = new SimpleDialog(
+      title: Text('Pilih Lokasi : '),
+      children: <Widget>[
+        Padding(
+            padding: EdgeInsets.all(8.0),
+            child: TextFormField(
+              controller: address,
+              decoration: InputDecoration(labelText: 'Lokasi'),
+            ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: RaisedButton(
+            child: Text("Simpan"),
+            onPressed: () {
+              setState(() {
+                alamat = address.text;
+                isVisible = false;
+              });
+              Navigator.of(context).pop();
+            },
+          ),
+        ),
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return dialog;
+      },
+    );
+  }
+
   void paint(Canvas canvas, Size size) {
     final p1 = Offset(50, 50);
     final p2 = Offset(250, 150);
@@ -590,12 +685,41 @@ class _BookingPilihanState extends State<BookingPilihan> {
     canvas.drawLine(p1, p2, paint);
   }
 
-  _pickTime() async {
-    TimeOfDay t = await showTimePicker(context: context, initialTime: time);
-    if (t != null) {
-      setState(() {
-        time = t;
-      });
-    }
+  Future<SimpanBookingResponse> simpanBookingRequest() async {
+    String url = "https://apingelesin.com/app/api/web/index.php?r=v1/booking2/simpan-booking";
+    Dio dio = new Dio();
+    dio.interceptors.add(
+        InterceptorsWrapper(
+            onRequest: (RequestOptions options) async {
+              var customHeaders = {
+                'content-type': 'application/json',
+                'email': account_info.email,
+                'password': account_info.password,
+              };
+              options.headers.addAll(customHeaders);
+              return options;
+            }
+        )
+    );
+    Response response;
+
+    FormData formData =
+    new FormData.fromMap({
+      "id_jam": selectedJadwal.id,
+      "metode_pembayaran": selectedPembayaran,
+      "tb_lokasi_id": selectedAlamat,
+      "jumlah_siswa": selectedMurid,
+      "tgl": formatDate2.format(selectedDate),
+      "alamat": alamat,
+      "voucher": voucher.text,
+    });
+
+    response = await dio.post(url, data: formData);
+    print(response.toString());
+
+    SimpanBookingResponse simpanBookingResponse =
+    simpanBookingResponseFromJson(response.toString());
+
+    return simpanBookingResponse;
   }
 }

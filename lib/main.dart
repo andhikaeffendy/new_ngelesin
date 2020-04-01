@@ -10,9 +10,9 @@ import 'global_variable/account_information.dart' as account_info;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if(account_info.loginGuruResponse != null){
+  if(account_info.role != null && account_info.role == "guru"){
     runApp(MainApp(role: "guru"));
-  } else if(account_info.loginSiswaResponseData != null){
+  } else if(account_info.role != null && account_info.role == "murid"){
     runApp(MainApp(role: "murid"));
   } else {
     runApp(LoginMurid());
