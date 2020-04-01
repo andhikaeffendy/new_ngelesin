@@ -1,4 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'global_variable/account_information.dart' as account_info;
+
+import 'api_response_model/history_kelas_guru_response.dart';
 
 class RiwayatMengajar extends StatefulWidget {
   @override
@@ -14,77 +19,93 @@ class _RiwayatMengajarState extends State<RiwayatMengajar> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Riwayat Mengajar'),
-      ),body: ListView.builder(
-        itemCount: kode.length,
-        itemBuilder: (BuildContext context, int index){
-          return GestureDetector(
-            onTap: _showAlertDialog,
-            child: Container(
-              child: Card(
-                elevation: 1,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Text(kode[index], style: TextStyle(fontWeight: FontWeight.bold),),
+      ),
+      body: FutureBuilder(
+        future: historyKelasRequest(),
+        builder: (context, snapshot){
+          if(snapshot.data == null){
+            return Container();
+          }else{
+            HistoryKelasGuruResponse historyKelasGuruResponse = snapshot.data;
+            List<Datum> listHistory = historyKelasGuruResponse.data;
+            final f = new DateFormat('yyyy-MM-dd');
+
+            return ListView.builder(
+                itemCount: listHistory.length,
+                itemBuilder: (BuildContext context, int index){
+                  Datum data = listHistory[index];
+                  return GestureDetector(
+                    onTap: () => _showAlertDialog(data),
+                    child: Container(
+                      child: Card(
+                        elevation: 1,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Container(
+                                  padding: const EdgeInsets.only(left: 8.0),
+                                  child: Text(listHistory[index].kodeKelas, style: TextStyle(fontWeight: FontWeight.bold),),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.only(left: 8.0),
+                                  child: Text(f.format(listHistory[index].tgl)),
+                                )
+                              ],
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Container(
+                                  width: 150.0,
+                                  padding: const EdgeInsets.only(bottom: 4.0),
+                                  child: Text(listHistory[index].mapel.toString(), style: TextStyle(fontWeight: FontWeight.bold),),
+                                ),
+                                Container(
+                                  width: 150.0,
+                                  padding: const EdgeInsets.only(bottom: 8.0),
+                                  child: Text(listHistory[index].guru.toString()),
+                                )
+                              ],
+                            ),Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: <Widget>[
+                                Container(
+                                  width: 120.0,
+                                  child: Text(
+                                    listHistory[index].statusKelas
+                                    ,style: TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                Container(
+                                  width: 120.0,
+                                  padding: const EdgeInsets.only(bottom: 8.0),
+                                  child: Text(
+                                    listHistory[index].biaya.toString(), style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
                         ),
-                        Container(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Text('13-Okt-2018'),
-                        )
-                      ],
+                      ),
                     ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          width: 150.0,
-                          padding: const EdgeInsets.only(bottom: 4.0),
-                          child: Text('Pendidikan Agama Islam (Lain-lain)', style: TextStyle(fontWeight: FontWeight.bold),),
-                        ),
-                        Container(
-                          width: 150.0,
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Text('Tedi Guru'),
-                        )
-                      ],
-                    ),Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: <Widget>[
-                        Container(
-                          width: 120.0,
-                          child: Text(
-                            'Dibatalkan Siswa'
-                            ,style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        Container(
-                          width: 120.0,
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Text(
-                            'Rp. 100.000', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
-          );
-        }),
+                  );
+                });
+          }
+        },
+      ),
     );
   }
 
-  void _showAlertDialog() {
+  void _showAlertDialog(Datum listHistory) {
+    final f = new DateFormat('yyyy-MM-dd');
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -102,7 +123,7 @@ class _RiwayatMengajarState extends State<RiwayatMengajar> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       Image.network(
-                        "https://www.freeiconspng.com/uploads/school-student-icon-18.png",
+                        listHistory.fotoGuru,
                         fit: BoxFit.contain,
                         height: 100.0,
                         width: 100.0,
@@ -126,7 +147,7 @@ class _RiwayatMengajarState extends State<RiwayatMengajar> {
                             ),
                           ),
                           Container(
-                            child: Text('YOPESO'),
+                            child: Text(listHistory.kodeKelas),
                           )
                         ],
                       ),
@@ -141,7 +162,7 @@ class _RiwayatMengajarState extends State<RiwayatMengajar> {
                             ),
                           ),
                           Container(
-                            child: Text('Saldo'),
+                            child: Text(listHistory.metodePembayaran),
                           )
                         ],
                       ),
@@ -165,7 +186,7 @@ class _RiwayatMengajarState extends State<RiwayatMengajar> {
                             ),
                           ),
                           Container(
-                            child: Text('Matermatika SD'),
+                            child: Text(listHistory.mapel.toString()),
                           )
                         ],
                       ),
@@ -180,7 +201,7 @@ class _RiwayatMengajarState extends State<RiwayatMengajar> {
                             ),
                           ),
                           Container(
-                            child: Text('1'),
+                            child: Text(listHistory.jumlahSiswa),
                           )
                         ],
                       ),
@@ -196,7 +217,7 @@ class _RiwayatMengajarState extends State<RiwayatMengajar> {
                     ),
                   ),
                   Container(
-                    child: Text('30-Mar-2020 08:00:00 - 10:00:00'),
+                    child: Text(f.format(listHistory.tgl) +' ' + listHistory.jamMulai +' - '+ listHistory.jamSelesai),
                   ),
                   SizedBox(
                     height: 12.0,
@@ -208,7 +229,7 @@ class _RiwayatMengajarState extends State<RiwayatMengajar> {
                     ),
                   ),
                   Container(
-                    child: Text('Rizky Akbar'),
+                    child: Text(listHistory.guru.toString()),
                   ),
                   SizedBox(
                     height: 12.0,
@@ -220,7 +241,7 @@ class _RiwayatMengajarState extends State<RiwayatMengajar> {
                     ),
                   ),
                   Container(
-                    child: Text('rumah saya,'),
+                    child: Text(listHistory.lokasi),
                   ),
                   SizedBox(
                     height: 12.0,
@@ -233,7 +254,7 @@ class _RiwayatMengajarState extends State<RiwayatMengajar> {
                   ),
                   Container(
                     child: Text(
-                      'Rp. 75.000',
+                      'Rp. ' + listHistory.biaya,
                       style: TextStyle(color: Colors.red),
                     ),
                   ),
@@ -251,5 +272,34 @@ class _RiwayatMengajarState extends State<RiwayatMengajar> {
             ),
           );
         });
+  }
+
+  Future<HistoryKelasGuruResponse> historyKelasRequest() async{
+    String url = "http://apingelesin.com/dev/api/web/index.php?r=v1/guru/history-kelas&guru_id";
+    Dio dio = new Dio();
+    print(account_info.email + account_info.password);
+    dio.interceptors.add(
+        InterceptorsWrapper(
+            onRequest: (RequestOptions options) async {
+              var customHeaders = {
+                'email': account_info.email,
+                'password': account_info.password,
+              };
+              options.headers.addAll(customHeaders);
+              return options;
+            }
+        )
+    );
+    Response response;
+
+    response = await dio.get(url);
+
+    print("Ini Response : " + response.toString());
+    print("Ini Response Stat : " + response.statusMessage );
+
+    HistoryKelasGuruResponse historyKelasGuruResponse =
+    historyKelasGuruResponseFromJson(response.toString());
+
+    return historyKelasGuruResponse;
   }
 }
