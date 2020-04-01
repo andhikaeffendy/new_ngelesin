@@ -82,6 +82,8 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
                 getProfileRequest(task.data.token, task.data.email, passwordEditTextController.text);
                 account_info.loginSiswaResponseData = task;
                 account_info.role = "murid";
+                account_info.email = emailEditTextController.text;
+                account_info.password = passwordEditTextController.text;
                 Navigator.of(context).push(new MaterialPageRoute(
                     builder: (BuildContext context) => new MainApp(role: "murid")));
               } else {

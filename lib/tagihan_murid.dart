@@ -74,7 +74,7 @@ class _TagihanMuridState extends State<TagihanMurid> {
     );
 
     Response response = await dio.get(url);
-    print("GET PROFILE REQUEST : " + response.data.toString());
+    print("Tagihan Response : " + response.data.toString());
 
     TagihanResponse tagihanResponse =
     tagihanResponseFromJson(response.toString());

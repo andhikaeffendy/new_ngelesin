@@ -1,4 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:new_ngelesin/api_response_model/history_kelas_v1_siswa_response.dart';
+import 'global_variable/account_information.dart' as account_info;
+
 
 class RiwayatLesMurid extends StatefulWidget {
   @override
@@ -15,73 +19,84 @@ class _RiwayatLesMuridState extends State<RiwayatLesMurid> {
       appBar: AppBar(
         title: Text('Riwayat Les'),
       ),
-      body: ListView.builder(
-          itemCount: kode.length,
-          itemBuilder: (BuildContext context, int index){
-            return GestureDetector(
-              onTap: _showAlertDialog,
-              child: Container(
-                child: Card(
-                  elevation: 1,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Text(kode[index], style: TextStyle(fontWeight: FontWeight.bold),),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Text('13-Okt-2018'),
-                          )
-                        ],
+      body: FutureBuilder(
+        future: makeRequest(),
+        builder: (context, snapshot){
+          if(snapshot.data == null){
+            return Container();
+          }else{
+            HistoryKelasV1SiswaResponse historyKelas = snapshot.data;
+            List<Datum> listHistory = historyKelas.data;
+            return ListView.builder(
+                itemCount: listHistory.length,
+                itemBuilder: (BuildContext context, int index){
+                  return GestureDetector(
+                    onTap: _showAlertDialog,
+                    child: Container(
+                      child: Card(
+                        elevation: 1,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Container(
+                                  padding: const EdgeInsets.only(left: 8.0),
+                                  child: Text(listHistory[index].kodeKelas, style: TextStyle(fontWeight: FontWeight.bold),),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.only(left: 8.0),
+                                  child: Text(listHistory[index].tgl),
+                                )
+                              ],
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Container(
+                                  width: 150.0,
+                                  padding: const EdgeInsets.only(bottom: 4.0),
+                                  child: Text(listHistory[index].mapel, style: TextStyle(fontWeight: FontWeight.bold),),
+                                ),
+                                Container(
+                                  width: 150.0,
+                                  padding: const EdgeInsets.only(bottom: 8.0),
+                                  child: Text(listHistory[index].guru),
+                                )
+                              ],
+                            ),Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: <Widget>[
+                                Container(
+                                  width: 120.0,
+                                  child: Text(
+                                    listHistory[index].statusKelas
+                                    ,style: TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                Container(
+                                  width: 120.0,
+                                  padding: const EdgeInsets.only(bottom: 8.0),
+                                  child: Text(
+                                    listHistory[index].biaya, style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
                       ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            width: 150.0,
-                            padding: const EdgeInsets.only(bottom: 4.0),
-                            child: Text('Pendidikan Agama Islam (Lain-lain)', style: TextStyle(fontWeight: FontWeight.bold),),
-                          ),
-                          Container(
-                            width: 150.0,
-                            padding: const EdgeInsets.only(bottom: 8.0),
-                            child: Text('Tedi Guru'),
-                          )
-                        ],
-                      ),Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: <Widget>[
-                          Container(
-                            width: 120.0,
-                            child: Text(
-                              'Dibatalkan Siswa'
-                              ,style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Container(
-                            width: 120.0,
-                            padding: const EdgeInsets.only(bottom: 8.0),
-                            child: Text(
-                              'Rp. 100.000', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            );
-          })
+                    ),
+                  );
+                });
+          }
+        },
+      ),
     );
 
   }
@@ -254,5 +269,34 @@ class _RiwayatLesMuridState extends State<RiwayatLesMurid> {
           );
         });
   }
-  
+
+  Future<HistoryKelasV1SiswaResponse> makeRequest() async {
+    String url = "http://apingelesin.com/app/api/web/index.php?r=v1/siswa/history-kelas&siswa_id="+account_info.loginSiswaResponseData.data.id.toString();
+    Dio dio = new Dio();
+    print(account_info.email + account_info.password);
+    dio.interceptors.add(
+        InterceptorsWrapper(
+            onRequest: (RequestOptions options) async {
+              var customHeaders = {
+                'email': account_info.email,
+                'password': account_info.password,
+              };
+              options.headers.addAll(customHeaders);
+              return options;
+            }
+        )
+    );
+    Response response;
+
+    response = await dio.get(url);
+
+    print("Ini Response : " + response.toString());
+    print("Ini Response Stat : " + response.statusMessage );
+
+    HistoryKelasV1SiswaResponse historyKelasV1SiswaResponse =
+    historyKelasV1SiswaResponseFromJson(response.toString());
+
+    return historyKelasV1SiswaResponse;
+  }
+
 }

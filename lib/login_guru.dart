@@ -73,7 +73,7 @@ class _LoginFormGuruState extends State<LoginFormGuru> {
         padding: EdgeInsets.fromLTRB(16.0, 18.0, 16.0, 18.0),
         onPressed: () {
           FutureBuilder(
-            future: loginSiswaRequest(emailEditTextController.text,
+            future: loginGuruRequest(emailEditTextController.text,
                 passwordEditTextController.text)
                 .then((task) {
               if (task.status == "success") {
@@ -81,6 +81,8 @@ class _LoginFormGuruState extends State<LoginFormGuru> {
                 getMapelRequest();
                 account_info.loginGuruResponse = task;
                 account_info.role = "guru";
+                account_info.email = emailEditTextController.text;
+                account_info.password = passwordEditTextController.text;
                 Navigator.of(context).push(new MaterialPageRoute(
                     builder: (BuildContext context) => new MainApp(role: "guru")));
               } else {
@@ -190,7 +192,7 @@ class _LoginFormGuruState extends State<LoginFormGuru> {
         ));
   }
 
-  Future<LoginGuruResponse> loginSiswaRequest(String email, String password) async {
+  Future<LoginGuruResponse> loginGuruRequest(String email, String password) async {
     String url =
         "http://apingelesin.com/dev/api/web/index.php?r=v1/guru/login";
     Dio dio = new Dio();
