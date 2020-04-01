@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:new_ngelesin/api_response_model/list_all_mapel_response.dart';
 import 'package:new_ngelesin/api_response_model/login_siswa_response.dart';
 import 'package:new_ngelesin/api_response_model/profile_siswa_response.dart';
-import 'package:new_ngelesin/login_guru.dart';
 import 'package:new_ngelesin/main.dart';
 import 'package:new_ngelesin/register.dart';
 import 'global_variable/account_information.dart' as account_info;
@@ -156,8 +155,7 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
                                   style: new TextStyle(
                                       color: Colors.red,
                                       fontSize: 16.0,
-                                      fontWeight: FontWeight.bold)),
-                            )),
+                                      fontWeight: FontWeight.bold)),)),
                         Align(
                             alignment: Alignment.centerRight,
                             child: Container(
@@ -186,7 +184,7 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
         ),
         bottomNavigationBar: RaisedButton(
           onPressed: () => Navigator.of(context).push(new MaterialPageRoute(
-              builder: (BuildContext context) => new LoginGuru())),
+              builder: (BuildContext context) => new MainApp(role: 'murid'))),
           color: Colors.blue,
           textColor: Colors.white,
           child: Text("Login Guru Disini"),

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:new_ngelesin/api_response_model/kategori_response.dart';
 import 'package:new_ngelesin/kategori_page.dart';
 import 'package:new_ngelesin/pilihan_guru.dart';
-import 'package:new_ngelesin/tanya_soal_page.dart';
+import 'package:new_ngelesin/tanya_soal_page_murid.dart';
 import 'package:new_ngelesin/api_response_model/banner_response.dart';
 import 'package:dio/dio.dart';
 import 'global_variable/account_information.dart' as account_info;
