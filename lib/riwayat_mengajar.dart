@@ -275,7 +275,7 @@ class _RiwayatMengajarState extends State<RiwayatMengajar> {
   }
 
   Future<HistoryKelasGuruResponse> historyKelasRequest() async{
-    String url = "http://apingelesin.com/dev/api/web/index.php?r=v1/guru/history-kelas&guru_id";
+    String url = account_info.api_url+"/dev/api/web/index.php?r=v1/guru/history-kelas&guru_id";
     Dio dio = new Dio();
     print(account_info.email + account_info.password);
     dio.interceptors.add(

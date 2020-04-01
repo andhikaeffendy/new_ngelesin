@@ -271,7 +271,7 @@ class _RiwayatLesMuridState extends State<RiwayatLesMurid> {
   }
 
   Future<HistoryKelasV1SiswaResponse> makeRequest() async {
-    String url = "http://apingelesin.com/app/api/web/index.php?r=v1/siswa/history-kelas&siswa_id="+account_info.loginSiswaResponseData.data.id.toString();
+    String url = account_info.api_url+"/app/api/web/index.php?r=v1/siswa/history-kelas&siswa_id="+account_info.loginSiswaResponseData.data.id.toString();
     Dio dio = new Dio();
     print(account_info.email + account_info.password);
     dio.interceptors.add(

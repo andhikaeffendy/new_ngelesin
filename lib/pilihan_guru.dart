@@ -59,7 +59,7 @@ class PilihanGuru extends StatelessWidget {
 
   Future<ListGuruResponse> pilGuru() async {
     String url =
-        "http://apingelesin.com/app/api/web/index.php?r=v1/booking2/guru-mapel";
+        account_info.api_url+"?r=v1/booking2/guru-mapel";
     Dio dio = new Dio();
     dio.interceptors.add(
         InterceptorsWrapper(

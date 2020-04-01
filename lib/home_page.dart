@@ -1,18 +1,12 @@
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
-import 'package:new_ngelesin/akademik_page.dart';
-import 'package:new_ngelesin/anak_page.dart';
 import 'package:new_ngelesin/api_response_model/kategori_response.dart';
-import 'package:new_ngelesin/bahasa_page.dart';
 import 'package:new_ngelesin/kategori_page.dart';
-import 'package:new_ngelesin/keterampilan_page.dart';
-import 'package:new_ngelesin/lainnya_page.dart';
-import 'package:new_ngelesin/musik_page.dart';
-import 'package:new_ngelesin/olahraga.dart';
 import 'package:new_ngelesin/pilihan_guru.dart';
 import 'package:new_ngelesin/tanya_soal_page.dart';
 import 'package:new_ngelesin/api_response_model/banner_response.dart';
 import 'package:dio/dio.dart';
+import 'global_variable/account_information.dart' as account_info;
 
 class HomePage extends StatelessWidget {
   @override
@@ -170,7 +164,7 @@ class HomePage extends StatelessWidget {
   }
 
   Future<BannerResponse> bannerRequest() async {
-    String url = "https://apingelesin.com/app/api/web/index.php?r=v1/home/banners";
+    String url = account_info.api_url+"?r=v1/home/banners";
     Dio dio = new Dio();
     Response response;
 
@@ -183,7 +177,7 @@ class HomePage extends StatelessWidget {
   }
 
   Future<KategoriResponse> kategoriRequest() async {
-    String url = "https://apingelesin.com/app/api/web/index.php?r=v1/home/kategori";
+    String url = account_info.api_url+"?r=v1/home/kategori";
     Dio dio = new Dio();
     Response response;
 

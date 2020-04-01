@@ -115,7 +115,7 @@ class _PendapatanJawabSoalState extends State<PendapatanJawabSoal> {
     );
   }
   Future<PendapatanSoalResponse> pendapatanRequest() async{
-    String url = "http://apingelesin.com/dev/api/web/index.php?r=v1/guru/lihat-pendapatan-soal";
+    String url = account_info.api_url+"/dev/api/web/index.php?r=v1/guru/lihat-pendapatan-soal";
     Dio dio = new Dio();
     print(account_info.email + account_info.password);
     dio.interceptors.add(

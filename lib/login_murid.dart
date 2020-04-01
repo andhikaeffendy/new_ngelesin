@@ -194,7 +194,7 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
   }
 
   Future<LoginSiswaResponse> loginSiswaRequest(String email, String password) async {
-    String url = "https://apingelesin.com/app/api/web/index.php?r=v1/siswa/login";
+    String url = account_info.api_url+"?r=v1/siswa/login";
     Dio dio = new Dio();
     Response response;
 
@@ -211,7 +211,7 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
   }
 
   getMapelRequest() async {
-    String url = "http://apingelesin.com/app/api/web/index.php?r=v1/home/mapel";
+    String url = account_info.api_url+"?r=v1/home/mapel";
     Dio dio = new Dio();
     Response response;
 
@@ -225,7 +225,7 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
   }
 
   getProfileRequest(String token, String email, String password) async {
-    String url = "http://apingelesin.com/app/api/web/index.php?r=v1/siswa/profile";
+    String url = account_info.api_url+"?r=v1/siswa/profile";
 
     var dio = Dio();
     dio.interceptors.add(

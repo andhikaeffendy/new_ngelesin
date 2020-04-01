@@ -43,12 +43,13 @@ class _BookingPilihanState extends State<BookingPilihan> {
 
   Future<Null> _selectDate(BuildContext context) async {
     var initial = selectedDate != null ? selectedDate : DateTime.now().add(new Duration(days: 1));
+    var end = new DateTime(initial.year, initial.month + 1, initial.day);
 
     final DateTime picked = await showDatePicker(
         context: context,
         initialDate: initial,
         firstDate: DateTime.now(),
-        lastDate: DateTime(2101));
+        lastDate: end);
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
@@ -66,7 +67,7 @@ class _BookingPilihanState extends State<BookingPilihan> {
 
   Future<ListJamMapelResponse> pilJamMapel() async {
     String url =
-        "http://apingelesin.com/app/api/web/index.php?r=v1/booking2/jam-mapel2";
+        account_info.api_url+"?r=v1/booking2/jam-mapel2";
     Dio dio = new Dio();
     dio.interceptors.add(
         InterceptorsWrapper(
@@ -686,7 +687,7 @@ class _BookingPilihanState extends State<BookingPilihan> {
   }
 
   Future<SimpanBookingResponse> simpanBookingRequest() async {
-    String url = "https://apingelesin.com/app/api/web/index.php?r=v1/booking2/simpan-booking";
+    String url = account_info.api_url+"?r=v1/booking2/simpan-booking";
     Dio dio = new Dio();
     dio.interceptors.add(
         InterceptorsWrapper(

@@ -194,7 +194,7 @@ class _LoginFormGuruState extends State<LoginFormGuru> {
 
   Future<LoginGuruResponse> loginGuruRequest(String email, String password) async {
     String url =
-        "http://apingelesin.com/dev/api/web/index.php?r=v1/guru/login";
+        account_info.api_url+"?r=v1/guru/login";
     Dio dio = new Dio();
     Response response;
 
@@ -207,11 +207,14 @@ class _LoginFormGuruState extends State<LoginFormGuru> {
     LoginGuruResponse loginGuruResponse =
     loginGuruResponseFromJson(response.toString());
 
+    account_info.email = email;
+    account_info.password = password;
+
     return loginGuruResponse;
   }
 
   getMapelRequest() async {
-    String url = "http://apingelesin.com/app/api/web/index.php?r=v1/home/mapel";
+    String url = account_info.api_url+"?r=v1/home/mapel";
     Dio dio = new Dio();
     Response response;
 

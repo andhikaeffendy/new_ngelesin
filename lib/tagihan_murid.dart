@@ -56,7 +56,7 @@ class _TagihanMuridState extends State<TagihanMurid> {
   }
 
   Future<TagihanResponse> getTagihanRequest() async{
-    String url = "http://apingelesin.com/app/api/web/index.php?r=v1/siswa/tagihan&siswa_id=1692";
+    String url = account_info.api_url+"?r=v1/siswa/tagihan&siswa_id=1692";
 
     var dio = Dio();
     dio.interceptors.add(

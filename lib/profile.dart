@@ -175,7 +175,7 @@ class Profile extends StatelessWidget {
 
   Future<ProfileGuruResponse> profilGuru() async {
     String url =
-        "http://apingelesin.com/app/api/web/index.php?r=booking/data-pengajar";
+        account_info.api_url+"?r=booking/data-pengajar";
     Dio dio = new Dio();
     dio.interceptors.add(
         InterceptorsWrapper(

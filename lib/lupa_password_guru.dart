@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:new_ngelesin/api_response_model/reset_pass_guru_response.dart';
+import 'global_variable/account_information.dart' as account_info;
 
 class LupaPassword extends StatefulWidget {
   @override
@@ -77,7 +78,7 @@ class _LupaPasswordState extends State<LupaPassword> {
 
   Future<ResetPassGuruResponse> resetPassRequest() async {
     String url =
-        "http://apingelesin.com/dev/api/web/index.php?r=v1/guru/reset-password";
+        account_info.api_url+"?r=v1/guru/reset-password";
     Dio dio = new Dio();
     Response response;
 

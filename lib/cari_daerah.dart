@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:new_ngelesin/api_response_model/search_area_response.dart';
 import 'package:new_ngelesin/api_response_model/search_area_v2_response.dart';
 import 'package:new_ngelesin/pilihan_guru.dart';
+import 'global_variable/account_information.dart' as account_info;
 
 void main() => runApp(CariDaerah());
 
@@ -79,7 +80,7 @@ class _CariDaerahState extends State<CariDaerah> {
 
   Future<SearchAreaResponse> makeRequest(String keyword) async {
     String url =
-        "http://apingelesin.com/app/api/web/index.php?r=v1/home/search-area";
+        account_info.api_url+"?r=v1/home/search-area";
     Dio dio = new Dio();
     Response response;
 
@@ -101,7 +102,7 @@ class _CariDaerahState extends State<CariDaerah> {
 
   Future<SearchAreaV2Response> makeRequestV2(String keyword) async {
     String url =
-        "http://apingelesin.com/app/api/web/index.php?r=v2/home/search-area";
+        account_info.api_url+"?r=v2/home/search-area";
     Dio dio = new Dio();
     Response response;
 

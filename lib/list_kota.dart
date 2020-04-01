@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:new_ngelesin/api_response_model/list_kota_response.dart';
 import 'global_variable/temp_var.dart' as globTemp;
+import 'global_variable/account_information.dart' as account_info;
 
 class ListKota extends StatefulWidget {
   @override
@@ -55,7 +56,7 @@ class _ListKotaState extends State<ListKota> {
   }
 
   Future<ListKotaResponse> kotaRequest() async {
-    String url = "http://apingelesin.com/app/api/web/index.php?r=v1/home/kota&provinsi_id=" + globTemp.provId.toString();
+    String url = account_info.api_url+"?r=v1/home/kota&provinsi_id=" + globTemp.provId.toString();
     Dio dio = new Dio();
     Response response;
 

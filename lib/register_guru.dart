@@ -6,6 +6,7 @@ import 'list_kota.dart';
 import 'list_kecamatan.dart';
 import 'list_provinsi.dart';
 import 'global_variable/temp_var.dart' as globTemp;
+import 'global_variable/account_information.dart' as account_info;
 
 class RegisterGuru extends StatefulWidget {
   @override
@@ -241,7 +242,7 @@ class _RegisterGuruState extends State<RegisterGuru> {
 
   Future<RegisGuruResponse> registerGuruRequest() async {
     String url =
-        "http://apingelesin.com/app/api/web/index.php?r=v1/guru/registrasi";
+        account_info.api_url+"?r=v1/guru/registrasi";
     Dio dio = new Dio();
     Response response;
 

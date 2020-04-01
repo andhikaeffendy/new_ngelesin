@@ -4,6 +4,7 @@ import 'package:new_ngelesin/list_kecamatan.dart';
 import 'package:new_ngelesin/list_kota.dart';
 import 'package:new_ngelesin/list_provinsi.dart';
 import 'package:new_ngelesin/verification_murid.dart';
+import 'global_variable/account_information.dart' as account_info;
 
 import 'global_variable/temp_var.dart' as globTemp;
 import 'api_response_model/regis_siswa_response.dart';
@@ -296,7 +297,7 @@ class _RegisterMuridState extends State<RegisterMurid> {
 
   Future<RegisSiswaResponse> regisSiswaRequest() async {
     String url =
-        "https://apingelesin.com/app/api/web/index.php?r=v1/siswa/registrasi";
+        account_info.api_url+"?r=v1/siswa/registrasi";
     Dio dio = new Dio();
     Response response;
 

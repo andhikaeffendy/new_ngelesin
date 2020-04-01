@@ -1,4 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:new_ngelesin/api_response_model/list_booking_response.dart';
+import 'package:intl/intl.dart';
+import 'global_variable/account_information.dart' as account_info;
 
 class BookingPage extends StatefulWidget {
   @override
@@ -6,90 +10,34 @@ class BookingPage extends StatefulWidget {
 }
 
 class _BookingPageState extends State<BookingPage> {
-  final List<String> coba = <String>['YOSJDKS', 'SKDJXI'];
+  final formatDate = new DateFormat("dd-MMM-yyyy");
+  final currency = new NumberFormat("###,###,###.#");
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        itemCount: coba.length,
-        itemBuilder: (BuildContext context, int index) {
-          return GestureDetector(
-            onTap: _showAlertDialog,
-            child: Container(
-              child: Card(
-                elevation: 1,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Text(
-                            coba[index],
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Text('13-Okt-2018'),
-                        )
-                      ],
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          width: 150.0,
-                          padding: const EdgeInsets.only(bottom: 4.0),
-                          child: Text(
-                            'Pendidikan Agama Islam (Lain-lain)',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        Container(
-                          width: 150.0,
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Text('Tedi Guru'),
-                        )
-                      ],
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: <Widget>[
-                        Container(
-                          width: 80.0,
-                          child: Text(
-                            'Pending',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        Container(
-                          width: 100.0,
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Text(
-                            'Rp. 100.000',
-                            style: TextStyle(
-                                color: Colors.red, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
-          );
-        });
+    return Scaffold(
+      body: FutureBuilder(
+        future: getBookings(),
+        builder: (context, snapshot){
+          if (snapshot.connectionState == ConnectionState.done) {
+            ListBookingResponse listBookingResponse = snapshot.data;
+            if(listBookingResponse.data.length == 0){
+              return emptyBooking();
+            } else {
+              return listBooking(listBookingResponse.data);
+            }
+          } else {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      ),
+    );
   }
 
-  void _showAlertDialog() {
-    showDialog(
+  void _showAlertDialog(Booking booking) async {
+    int pilihan = await showDialog(
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
@@ -106,7 +54,7 @@ class _BookingPageState extends State<BookingPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       Image.network(
-                        "https://www.freeiconspng.com/uploads/school-student-icon-18.png",
+                        account_info.role == "murid" ? booking.foto_guru : booking.foto_siswa,
                         fit: BoxFit.contain,
                         height: 100.0,
                         width: 100.0,
@@ -130,7 +78,7 @@ class _BookingPageState extends State<BookingPage> {
                             ),
                           ),
                           Container(
-                            child: Text('YOPESO'),
+                            child: Text(booking.kode_kelas),
                           )
                         ],
                       ),
@@ -145,7 +93,7 @@ class _BookingPageState extends State<BookingPage> {
                             ),
                           ),
                           Container(
-                            child: Text('Saldo'),
+                            child: Text(booking.metode_pembayaran == "1" ? "Saldo" : "Tunai" ),
                           )
                         ],
                       ),
@@ -169,7 +117,7 @@ class _BookingPageState extends State<BookingPage> {
                             ),
                           ),
                           Container(
-                            child: Text('Matermatika SD'),
+                            child: Text(booking.mapel),
                           )
                         ],
                       ),
@@ -184,7 +132,7 @@ class _BookingPageState extends State<BookingPage> {
                             ),
                           ),
                           Container(
-                            child: Text('1'),
+                            child: Text(booking.jumlah_siswa),
                           )
                         ],
                       ),
@@ -200,33 +148,58 @@ class _BookingPageState extends State<BookingPage> {
                     ),
                   ),
                   Container(
-                    child: Text('30-Mar-2020 08:00:00 - 10:00:00'),
+                    child: Text(formatDate.format(booking.tgl) + ' '+ booking.jam_mulai +' - '+ booking.jam_selesai),
+                  ),
+                  SizedBox(
+                    height: 12.0,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            child: Text(
+                              'Nama '+ account_info.role == "murid" ? "Guru" : "Siswa" ,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Container(
+                            child: Text(account_info.role == "murid" ? booking.guru : booking.siswa),
+                          )
+                        ],
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: <Widget>[
+                          Container(
+                            child: Text(
+                              'Nomor Handphone',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Container(
+                            child: Text(account_info.role == "murid" ? booking.hp_guru : booking.hp_siswa ),
+                          )
+                        ],
+                      ),
+                    ],
                   ),
                   SizedBox(
                     height: 12.0,
                   ),
                   Container(
                     child: Text(
-                      'Nama Guru',
+                      'Lokasi: ',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
                   Container(
-                    child: Text('Rizky Akbar'),
-                  ),
-                  SizedBox(
-                    height: 12.0,
-                  ),
-                  Container(
-                    child: Text(
-                      'Lokasi & Jam: ',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Container(
-                    child: Text('rumah saya,'),
-                  ),Container(
-                    child: Text('Jam 08:00:00 - 10:00:00'),
+                    child: Text(booking.alamat),
                   ),
                   SizedBox(
                     height: 12.0,
@@ -239,7 +212,7 @@ class _BookingPageState extends State<BookingPage> {
                   ),
                   Container(
                     child: Text(
-                      'Rp. 75.000',
+                      'Rp. '+ currency.format(int.parse(booking.biaya)),
                       style: TextStyle(color: Colors.red),
                     ),
                   ),
@@ -270,31 +243,191 @@ class _BookingPageState extends State<BookingPage> {
             ),
           );
         });
+
+    //CHECK hasil dari pilihan 5:batal oleh siswa, 4:batal oleh guru, 3:selesai, 1:terima, 0:tutup, 10:chat
   }
+
+  List<Widget> bookingActions(Booking booking){
+    List<Widget> result = new List();
+    result.add(new ButtonTheme(
+      minWidth: 130.0,
+      child: RaisedButton(
+        onPressed: () => Navigator.of(context).pop(account_info.role=="murid" ? 5 : 4),
+        child: Text('BATALKAN', style: TextStyle(color: Colors.white),),
+        color: Colors.blue,),
+    ));
+
+    if(booking.status_kelas=="1") {
+      result.add(new ButtonTheme(
+        minWidth: 130.0,
+        child: RaisedButton(
+          onPressed: () => Navigator.of(context).pop(3),
+          child: Text('SELESAI', style: TextStyle(color: Colors.white),),
+          color: Colors.blue,),
+      ));
+      result.add(new ButtonTheme(
+        minWidth: 130.0,
+        child: RaisedButton(
+          onPressed: () => Navigator.of(context).pop(10),
+          child: Text('CHAT', style: TextStyle(color: Colors.white),),
+          color: Colors.blue,),
+      ));
+    }
+
+    if(booking.status_kelas=="2" && account_info.role == "guru")
+      result.add(new ButtonTheme(
+        minWidth: 130.0,
+        child: RaisedButton(
+          onPressed: () => Navigator.of(context).pop(1),
+          child: Text('TERIMA', style: TextStyle(color: Colors.white),),
+          color: Colors.blue,),
+      ));
+
+    result.add(new ButtonTheme(
+      minWidth: 130.0,
+      child: RaisedButton(
+        onPressed: () => Navigator.of(context).pop(0),
+        child: Text('TUTUP',style: TextStyle(color: Colors.white),),
+        color: Colors.blue,),
+    ));
+    return result;
+  }
+
+  Widget listBooking(List<Booking> bookings){
+    return ListView.builder(
+        itemCount: bookings.length,
+        itemBuilder: (BuildContext context, int index) {
+          return GestureDetector(
+            onTap: () => _showAlertDialog(bookings[index]),
+            child: Container(
+              child: Card(
+                elevation: 1,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Text(
+                            bookings[index].kode_kelas,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Text(formatDate.format(bookings[index].tgl)),
+                        )
+                      ],
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          width: 150.0,
+                          padding: const EdgeInsets.only(bottom: 4.0),
+                          child: Text(
+                            bookings[index].mapel + bookings[index].tingkatan,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Container(
+                          width: 150.0,
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: Text(account_info.role=="murid" ? bookings[index].guru : bookings[index].siswa),
+                        )
+                      ],
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: <Widget>[
+                        Container(
+                          width: 80.0,
+                          child: Text(
+                            bookings[index].status_kelas == "1" ? "Proses" : "Pending" ,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Container(
+                          width: 100.0,
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: Text(
+                            'Rp. '+ currency.format(int.parse(bookings[index].biaya)),
+                            style: TextStyle(
+                                color: Colors.red, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+  Widget emptyBooking(){
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Icon(
+            Icons.unarchive,
+            size: 80.0,
+          ),
+          Padding(
+            padding: EdgeInsets.all(12.0),
+          ),
+          Text(
+            "Oops No Data",
+            style: new TextStyle(
+                fontWeight: FontWeight.w300,
+                color: Colors.blueGrey,
+                fontSize: 16.0),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<ListBookingResponse> getBookings() async {
+    String url = account_info.role == "murid" ?
+        account_info.api_url+"?r=v1/siswa/history-order" :
+        account_info.api_url+"?r=v1/guru/history-order";
+    Dio dio = new Dio();
+    dio.interceptors.add(
+        InterceptorsWrapper(
+            onRequest: (RequestOptions options) async {
+              var customHeaders = {
+                'content-type': 'application/json',
+                'email': account_info.email,
+                'password': account_info.password,
+              };
+              options.headers.addAll(customHeaders);
+              return options;
+            }
+        )
+    );
+    Response response;
+
+    response = await dio.get(url);
+    print("Ini Response : " + response.toString());
+    print("Ini Response Stat : " + response.statusMessage );
+
+    ListBookingResponse listBookingResponse =
+    listBookingResponseFromJson(response.toString());
+
+    return listBookingResponse;
+  }
+
+
 }
 
-//Notes : klw kosong masang ini aja untung semuanya
-
-//Container(
-//      child: Column(
-//        mainAxisAlignment: MainAxisAlignment.center,
-//        crossAxisAlignment: CrossAxisAlignment.stretch,
-//        children: <Widget>[
-//          Icon(
-//            Icons.unarchive,
-//            size: 80.0,
-//          ),
-//          Padding(
-//            padding: EdgeInsets.all(12.0),
-//          ),
-//          Text(
-//            "Oops No Data",
-//            style: new TextStyle(
-//                fontWeight: FontWeight.w300,
-//                color: Colors.blueGrey,
-//                fontSize: 16.0),
-//            textAlign: TextAlign.center,
-//          ),
-//        ],
-//      ),
-//    );

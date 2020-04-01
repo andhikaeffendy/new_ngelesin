@@ -10,3 +10,10 @@ String password;
 String role;
 
 ProfileSiswaResponse profileSiswaResponse;
+
+String base_url = "https://apingelesin.com";
+String dev_url = base_url+"/dev/api/web/index.php";
+String app_url = base_url+"/app/api/web/index.php";
+
+//SETTING API URL
+String api_url = dev_url;

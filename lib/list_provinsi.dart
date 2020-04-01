@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'api_response_model/all_province_response.dart';
 import 'global_variable/temp_var.dart' as globTemp;
+import 'global_variable/account_information.dart' as account_info;
 
 class listProvinsi extends StatefulWidget {
   @override
@@ -53,7 +54,7 @@ class _listProvinsiState extends State<listProvinsi> {
   }
 
   Future<AllProvinceResponse> provinceRequest() async {
-    String url = "http://apingelesin.com/app/api/web/index.php?r=v1/home/provinsi";
+    String url = account_info.api_url+"?r=v1/home/provinsi";
     Dio dio = new Dio();
     Response response;
 
