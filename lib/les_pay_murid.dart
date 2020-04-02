@@ -1,6 +1,4 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:new_ngelesin/api_response_model/jwt_login_siswa_response.dart';
 import 'package:new_ngelesin/pembayaran_murid.dart';
 import 'global_variable/account_information.dart' as account_info;
 
@@ -106,25 +104,6 @@ class _LesPayMuridState extends State<LesPayMurid> {
     );
   }
 
-  getLoginJwt() async{
-    String url = "dev.apingelesin.com/api/web/index.php?r=jwt/login-siswa";
-    Dio dio = new Dio();
-    Response response;
-
-    String dummy_password = "1234567890";
-    String dummy_mail = "daussho@gmail.com";
-
-    FormData formData =
-    new FormData.fromMap({"email": dummy_mail, "password": dummy_password});
-
-    response = await dio.post(url, data: formData);
-    print(response.toString());
-
-    JwtLoginSiswaResponse jwtLoginSiswaResponse =
-    jwtLoginSiswaResponseFromJson(response.toString());
-
-    account_info.jwtLoginSiswaResponse = jwtLoginSiswaResponse;
-  }
 }
 class listDropDown {
   const listDropDown(this.name);

@@ -1,6 +1,11 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:new_ngelesin/api_response_model/create_billing_response.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'global_variable/account_information.dart' as account_info;
 
 class Pembayaran extends StatefulWidget {
   @override
@@ -84,7 +89,7 @@ class _PembayaranState extends State<Pembayaran> {
                     ),ButtonTheme(
                       minWidth: 150.0,
                       child: RaisedButton(
-                        onPressed: _showAlertDialog,
+                        onPressed: () => _showAlertDialog("10000", context),
                         child: Text('BAYAR', style: TextStyle(color: Colors.white),),
                       ),
                     )
@@ -99,22 +104,60 @@ class _PembayaranState extends State<Pembayaran> {
     );
   }
 
-  void _showAlertDialog() {
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return CupertinoAlertDialog(
-            content: Container(
-              child: Text('Nomor Virtual Account anda adalah : 98812-24-1222307. Silahkan selesaikan pembayaran anda.'),
-            ),actions: <Widget>[
-              RaisedButton(
-                onPressed: _launchURL,
-                child: Text('OK, SALIN NOMOR SAYA'),
-              )
-          ],
-          );
-        });
+  void _showAlertDialog(String ammount, context) {
+    print("ini jalan");
+    FutureBuilder(
+      future: makeBillingRequest(ammount).then((task){
+        if(task.code == 0){
+          if(task.message!=null){
+            showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return CupertinoAlertDialog(
+                    content: Container(
+                      child: Text(task.message),
+                    ),actions: <Widget>[
+                    RaisedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        },
+                      child: Text('OK'),
+                    )
+                  ],
+                  );
+                });
+          }else{
+            showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return CupertinoAlertDialog(
+                    content: Container(
+                      child: Text('Nomor Virtual Account anda adalah : '+  task.data.virtualAccount +'. Silahkan selesaikan pembayaran anda.'),
+                    ),actions: <Widget>[
+                    RaisedButton(
+                      onPressed: _launchURL,
+                      child: Text('OK, SALIN NOMOR SAYA'),
+                    )
+                  ],
+                  );
+                });
+          }
+
+        }
+
+      }),
+      builder: (context, snapshot){
+        if(snapshot.data == null){
+          print("masuk data null");
+          return Container();
+        }else{
+          return Container();
+        }
+      },
+    );
+
   }
 
   _launchURL() async {
@@ -124,6 +167,25 @@ class _PembayaranState extends State<Pembayaran> {
     } else {
       print('Could not launch $url');
     }
+  }
+
+  Future<CreateBillingResponse> makeBillingRequest(String amount) async{
+    print("billing req jalan");
+    String url = "https://dev.apingelesin.com/api/web/index.php?r=payment/bni/create-billing";
+
+    var dio = Dio();
+    dio.options.headers[HttpHeaders.authorizationHeader] = 'Bearer ' + account_info.jwtLoginSiswaResponse.data.token;
+
+    FormData formData = new FormData.fromMap({"amount": amount});
+    print("billing req jalan2");
+
+    Response response = await dio.post(url, data: formData);
+    print("Billing Response : " + response.data.toString());
+
+    CreateBillingResponse createBillingResponse =
+    createBillingResponseFromJson(response.toString());
+
+    return createBillingResponse;
   }
 
 }

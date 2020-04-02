@@ -80,13 +80,14 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
               if (task.status == "success") {
                 print("masuk sukses");
                 getMapelRequest();
+                getLoginJwt();
                 getProfileRequest(task.data.token, task.data.email, passwordEditTextController.text);
                 account_info.loginSiswaResponseData = task;
                 account_info.role = "murid";
                 account_info.email = emailEditTextController.text;
                 account_info.password = passwordEditTextController.text;
 
-                getLoginJwt();
+
 
                 Navigator.of(context).push(new MaterialPageRoute(
                     builder: (BuildContext context) => new MainApp(role: "murid")));
@@ -205,7 +206,7 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
         new FormData.fromMap({"email": email, "password": password});
 
     response = await dio.post(url, data: formData);
-    print(response.toString());
+    print("Login response : "+response.toString());
 
     LoginSiswaResponse loginSiswaResponse =
         loginSiswaResponseFromJson(response.toString());
@@ -259,22 +260,20 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
   }
 
   getLoginJwt() async{
-    String url = "dev.apingelesin.com/api/web/index.php?r=jwt/login-siswa";
+    String url = 'https://dev.apingelesin.com/api/web/index.php?r=jwt/login-siswa';
     Dio dio = new Dio();
     Response response;
 
-    //String dummy_password = "1234567890";
-    //String dummy_mail = "daussho@gmail.com";
-
     FormData formData =
     new FormData.fromMap({"email": emailEditTextController.text, "password": passwordEditTextController.text});
+    print("jwt run ");
 
     response = await dio.post(url, data: formData);
     print(response.toString());
 
     JwtLoginSiswaResponse jwtLoginSiswaResponse =
     jwtLoginSiswaResponseFromJson(response.toString());
-
+    print("jwt token = " + jwtLoginSiswaResponse.data.token);
     account_info.jwtLoginSiswaResponse = jwtLoginSiswaResponse;
   }
 }
