@@ -1,9 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:new_ngelesin/api_response_model/get_kategori_response.dart';
 import 'package:new_ngelesin/login_murid.dart';
 import 'package:new_ngelesin/main.dart';
 import 'package:new_ngelesin/register.dart';
 
+import 'api_response_model/biaya_les_response.dart';
+import 'api_response_model/kategori_response.dart';
 import 'api_response_model/list_all_mapel_response.dart';
 import 'api_response_model/login_guru_response.dart';
 import 'lupa_password_guru.dart';
@@ -79,6 +82,8 @@ class _LoginFormGuruState extends State<LoginFormGuru> {
               if (task.status == "success") {
                 print("masuk sukses");
                 getMapelRequest();
+                getKategori();
+                getBiayaMapel();
                 account_info.loginGuruResponse = task;
                 account_info.role = "guru";
                 account_info.email = emailEditTextController.text;
@@ -225,5 +230,52 @@ class _LoginFormGuruState extends State<LoginFormGuru> {
     listAllMapelResponseFromJson(response.toString());
 
     globalTemp.listAllMapel = mapelResponse;
+  }
+
+  getKategori() async{
+    String url = account_info.api_url+"/dev/api/web/index.php?r=/home/kategori";
+    Dio dio = new Dio();
+    Response response;
+
+    response = await dio.get(url);
+
+    print("Ini Response Kategori : " + response.toString());
+    print("Ini Response Stat : " + response.statusMessage );
+
+    GetKategoriMapel kategoriResponses =
+    getKategoriMapelFromJson(response.toString());
+
+    globalTemp.listKategoriMapel = kategoriResponses;
+
+    return kategoriResponses;
+  }
+
+  getBiayaMapel() async{
+    String url = account_info.api_url+"/dev/api/web/index.php?r=/guru-mapel/mapel";
+    Dio dio = new Dio();
+    print(account_info.email + account_info.password);
+    dio.interceptors.add(
+        InterceptorsWrapper(
+            onRequest: (RequestOptions options) async {
+              var customHeaders = {
+                'email': account_info.email,
+                'password': account_info.password,
+              };
+              options.headers.addAll(customHeaders);
+              return options;
+            }
+        )
+    );
+    Response response;
+
+    response = await dio.get(url);
+
+    print("Ini Response : " + response.toString());
+    print("Ini Response Stat : " + response.statusMessage );
+
+    BiayaLesResponse biayaLesResponse =
+    biayaLesResponseFromJson(response.toString());
+
+    globalTemp.biayaLesResponse = biayaLesResponse;
   }
 }
