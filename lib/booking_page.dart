@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:new_ngelesin/api_response_model/global_response.dart';
 import 'package:new_ngelesin/api_response_model/list_booking_response.dart';
 import 'package:intl/intl.dart';
 import 'global_variable/account_information.dart' as account_info;
@@ -12,6 +13,7 @@ class BookingPage extends StatefulWidget {
 class _BookingPageState extends State<BookingPage> {
   final formatDate = new DateFormat("dd-MMM-yyyy");
   final currency = new NumberFormat("###,###,###.#");
+  List<Booking> bookingList = new List();
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +23,8 @@ class _BookingPageState extends State<BookingPage> {
         builder: (context, snapshot){
           if (snapshot.connectionState == ConnectionState.done) {
             ListBookingResponse listBookingResponse = snapshot.data;
-            if(listBookingResponse.data.length == 0){
-              return emptyBooking();
-            } else {
-              return listBooking(listBookingResponse.data);
-            }
+            bookingList = listBookingResponse.data;
+            return listBooking();
           } else {
             return Center(
               child: CircularProgressIndicator(),
@@ -39,12 +38,12 @@ class _BookingPageState extends State<BookingPage> {
   void _showAlertDialog(Booking booking) async {
     int pilihan = await showDialog(
         context: context,
-        barrierDismissible: false,
+        barrierDismissible: true,
         builder: (BuildContext context) {
           return AlertDialog(
             content: Container(
               width: 330.0,
-              height: 500.0,
+              height: booking.status_kelas=="1" || account_info.role=="guru" ? 520.0 : 500.0,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -199,7 +198,7 @@ class _BookingPageState extends State<BookingPage> {
                     ),
                   ),
                   Container(
-                    child: Text(booking.alamat),
+                    child: Text(booking.alamat, maxLines: 1,),
                   ),
                   SizedBox(
                     height: 12.0,
@@ -218,25 +217,11 @@ class _BookingPageState extends State<BookingPage> {
                   ),
                   SizedBox(
                     height: 12.0,
-                  ),Row(
+                  ),
+                  Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      ButtonTheme(
-                        minWidth: 130.0,
-                        child: RaisedButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: Text('BATALKAN', style: TextStyle(color: Colors.white),),
-                          color: Colors.blue,),
-                      ),
-                      ButtonTheme(
-                        minWidth: 130.0,
-                        child: RaisedButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: Text('TUTUP',style: TextStyle(color: Colors.white),),
-                          color: Colors.blue,),
-                      ),
-                    ],
+                    children: bookingActions(context, booking),
                   )
                 ],
               ),
@@ -245,11 +230,20 @@ class _BookingPageState extends State<BookingPage> {
         });
 
     //CHECK hasil dari pilihan 5:batal oleh siswa, 4:batal oleh guru, 3:selesai, 1:terima, 0:tutup, 10:chat
+    if(pilihan > 0 && pilihan < 6)
+      updateKelasRequest(booking.id, pilihan).then((task){
+        if (task.status == "success") {
+          getBookings().then((task){
+            ListBookingResponse listBookingResponse = task;
+            bookingList = listBookingResponse.data;
+          });
+        }
+      });
   }
 
-  List<Widget> bookingActions(Booking booking){
-    List<Widget> result = new List();
-    result.add(new ButtonTheme(
+  List<Widget> bookingActions(BuildContext context, Booking booking){
+    List<Widget> actions = new List();
+    actions.add(new ButtonTheme(
       minWidth: 130.0,
       child: RaisedButton(
         onPressed: () => Navigator.of(context).pop(account_info.role=="murid" ? 5 : 4),
@@ -258,14 +252,14 @@ class _BookingPageState extends State<BookingPage> {
     ));
 
     if(booking.status_kelas=="1") {
-      result.add(new ButtonTheme(
+      actions.add(new ButtonTheme(
         minWidth: 130.0,
         child: RaisedButton(
           onPressed: () => Navigator.of(context).pop(3),
           child: Text('SELESAI', style: TextStyle(color: Colors.white),),
           color: Colors.blue,),
       ));
-      result.add(new ButtonTheme(
+      actions.add(new ButtonTheme(
         minWidth: 130.0,
         child: RaisedButton(
           onPressed: () => Navigator.of(context).pop(10),
@@ -275,7 +269,7 @@ class _BookingPageState extends State<BookingPage> {
     }
 
     if(booking.status_kelas=="2" && account_info.role == "guru")
-      result.add(new ButtonTheme(
+      actions.add(new ButtonTheme(
         minWidth: 130.0,
         child: RaisedButton(
           onPressed: () => Navigator.of(context).pop(1),
@@ -283,22 +277,49 @@ class _BookingPageState extends State<BookingPage> {
           color: Colors.blue,),
       ));
 
-    result.add(new ButtonTheme(
+    actions.add(new ButtonTheme(
       minWidth: 130.0,
       child: RaisedButton(
         onPressed: () => Navigator.of(context).pop(0),
         child: Text('TUTUP',style: TextStyle(color: Colors.white),),
         color: Colors.blue,),
     ));
+
+    List<Widget> row1 = new List();
+    row1.add(actions[0]);
+    row1.add(actions[1]);
+
+    List<Widget> row2 = new List();
+    if(actions.length>2)
+      row2.add(actions[2]);
+    if(actions.length>3)
+      row2.add(actions[3]);
+
+    List<Widget> result = new List();
+    result.add(Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: row1,
+    ));
+
+    if(actions.length>2)
+      result.add(Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: row2,
+      ));
+
     return result;
   }
 
-  Widget listBooking(List<Booking> bookings){
+  Widget listBooking(){
+    if(bookingList.length == 0)
+      return emptyBooking();
     return ListView.builder(
-        itemCount: bookings.length,
+        itemCount: bookingList.length,
         itemBuilder: (BuildContext context, int index) {
           return GestureDetector(
-            onTap: () => _showAlertDialog(bookings[index]),
+            onTap: () => _showAlertDialog(bookingList[index]),
             child: Container(
               child: Card(
                 elevation: 1,
@@ -313,13 +334,13 @@ class _BookingPageState extends State<BookingPage> {
                         Container(
                           padding: const EdgeInsets.only(left: 8.0),
                           child: Text(
-                            bookings[index].kode_kelas,
+                            bookingList[index].kode_kelas,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                         Container(
                           padding: const EdgeInsets.only(left: 8.0),
-                          child: Text(formatDate.format(bookings[index].tgl)),
+                          child: Text(formatDate.format(bookingList[index].tgl)),
                         )
                       ],
                     ),
@@ -331,14 +352,14 @@ class _BookingPageState extends State<BookingPage> {
                           width: 150.0,
                           padding: const EdgeInsets.only(bottom: 4.0),
                           child: Text(
-                            bookings[index].mapel + bookings[index].tingkatan,
+                            bookingList[index].mapel + bookingList[index].tingkatan,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                         Container(
                           width: 150.0,
                           padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Text(account_info.role=="murid" ? bookings[index].guru : bookings[index].siswa),
+                          child: Text(account_info.role=="murid" ? bookingList[index].guru : bookingList[index].siswa),
                         )
                       ],
                     ),
@@ -349,7 +370,7 @@ class _BookingPageState extends State<BookingPage> {
                         Container(
                           width: 80.0,
                           child: Text(
-                            bookings[index].status_kelas == "1" ? "Proses" : "Pending" ,
+                            bookingList[index].status_kelas == "1" ? "Proses" : "Pending" ,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -357,7 +378,7 @@ class _BookingPageState extends State<BookingPage> {
                           width: 100.0,
                           padding: const EdgeInsets.only(bottom: 8.0),
                           child: Text(
-                            'Rp. '+ currency.format(int.parse(bookings[index].biaya)),
+                            'Rp. '+ currency.format(int.parse(bookingList[index].biaya)),
                             style: TextStyle(
                                 color: Colors.red, fontWeight: FontWeight.bold),
                           ),
@@ -400,7 +421,7 @@ class _BookingPageState extends State<BookingPage> {
 
   Future<ListBookingResponse> getBookings() async {
     String url = account_info.role == "murid" ?
-        account_info.api_url+"?r=v1/siswa/history-order" :
+        account_info.api_url+"?r=v1/siswa/history-kelas" :
         account_info.api_url+"?r=v1/guru/history-order";
     Dio dio = new Dio();
     dio.interceptors.add(
@@ -428,6 +449,36 @@ class _BookingPageState extends State<BookingPage> {
     return listBookingResponse;
   }
 
+  Future<GlobalResponse> updateKelasRequest(String id, int status) async {
+    String url = account_info.role == "murid" ?
+      account_info.api_url+"?r=v1/siswa/update-kelas" :
+      account_info.api_url+"?r=guru/update-kelas" ;
+    Dio dio = new Dio();
+    dio.interceptors.add(
+        InterceptorsWrapper(
+            onRequest: (RequestOptions options) async {
+              var customHeaders = {
+                'content-type': 'application/json',
+                'email': account_info.email,
+                'password': account_info.password,
+              };
+              options.headers.addAll(customHeaders);
+              return options;
+            }
+        )
+    );
+    Response response;
+    FormData formData = account_info.role == "murid" ?
+      new FormData.fromMap({"id": id, "status_kelas": status}) :
+      new FormData.fromMap({"id": id, "status_kelas": status, "tb_guru_id": account_info.loginGuruResponse.data.id});
 
+    response = await dio.post(url, data: formData);
+    print(response.toString());
+
+    GlobalResponse globalResponse =
+    globalResponseFromJson(response.toString());
+
+    return globalResponse;
+  }
 }
 

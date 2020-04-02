@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:new_ngelesin/api_response_model/kategori_response.dart';
 import 'package:new_ngelesin/kategori_page.dart';
 import 'package:new_ngelesin/pilihan_guru.dart';
+import 'package:new_ngelesin/tanya_soal_page_guru.dart';
 import 'package:new_ngelesin/tanya_soal_page_murid.dart';
 import 'package:new_ngelesin/api_response_model/banner_response.dart';
 import 'package:dio/dio.dart';
@@ -139,8 +140,9 @@ class HomePage extends StatelessWidget {
               if(kategori.nama == "Tanya Soal") {
                 Navigator.of(context, rootNavigator: true).push(
                     MaterialPageRoute(
-                        builder: (BuildContext) =>
-                        new TanyaSoalPage()));
+                        builder: (BuildContext) => account_info.role == "murid" ?
+                        new TanyaSoalPage() :
+                        new TanyaSoalFormGuru()));
               } else if(kategori.nama == "Help Center"){
               } else {
                 Navigator.of(context, rootNavigator: true).push(
