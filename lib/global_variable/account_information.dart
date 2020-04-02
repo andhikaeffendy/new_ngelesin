@@ -1,3 +1,4 @@
+import 'package:new_ngelesin/api_response_model/jwt_login_siswa_response.dart';
 import 'package:new_ngelesin/api_response_model/login_guru_response.dart';
 import 'package:new_ngelesin/api_response_model/login_siswa_response.dart';
 import 'package:new_ngelesin/api_response_model/profile_siswa_response.dart';
@@ -17,3 +18,5 @@ String app_url = base_url+"/app/api/web/index.php";
 
 //SETTING API URL
 String api_url = dev_url;
+
+JwtLoginSiswaResponse jwtLoginSiswaResponse;

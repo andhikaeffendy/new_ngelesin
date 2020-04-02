@@ -5,9 +5,11 @@ import 'package:new_ngelesin/api_response_model/login_siswa_response.dart';
 import 'package:new_ngelesin/api_response_model/profile_siswa_response.dart';
 import 'package:new_ngelesin/main.dart';
 import 'package:new_ngelesin/register.dart';
+import 'api_response_model/jwt_login_siswa_response.dart';
 import 'global_variable/account_information.dart' as account_info;
 import 'global_variable/temp_var.dart' as globalTemp;
 
+import 'login_guru.dart';
 import 'lupa_password_siswa.dart';
 
 class LoginMurid extends StatelessWidget {
@@ -83,6 +85,9 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
                 account_info.role = "murid";
                 account_info.email = emailEditTextController.text;
                 account_info.password = passwordEditTextController.text;
+
+                getLoginJwt();
+
                 Navigator.of(context).push(new MaterialPageRoute(
                     builder: (BuildContext context) => new MainApp(role: "murid")));
               } else {
@@ -184,7 +189,7 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
         ),
         bottomNavigationBar: RaisedButton(
           onPressed: () => Navigator.of(context).push(new MaterialPageRoute(
-              builder: (BuildContext context) => new MainApp(role: 'murid'))),
+              builder: (BuildContext context) => LoginGuru())),
           color: Colors.blue,
           textColor: Colors.white,
           child: Text("Login Guru Disini"),
@@ -240,6 +245,8 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
         )
     );
 
+
+
     Response response = await dio.get(url);
     print("GET PROFILE REQUEST : " + response.data.toString());
     ProfileSiswaResponse profileSiswaResponse;
@@ -249,5 +256,25 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
     account_info.password = password;
 
     account_info.profileSiswaResponse = profileSiswaResponse;
+  }
+
+  getLoginJwt() async{
+    String url = "dev.apingelesin.com/api/web/index.php?r=jwt/login-siswa";
+    Dio dio = new Dio();
+    Response response;
+
+    //String dummy_password = "1234567890";
+    //String dummy_mail = "daussho@gmail.com";
+
+    FormData formData =
+    new FormData.fromMap({"email": emailEditTextController.text, "password": passwordEditTextController.text});
+
+    response = await dio.post(url, data: formData);
+    print(response.toString());
+
+    JwtLoginSiswaResponse jwtLoginSiswaResponse =
+    jwtLoginSiswaResponseFromJson(response.toString());
+
+    account_info.jwtLoginSiswaResponse = jwtLoginSiswaResponse;
   }
 }
