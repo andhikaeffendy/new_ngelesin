@@ -1,5 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:new_ngelesin/api_response_model/simpan_jadwal_mengajar_response.dart';
 import 'package:new_ngelesin/list_mapel_guru.dart';
+
+import 'global_variable/account_information.dart' as account_info;
+import 'global_variable/temp_var.dart' as globalTemp;
 
 class KelolaJadwal extends StatefulWidget {
   @override
@@ -408,7 +413,47 @@ class _KelolaJadwalState extends State<KelolaJadwal> {
         )
     );
   }
+
+  Future<SimpanJadwalMengajarResponse> makeRequest() async{
+    String url = account_info.api_url+"?r=/jadwal2/simpan-jadwal";
+
+    var dio = Dio();
+    dio.interceptors.add(
+        InterceptorsWrapper(
+            onRequest: (RequestOptions options) async {
+              var customHeaders = {
+                'content-type': 'application/json',
+                'email': account_info.email,
+                'password': account_info.password,
+              };
+              options.headers.addAll(customHeaders);
+              return options;
+            }
+        )
+    );
+
+    FormData formData = new FormData.fromMap({
+      "tb_guru_mapel_id": "",
+      "hari[0]": "",
+      "hari[1]": "",
+      "jam[0]": "",
+      "jam[1]": "",
+      "area_list[0]]": "",
+      "area_list[1]": "",
+      "area_list[2]": "",
+    });
+
+
+
+    Response response = await dio.get(url);
+    print("GET PROFILE REQUEST : " + response.data.toString());
+    SimpanJadwalMengajarResponse simpanJadwalMengajarResponse;
+    simpanJadwalMengajarResponse = simpanJadwalMengajarResponseFromJson(response.toString());
+
+    return simpanJadwalMengajarResponse;
+  }
 }
+
 
 class listDropDown {
   const listDropDown(this.name);
