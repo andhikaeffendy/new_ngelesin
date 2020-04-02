@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Pembayaran extends StatefulWidget {
   @override
@@ -82,7 +84,7 @@ class _PembayaranState extends State<Pembayaran> {
                     ),ButtonTheme(
                       minWidth: 150.0,
                       child: RaisedButton(
-                        onPressed: (){},
+                        onPressed: _showAlertDialog,
                         child: Text('BAYAR', style: TextStyle(color: Colors.white),),
                       ),
                     )
@@ -96,4 +98,32 @@ class _PembayaranState extends State<Pembayaran> {
     ),
     );
   }
+
+  void _showAlertDialog() {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return CupertinoAlertDialog(
+            content: Container(
+              child: Text('Nomor Virtual Account anda adalah : 98812-24-1222307. Silahkan selesaikan pembayaran anda.'),
+            ),actions: <Widget>[
+              RaisedButton(
+                onPressed: _launchURL,
+                child: Text('OK, SALIN NOMOR SAYA'),
+              )
+          ],
+          );
+        });
+  }
+
+  _launchURL() async {
+    const url = 'https://flutter.dev';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      print('Could not launch $url');
+    }
+  }
+
 }
