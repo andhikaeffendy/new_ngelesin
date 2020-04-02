@@ -40,7 +40,7 @@ class ListBookingResponse {
     status: json["status"],
     code: json["code"],
     message: json["message"],
-    data: List<Booking>.from(json["data"].map((x) => Booking.fromJson(x))),
+    data: json["data"] == null ? [] : List<Booking>.from(json["data"].map((x) => Booking.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
