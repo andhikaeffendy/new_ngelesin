@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:new_ngelesin/chat_message.dart';
 
 class ListJawabanSoal extends StatefulWidget {
   @override
@@ -121,7 +122,8 @@ class _ListJawabanSoalState extends State<ListJawabanSoal> {
                         ),ButtonTheme(
                           minWidth: 50.0,
                           child: RaisedButton(
-                            onPressed: () => Navigator.of(context).pop(),
+                            onPressed: () => Navigator.push(context,
+                                MaterialPageRoute(builder: (BuildContext) => new ChatMessage())),
                             child: Text('CHAT', style: TextStyle(color: Colors.white),),
                             color: Colors.blue,),
                         ),ButtonTheme(

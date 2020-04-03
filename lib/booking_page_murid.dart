@@ -5,12 +5,12 @@ import 'package:new_ngelesin/api_response_model/list_booking_response.dart';
 import 'package:intl/intl.dart';
 import 'global_variable/account_information.dart' as account_info;
 
-class BookingPage extends StatefulWidget {
+class BookingPageMurid extends StatefulWidget {
   @override
-  _BookingPageState createState() => _BookingPageState();
+  _BookingPageMuridState createState() => _BookingPageMuridState();
 }
 
-class _BookingPageState extends State<BookingPage> {
+class _BookingPageMuridState extends State<BookingPageMurid> {
   final formatDate = new DateFormat("dd-MMM-yyyy");
   final currency = new NumberFormat("###,###,###.#");
   List<Booking> bookingList = new List();

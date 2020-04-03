@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:new_ngelesin/booking_page_guru.dart';
 import 'package:new_ngelesin/setting_guru.dart';
 import 'package:new_ngelesin/settings_murid.dart';
 import 'akun_page.dart';
-import 'booking_page.dart';
+import 'booking_page_murid.dart';
 import 'home_page.dart';
 import 'login_murid.dart';
 import 'global_variable/account_information.dart' as account_info;
@@ -30,14 +31,14 @@ class MainApp extends StatefulWidget {
     if(role == "guru") {
       pageOptions = [
         HomePage(),
-        BookingPage(),
+        BookingPageGuru(),
         AkunPage(),
         SettingGuru(),
       ];
     } else {
       pageOptions = [
         HomePage(),
-        BookingPage(),
+        BookingPageMurid(),
         AkunPage(),
         SettingsMurid(),
       ];
