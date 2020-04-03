@@ -9,6 +9,7 @@ import 'api_response_model/biaya_les_response.dart';
 import 'api_response_model/kategori_response.dart';
 import 'api_response_model/list_all_mapel_response.dart';
 import 'api_response_model/login_guru_response.dart';
+import 'api_response_model/profile_guru_v2_response.dart';
 import 'lupa_password_guru.dart';
 import 'global_variable/temp_var.dart' as globalTemp;
 import 'global_variable/account_information.dart' as account_info;
@@ -81,6 +82,7 @@ class _LoginFormGuruState extends State<LoginFormGuru> {
                 .then((task) {
               if (task.status == "success") {
                 print("masuk sukses");
+                getProfileRequest("token", task.data.email, passwordEditTextController.text);
                 getMapelRequest();
                 getKategori();
                 getBiayaMapel();
@@ -216,6 +218,35 @@ class _LoginFormGuruState extends State<LoginFormGuru> {
     account_info.password = password;
 
     return loginGuruResponse;
+  }
+
+  getProfileRequest(String token, String email, String password) async {
+    String url = account_info.api_url+"?r=v1/guru/profile&token&email&password";
+
+    var dio = Dio();
+    dio.interceptors.add(
+        InterceptorsWrapper(
+            onRequest: (RequestOptions options) async {
+              var customHeaders = {
+                'content-type': 'application/json',
+                'email': email,
+                'password': password,
+              };
+              options.headers.addAll(customHeaders);
+              return options;
+            }
+        )
+    );
+
+    Response response = await dio.get(url);
+    print("GET PROFILE REQUEST : " + response.data.toString());
+    ProfileGuruV2Response profileGuruV2Response;
+    profileGuruV2Response = profileGuruV2ResponseFromJson(response.toString());
+
+    account_info.email = email;
+    account_info.password = password;
+
+    account_info.profileGuruV2Response = profileGuruV2Response;
   }
 
   getMapelRequest() async {

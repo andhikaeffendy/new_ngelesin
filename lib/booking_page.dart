@@ -232,12 +232,17 @@ class _BookingPageState extends State<BookingPage> {
     //CHECK hasil dari pilihan 5:batal oleh siswa, 4:batal oleh guru, 3:selesai, 1:terima, 0:tutup, 10:chat
     if(pilihan > 0 && pilihan < 6)
       updateKelasRequest(booking.id, pilihan).then((task){
-        if (task.status == "success") {
-          getBookings().then((task){
-            ListBookingResponse listBookingResponse = task;
-            bookingList = listBookingResponse.data;
-          });
-        }
+        setState(() {
+          bookingList.remove(booking);
+          if(pilihan == 3){
+            booking.status_kelas = pilihan.toString();
+            bookingList.add(booking);
+          }
+        });
+        getBookings().then((task2){
+          ListBookingResponse listBookingResponse = task2;
+          bookingList = listBookingResponse.data;
+        });
       });
   }
 
@@ -251,14 +256,7 @@ class _BookingPageState extends State<BookingPage> {
         color: Colors.blue,),
     ));
 
-    if(booking.status_kelas=="1") {
-      actions.add(new ButtonTheme(
-        minWidth: 130.0,
-        child: RaisedButton(
-          onPressed: () => Navigator.of(context).pop(3),
-          child: Text('SELESAI', style: TextStyle(color: Colors.white),),
-          color: Colors.blue,),
-      ));
+    if(booking.status_kelas=="1")
       actions.add(new ButtonTheme(
         minWidth: 130.0,
         child: RaisedButton(
@@ -266,7 +264,15 @@ class _BookingPageState extends State<BookingPage> {
           child: Text('CHAT', style: TextStyle(color: Colors.white),),
           color: Colors.blue,),
       ));
-    }
+
+    if(booking.status_kelas=="1" && account_info.role == "guru")
+      actions.add(new ButtonTheme(
+        minWidth: 130.0,
+        child: RaisedButton(
+          onPressed: () => Navigator.of(context).pop(3),
+          child: Text('SELESAI', style: TextStyle(color: Colors.white),),
+          color: Colors.blue,),
+      ));
 
     if(booking.status_kelas=="2" && account_info.role == "guru")
       actions.add(new ButtonTheme(
@@ -421,7 +427,7 @@ class _BookingPageState extends State<BookingPage> {
 
   Future<ListBookingResponse> getBookings() async {
     String url = account_info.role == "murid" ?
-        account_info.api_url+"?r=v1/siswa/history-kelas" :
+        account_info.api_url+"?r=v1/siswa/history-order" :
         account_info.api_url+"?r=v1/guru/history-order";
     Dio dio = new Dio();
     dio.interceptors.add(

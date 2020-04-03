@@ -20,7 +20,7 @@ class GlobalResponse {
   });
 
   factory GlobalResponse.fromJson(Map<String, dynamic> json) => GlobalResponse(
-    status: json["status"] is String ? json["status"]: json["status"] ? "success" : "fail" ,
+    status: json["status"] is String ? json["status"] : json["status"] == true ? "success" : "fail" ,
     code: json.containsKey("code") ? json["code"] : json["kode"] == 1 ? "200" : "400",
     message: json.containsKey("message") ? json["message"] : json["pesan"],
   );
