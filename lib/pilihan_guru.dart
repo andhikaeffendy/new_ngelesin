@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import 'api_response_model/list_guru_response.dart';
 import 'package:new_ngelesin/profile.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
@@ -37,7 +38,39 @@ class PilihanGuru extends StatelessWidget {
                           );
                         } else {
                           return Center(
-                            child: CircularProgressIndicator(),
+                            child: Shimmer.fromColors(child: Column(
+                              children: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    Container(
+                                      height: 60.0,
+                                      width: 60.0,
+                                      color: Colors.black,
+                                    ),Padding(
+                                      padding: EdgeInsets.all(25.0),
+                                    ),Column(
+                                      children: <Widget>[
+                                        Container(
+                                          height: 6.0,width: 200.0, color: Colors.black,
+                                        ),Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                        ),Container(
+                                          height: 6.0,width: 200.0, color: Colors.black,
+                                        ),Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                        ),Container(
+                                          height: 6.0,width: 200.0, color: Colors.black,
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
+                              baseColor: Colors.grey[700],
+                              highlightColor: Colors.grey[100],
+                              direction: ShimmerDirection.rtl,
+                            ),
                           );
                         }
                       },

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:new_ngelesin/edit_password.dart';
 import 'package:new_ngelesin/edit_profile_guru.dart';
 import 'package:new_ngelesin/edit_profile_murid.dart';
+import 'package:shimmer/shimmer.dart';
 import 'api_response_model/profile_siswa_response.dart';
 import 'api_response_model/profile_guru_v2_response.dart';
 import 'global_variable/account_information.dart' as accountInformation;
@@ -9,7 +10,9 @@ import 'global_variable/account_information.dart' as accountInformation;
 class AkunPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return accountInformation.role == "murid" ? profileSiswa(context) : profileGuru(context);
+    return accountInformation.role == "murid"
+        ? profileSiswa(context)
+        : profileGuru(context);
   }
 
   Widget profileSiswa(BuildContext context) {
@@ -20,155 +23,176 @@ class AkunPage extends StatelessWidget {
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(20.0),
-              child: new Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      new Text('Detail Profile',
-                          style: new TextStyle(
-                              color: Colors.black,
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.start),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          GestureDetector(
-                            onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-                                builder: (BuildContext context) => new EditProfileMurid())),
-                            child: Text('Edit Profile',
-                                style: new TextStyle(
-                                    color: Colors.red,
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.start),
-                          ),
-                          SizedBox(
-                            height: 4.0,
-                          ),
-                          GestureDetector(
-                            onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-                                builder: (BuildContext context) => new EditPassword())),
-                            child: Text('Edit Password',
-                                style: new TextStyle(
-                                    color: Colors.red,
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.start),
-                          ),
-                        ],
-                      )
-                    ],
-                  )
-                  ,new Container(
-                    margin: const EdgeInsets.only(bottom: 20.0),
-                  ),
-                  new Icon(Icons.person_pin, size: 50.0),
-                  new Container(
-                    margin: const EdgeInsets.only(bottom: 20.0),
-                  ),
-                  new Text('Saldo Saya:',
-                      style: new TextStyle(color: Colors.black, fontSize: 16.0),
-                      textAlign: TextAlign.start),
-                  new Text(data.saldo,
+              child: Shimmer.fromColors(
+                direction: ShimmerDirection.rtl,
+                period: Duration(seconds: 3),
+                baseColor: Colors.grey[700],
+                highlightColor: Colors.grey[100],
+                child: new Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        new Text('Detail Profile',
+                            style: new TextStyle(
+                                color: Colors.black,
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.start),
+                        SizedBox(
+                          height: 20.0,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            GestureDetector(
+                              onTap: () => Navigator.of(context).push(
+                                  new MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          new EditProfileMurid())),
+                              child: Text('Edit Profile',
+                                  style: new TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold),
+                                  textAlign: TextAlign.start),
+                            ),
+                            SizedBox(
+                              height: 4.0,
+                            ),
+                            GestureDetector(
+                              onTap: () => Navigator.of(context).push(
+                                  new MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          new EditPassword())),
+                              child: Text('Edit Password',
+                                  style: new TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold),
+                                  textAlign: TextAlign.start),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                    new Container(
+                      margin: const EdgeInsets.only(bottom: 20.0),
+                    ),
+                    new Icon(Icons.person_pin, size: 50.0),
+                    new Container(
+                      margin: const EdgeInsets.only(bottom: 20.0),
+                    ),
+                    new Text('Saldo Saya:',
+                        style:
+                            new TextStyle(color: Colors.black, fontSize: 16.0),
+                        textAlign: TextAlign.start),
+                    new Text(data.saldo,
+                        style: new TextStyle(
+                            color: Colors.black,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.start),
+                    new Container(
+                      margin: const EdgeInsets.only(bottom: 20.0),
+                    ),
+                    new Text('Nama Lengkap:',
+                        style:
+                            new TextStyle(color: Colors.black, fontSize: 16.0),
+                        textAlign: TextAlign.start),
+                    new Text(data.namaLengkap,
+                        style: new TextStyle(
+                            color: Colors.black,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.start),
+                    new Container(
+                      margin: const EdgeInsets.only(bottom: 20.0),
+                    ),
+                    new Text('Jenis Kelamin:',
+                        style:
+                            new TextStyle(color: Colors.black, fontSize: 16.0),
+                        textAlign: TextAlign.start),
+                    new Text(data.jenisKelamin.toString(),
+                        style: new TextStyle(
+                            color: Colors.black,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.start),
+                    new Container(
+                      margin: const EdgeInsets.only(bottom: 20.0),
+                    ),
+                    new Text('Alamat:',
+                        style:
+                            new TextStyle(color: Colors.black, fontSize: 16.0),
+                        textAlign: TextAlign.start),
+                    new Text(data.alamatLengkap,
+                        style: new TextStyle(
+                            color: Colors.black,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.start),
+                    new Container(
+                      margin: const EdgeInsets.only(bottom: 20.0),
+                    ),
+                    new Text('Wilayah:',
+                        style:
+                            new TextStyle(color: Colors.black, fontSize: 16.0),
+                        textAlign: TextAlign.start),
+                    new Text(data.labelKota,
+                        style: new TextStyle(
+                            color: Colors.black,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.start),
+                    new Container(
+                      margin: const EdgeInsets.only(bottom: 20.0),
+                    ),
+                    new Text('Kecamatan:',
+                        style:
+                            new TextStyle(color: Colors.black, fontSize: 16.0),
+                        textAlign: TextAlign.start),
+                    new Text(data.labelKecamatan,
+                        style: new TextStyle(
+                            color: Colors.black,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.start),
+                    new Container(
+                      margin: const EdgeInsets.only(bottom: 20.0),
+                    ),
+                    new Text('Jenjang:',
+                        style:
+                            new TextStyle(color: Colors.black, fontSize: 16.0),
+                        textAlign: TextAlign.start),
+                    new Text(data.labelTingkatan,
+                        style: new TextStyle(
+                            color: Colors.black,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.start),
+                    new Container(
+                      margin: const EdgeInsets.only(bottom: 20.0),
+                    ),
+                    new Text('No Handphone:',
+                        style:
+                            new TextStyle(color: Colors.black, fontSize: 16.0),
+                        textAlign: TextAlign.start),
+                    new Text(
+                      data.hp,
                       style: new TextStyle(
                           color: Colors.black,
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.start),
-                  new Container(
-                    margin: const EdgeInsets.only(bottom: 20.0),
-                  ),
-                  new Text('Nama Lengkap:',
-                      style: new TextStyle(color: Colors.black, fontSize: 16.0),
-                      textAlign: TextAlign.start),
-                  new Text(data.namaLengkap,
-                      style: new TextStyle(
-                          color: Colors.black,
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.start),
-                  new Container(
-                    margin: const EdgeInsets.only(bottom: 20.0),
-                  ),
-                  new Text('Jenis Kelamin:',
-                      style: new TextStyle(color: Colors.black, fontSize: 16.0),
-                      textAlign: TextAlign.start),
-                  new Text(data.jenisKelamin.toString(),
-                      style: new TextStyle(
-                          color: Colors.black,
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.start),
-                  new Container(
-                    margin: const EdgeInsets.only(bottom: 20.0),
-                  ),
-                  new Text('Alamat:',
-                      style: new TextStyle(color: Colors.black, fontSize: 16.0),
-                      textAlign: TextAlign.start),
-                  new Text(data.alamatLengkap,
-                      style: new TextStyle(
-                          color: Colors.black,
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.start),
-                  new Container(
-                    margin: const EdgeInsets.only(bottom: 20.0),
-                  ),
-                  new Text('Wilayah:',
-                      style: new TextStyle(color: Colors.black, fontSize: 16.0),
-                      textAlign: TextAlign.start),
-                  new Text(data.labelKota,
-                      style: new TextStyle(
-                          color: Colors.black,
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.start),
-                  new Container(
-                    margin: const EdgeInsets.only(bottom: 20.0),
-                  ),
-                  new Text('Kecamatan:',
-                      style: new TextStyle(color: Colors.black, fontSize: 16.0),
-                      textAlign: TextAlign.start),
-                  new Text(data.labelKecamatan,
-                      style: new TextStyle(
-                          color: Colors.black,
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.start),
-                  new Container(
-                    margin: const EdgeInsets.only(bottom: 20.0),
-                  ),
-                  new Text('Jenjang:',
-                      style: new TextStyle(color: Colors.black, fontSize: 16.0),
-                      textAlign: TextAlign.start),
-                  new Text(data.labelTingkatan,
-                      style: new TextStyle(
-                          color: Colors.black,
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.start),
-                  new Container(
-                    margin: const EdgeInsets.only(bottom: 20.0),
-                  ),
-                  new Text('No Handphone:',
-                      style: new TextStyle(color: Colors.black, fontSize: 16.0),
-                      textAlign: TextAlign.start),
-                  new Text(
-                    data.hp,
-                    style: new TextStyle(
-                        color: Colors.black,
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.start,
-                    softWrap: true,
-                  ),
-                ],
+                      textAlign: TextAlign.start,
+                      softWrap: true,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -204,8 +228,10 @@ class AkunPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           GestureDetector(
-                            onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-                                builder: (BuildContext context) => new EditProfileGuru())),
+                            onTap: () => Navigator.of(context).push(
+                                new MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        new EditProfileGuru())),
                             child: Text('Edit Profile',
                                 style: new TextStyle(
                                     color: Colors.red,
@@ -217,8 +243,10 @@ class AkunPage extends StatelessWidget {
                             height: 4.0,
                           ),
                           GestureDetector(
-                            onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-                                builder: (BuildContext context) => new EditPassword())),
+                            onTap: () => Navigator.of(context).push(
+                                new MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        new EditPassword())),
                             child: Text('Edit Password',
                                 style: new TextStyle(
                                     color: Colors.red,
@@ -228,8 +256,9 @@ class AkunPage extends StatelessWidget {
                           ),
                           SizedBox(
                             height: 4.0,
-                          ),GestureDetector(
-                            onTap: (){},
+                          ),
+                          GestureDetector(
+                            onTap: () {},
                             child: Text('Isi Saldo',
                                 style: new TextStyle(
                                     color: Colors.red,

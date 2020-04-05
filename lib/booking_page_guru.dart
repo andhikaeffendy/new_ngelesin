@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:new_ngelesin/chat_message.dart';
+import 'package:shimmer/shimmer.dart';
 
 class BookingPageGuru extends StatefulWidget {
   @override
@@ -8,89 +9,83 @@ class BookingPageGuru extends StatefulWidget {
 }
 
 class _BookingPageGuruState extends State<BookingPageGuru> {
-  final List<String> entries = <String>['A', 'B', 'C'];
+  final List<String> entries = <String>['A', 'B', 'C', 'C', 'C', 'C', 'C'];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView.builder(
-          itemCount: entries.length,
-          itemBuilder: (BuildContext context, int index) {
-            return GestureDetector(
-              onTap: _alertDialogDesc,
-              child: Container(
-                child: Card(
-                  elevation: 1,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Text(
-                              'eysd',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Text('21-Apr-2020'),
-                          )
-                        ],
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                            width: 120.0,
-                            child: Text(
-                              'Mengaji (Lain-lain)',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Container(
-                            width: 120.0,
-                            child: Text('tedi murid'),
-                          )
-                        ],
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: <Widget>[
-                          Container(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            width: 90.0,
-                            child: Text(
-                              'Proses',
-                              textAlign: TextAlign.right,
-                            ),
-                          ),
-                          Container(
-                            width: 90.0,
-                            padding:
-                                const EdgeInsets.only(bottom: 8.0, right: 8.0),
-                            child: Text(
-                              'Rp. 200.000',
-                              style: TextStyle(
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.right,
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }),
+      body: Shimmer.fromColors(
+        child: Container(
+          padding: const EdgeInsets.all(16.0),
+          child: ListView.builder(
+              itemCount: entries.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Column(
+                      children: <Widget>[
+                        Container(
+                          width: 120.0,
+                          height: 20.0,
+                          color: Colors.grey,
+                        ),
+                        SizedBox(
+                          height: 12.0,
+                        ),
+                        Container(
+                          width: 120.0,
+                          height: 20.0,
+                          color: Colors.grey,
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: <Widget>[
+                        Container(
+                          width: 120.0,
+                          height: 20.0,
+                          color: Colors.grey,
+                        ),
+                        SizedBox(
+                          height: 12.0,
+                        ),
+                        Container(
+                          width: 120.0,
+                          height: 20.0,
+                          color: Colors.grey,
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: <Widget>[
+                        Container(
+                          width: 120.0,
+                          height: 20.0,
+                          color: Colors.grey,
+                        ),
+                        SizedBox(
+                          height: 12.0,
+                        ),
+                        Container(
+                          width: 120.0,
+                          height: 20.0,
+                          color: Colors.grey,
+                        ),
+                        SizedBox(
+                          height: 24.0,
+                        )
+                      ],
+                    ),
+                  ],
+                );
+              }),
+        ),
+        baseColor: Colors.grey[700],
+        highlightColor: Colors.grey[100],
+        direction: ShimmerDirection.rtl,
+      ),
     );
   }
 

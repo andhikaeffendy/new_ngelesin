@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:new_ngelesin/api_response_model/list_guru_response.dart';
 import 'package:new_ngelesin/api_response_model/profile_guru_response.dart';
 import 'package:new_ngelesin/booking_pilihan.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'global_variable/account_information.dart' as account_info;
 
@@ -10,7 +11,8 @@ class Profile extends StatelessWidget {
   final Guru guru;
   final String mapel_name;
 
-  Profile({Key key, @required this.guru, @required this.mapel_name}) : super(key: key);
+  Profile({Key key, @required this.guru, @required this.mapel_name})
+      : super(key: key);
 
   Widget _buildStarItem(String label, double bintang, int suara) {
     return Column(
@@ -28,7 +30,7 @@ class Profile extends StatelessWidget {
           spacing: 0.0,
         ),
         Text(
-          '( '+ suara.toString() +' Suara )',
+          '( ' + suara.toString() + ' Suara )',
           style: new TextStyle(
               color: Colors.black, fontSize: 12.0, fontWeight: FontWeight.w300),
         ),
@@ -67,28 +69,103 @@ class Profile extends StatelessWidget {
       body: Container(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: FutureBuilder(
-              future: profilGuru(),
-              builder: (context, snapshot){
-                if (snapshot.connectionState == ConnectionState.done) {
-                  ProfileGuruResponse profileGuruResponse = snapshot.data;
-                  return generateProfil(profileGuruResponse.data);
-                } else {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-              },
-            )
-          ),
+              padding: const EdgeInsets.all(20.0),
+              child: FutureBuilder(
+                future: profilGuru(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    ProfileGuruResponse profileGuruResponse = snapshot.data;
+                    return generateProfil(profileGuruResponse.data);
+                  } else {
+                    return Center(
+                      child: Shimmer.fromColors(
+                        direction: ShimmerDirection.rtl,
+                        baseColor: Colors.grey[700],
+                        highlightColor: Colors.grey[100],
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            CircleAvatar(
+                              backgroundColor: Colors.grey,
+                              radius: 50.0,
+                            ),SizedBox(
+                              height: 20.0,
+                            ),Container(
+                              height: 20.0,
+                              width: 200.0,
+                              color: Colors.grey,
+                            ),
+                        SizedBox(
+                          height: 20.0,
+                        ),Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Column(
+                                  children: <Widget>[
+                                    Container(
+                                      width: 120.0,
+                                      height: 20.0,
+                                      color: Colors.grey,
+                                    ),SizedBox(
+                                      height: 12.0,
+                                    ),Container(
+                                      width: 120.0,
+                                      height: 20.0,
+                                      color: Colors.grey,
+                                    ),
+                                  ],
+                                ),Column(
+                                  children: <Widget>[
+                                    Container(
+                                      width: 120.0,
+                                      height: 20.0,
+                                      color: Colors.grey,
+                                    ),SizedBox(
+                                      height: 12.0,
+                                    ),Container(
+                                      width: 120.0,
+                                      height: 20.0,
+                                      color: Colors.grey,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),SizedBox(
+                              height: 20.0,
+                            ),Container(
+                              width: 200.0,
+                              height: 20.0,
+                              color: Colors.grey,
+                            ),SizedBox(
+                              height: 20.0,
+                            ),Container(
+                              width: 200.0,
+                              height: 20.0,
+                              color: Colors.grey,
+                            ),SizedBox(
+                              height: 20.0,
+                            ),Container(
+                              width: 200.0,
+                              height: 20.0,
+                              color: Colors.grey,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                },
+              )),
         ),
       ),
       bottomNavigationBar: Padding(
           padding: EdgeInsets.all(20.0),
           child: RaisedButton(
             onPressed: () => Navigator.of(context).push(new MaterialPageRoute(
-                builder: (BuildContext context) => new BookingPilihan(guru: this.guru, mapel_name: this.mapel_name))),
+                builder: (BuildContext context) => new BookingPilihan(
+                    guru: this.guru, mapel_name: this.mapel_name))),
             color: Colors.blue,
             textColor: Colors.white,
             child: Text('Atur Jadwal'),
@@ -96,7 +173,7 @@ class Profile extends StatelessWidget {
     );
   }
 
-  Column generateProfil(Data data){
+  Column generateProfil(Data data) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -110,8 +187,7 @@ class Profile extends StatelessWidget {
                   shape: BoxShape.circle,
                   image: new DecorationImage(
                       fit: BoxFit.fill,
-                      image: new NetworkImage(
-                          guru.foto_profil))),
+                      image: new NetworkImage(guru.foto_profil))),
             )),
         new Text(
           guru.nama_guru,
@@ -127,8 +203,7 @@ class Profile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              _buildStatItem("Pendidikan",
-                  guru.pendidikan_terakhir),
+              _buildStatItem("Pendidikan", guru.pendidikan_terakhir),
               _buildStarItem("Rating", guru.rating_guru.toDouble(), guru.suara),
             ],
           ),
@@ -148,8 +223,7 @@ class Profile extends StatelessWidget {
               ),
               Text(
                 data.pekerjaan.pekerjaan,
-                style:
-                new TextStyle(color: Colors.black, fontSize: 14.0),
+                style: new TextStyle(color: Colors.black, fontSize: 14.0),
               ),
               Padding(
                 padding: EdgeInsets.only(bottom: 16.0),
@@ -163,8 +237,7 @@ class Profile extends StatelessWidget {
               ),
               Text(
                 data.profil.pengalaman_organisasi,
-                style:
-                new TextStyle(color: Colors.black, fontSize: 14.0),
+                style: new TextStyle(color: Colors.black, fontSize: 14.0),
               ),
             ],
           ),
@@ -174,32 +247,27 @@ class Profile extends StatelessWidget {
   }
 
   Future<ProfileGuruResponse> profilGuru() async {
-    String url =
-        account_info.api_url+"?r=booking/data-pengajar";
+    String url = account_info.api_url + "?r=booking/data-pengajar";
     Dio dio = new Dio();
-    dio.interceptors.add(
-        InterceptorsWrapper(
-            onRequest: (RequestOptions options) async {
-              var customHeaders = {
-                'content-type': 'application/json',
-                'email': account_info.email,
-                'password': account_info.password,
-              };
-              options.headers.addAll(customHeaders);
-              return options;
-            }
-        )
-    );
+    dio.interceptors
+        .add(InterceptorsWrapper(onRequest: (RequestOptions options) async {
+      var customHeaders = {
+        'content-type': 'application/json',
+        'email': account_info.email,
+        'password': account_info.password,
+      };
+      options.headers.addAll(customHeaders);
+      return options;
+    }));
     Response response;
 
-    response = await dio.get(url, queryParameters: {
-      "id_guru": guru.tb_guru_id
-    });
+    response =
+        await dio.get(url, queryParameters: {"id_guru": guru.tb_guru_id});
     print("Ini Response : " + response.toString());
-    print("Ini Response Stat : " + response.statusMessage );
+    print("Ini Response Stat : " + response.statusMessage);
 
     ProfileGuruResponse profileGuruResponse =
-    profileGuruResponseFromJson(response.toString());
+        profileGuruResponseFromJson(response.toString());
 
     return profileGuruResponse;
   }

@@ -309,4 +309,91 @@ class _LoginFormGuruState extends State<LoginFormGuru> {
 
     globalTemp.biayaLesResponse = biayaLesResponse;
   }
+
+
+  //AlertDialog jika login berhasil
+
+  void _alerDialogLoginSucces(){
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Container(
+              height: 250.0,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  CircleAvatar(
+                    radius: 40.0,
+                    backgroundImage: NetworkImage('https://www.pngitem.com/pimgs/m/423-4236368_icon-ceklis-png-transparent-png.png'),
+                  ),SizedBox(
+                    height: 16.0,
+                  ),
+                  Text('Login', style: TextStyle(fontSize: 24.0),),
+                  SizedBox(
+                    height: 16.0,
+                  ),
+                  Container(
+                    child: Text('Login Berhasil'),
+                  ),SizedBox(
+                    height: 16.0,
+                  ),ButtonTheme(
+                    minWidth: 50.0,
+                    child: RaisedButton(
+                      onPressed: () => Navigator.pop(context),
+                      color: Colors.green,
+                      child: Text('OK', style: TextStyle(color: Colors.white),),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+        });
+  }
+  //AlertDialog jika login Gagal
+
+  void _alerDialogLoginFail(){
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Container(
+              height: 250.0,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  CircleAvatar(
+                    radius: 40.0,
+                    backgroundImage: NetworkImage('http://getdrawings.com/free-icon/fail-icon-65.png'),
+                  ),SizedBox(
+                    height: 16.0,
+                  ),
+                  Text('Login', style: TextStyle(fontSize: 24.0),),
+                  SizedBox(
+                    height: 16.0,
+                  ),
+                  Container(
+                    child: Text('Password Salah'),
+                  ),SizedBox(
+                    height: 16.0,
+                  ),ButtonTheme(
+                    minWidth: 50.0,
+                    child: RaisedButton(
+                      onPressed: () => Navigator.pop(context),
+                      color: Colors.green,
+                      child: Text('OK', style: TextStyle(color: Colors.white),),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
 }

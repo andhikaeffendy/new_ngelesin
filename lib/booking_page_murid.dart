@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:new_ngelesin/api_response_model/global_response.dart';
 import 'package:new_ngelesin/api_response_model/list_booking_response.dart';
 import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 import 'global_variable/account_information.dart' as account_info;
 
 class BookingPageMurid extends StatefulWidget {
@@ -15,19 +16,102 @@ class _BookingPageMuridState extends State<BookingPageMurid> {
   final currency = new NumberFormat("###,###,###.#");
   List<Booking> bookingList = new List();
 
+  final List<String> entries = <String>[
+    'A',
+    'B',
+    'C',
+    'C',
+    'C',
+    'C',
+    'C',
+    'C',
+    'C',
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
         future: getBookings(),
-        builder: (context, snapshot){
+        builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             ListBookingResponse listBookingResponse = snapshot.data;
             bookingList = listBookingResponse.data;
             return listBooking();
           } else {
             return Center(
-              child: CircularProgressIndicator(),
+              child: Shimmer.fromColors(
+                child: Container(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ListView.builder(
+                      itemCount: entries.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Column(
+                              children: <Widget>[
+                                Container(
+                                  width: 120.0,
+                                  height: 20.0,
+                                  color: Colors.grey,
+                                ),
+                                SizedBox(
+                                  height: 12.0,
+                                ),
+                                Container(
+                                  width: 120.0,
+                                  height: 20.0,
+                                  color: Colors.grey,
+                                ),
+                              ],
+                            ),
+                            Column(
+                              children: <Widget>[
+                                Container(
+                                  width: 120.0,
+                                  height: 20.0,
+                                  color: Colors.grey,
+                                ),
+                                SizedBox(
+                                  height: 12.0,
+                                ),
+                                Container(
+                                  width: 120.0,
+                                  height: 20.0,
+                                  color: Colors.grey,
+                                ),
+                              ],
+                            ),
+                            Column(
+                              children: <Widget>[
+                                Container(
+                                  width: 120.0,
+                                  height: 20.0,
+                                  color: Colors.grey,
+                                ),
+                                SizedBox(
+                                  height: 12.0,
+                                ),
+                                Container(
+                                  width: 120.0,
+                                  height: 20.0,
+                                  color: Colors.grey,
+                                ),
+                                SizedBox(
+                                  height: 24.0,
+                                )
+                              ],
+                            ),
+                          ],
+                        );
+                      }),
+                ),
+                baseColor: Colors.grey[700],
+                highlightColor: Colors.grey[100],
+                direction: ShimmerDirection.rtl,
+              ),
             );
           }
         },
@@ -43,7 +127,9 @@ class _BookingPageMuridState extends State<BookingPageMurid> {
           return AlertDialog(
             content: Container(
               width: 330.0,
-              height: booking.status_kelas=="1" || account_info.role=="guru" ? 520.0 : 500.0,
+              height: booking.status_kelas == "1" || account_info.role == "guru"
+                  ? 520.0
+                  : 500.0,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,13 +139,16 @@ class _BookingPageMuridState extends State<BookingPageMurid> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       Image.network(
-                        account_info.role == "murid" ? booking.foto_guru : booking.foto_siswa,
+                        account_info.role == "murid"
+                            ? booking.foto_guru
+                            : booking.foto_siswa,
                         fit: BoxFit.contain,
                         height: 100.0,
                         width: 100.0,
                       )
                     ],
-                  ),SizedBox(
+                  ),
+                  SizedBox(
                     height: 16.0,
                   ),
                   Row(
@@ -92,7 +181,9 @@ class _BookingPageMuridState extends State<BookingPageMurid> {
                             ),
                           ),
                           Container(
-                            child: Text(booking.metode_pembayaran == "1" ? "Saldo" : "Tunai" ),
+                            child: Text(booking.metode_pembayaran == "1"
+                                ? "Saldo"
+                                : "Tunai"),
                           )
                         ],
                       ),
@@ -147,7 +238,11 @@ class _BookingPageMuridState extends State<BookingPageMurid> {
                     ),
                   ),
                   Container(
-                    child: Text(formatDate.format(booking.tgl) + ' '+ booking.jam_mulai +' - '+ booking.jam_selesai),
+                    child: Text(formatDate.format(booking.tgl) +
+                        ' ' +
+                        booking.jam_mulai +
+                        ' - ' +
+                        booking.jam_selesai),
                   ),
                   SizedBox(
                     height: 12.0,
@@ -162,12 +257,16 @@ class _BookingPageMuridState extends State<BookingPageMurid> {
                         children: <Widget>[
                           Container(
                             child: Text(
-                              'Nama '+ account_info.role == "murid" ? "Guru" : "Siswa" ,
+                              'Nama ' + account_info.role == "murid"
+                                  ? "Guru"
+                                  : "Siswa",
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
                           Container(
-                            child: Text(account_info.role == "murid" ? booking.guru : booking.siswa),
+                            child: Text(account_info.role == "murid"
+                                ? booking.guru
+                                : booking.siswa),
                           )
                         ],
                       ),
@@ -182,7 +281,9 @@ class _BookingPageMuridState extends State<BookingPageMurid> {
                             ),
                           ),
                           Container(
-                            child: Text(account_info.role == "murid" ? booking.hp_guru : booking.hp_siswa ),
+                            child: Text(account_info.role == "murid"
+                                ? booking.hp_guru
+                                : booking.hp_siswa),
                           )
                         ],
                       ),
@@ -198,7 +299,10 @@ class _BookingPageMuridState extends State<BookingPageMurid> {
                     ),
                   ),
                   Container(
-                    child: Text(booking.alamat, maxLines: 1,),
+                    child: Text(
+                      booking.alamat,
+                      maxLines: 1,
+                    ),
                   ),
                   SizedBox(
                     height: 12.0,
@@ -211,7 +315,7 @@ class _BookingPageMuridState extends State<BookingPageMurid> {
                   ),
                   Container(
                     child: Text(
-                      'Rp. '+ currency.format(int.parse(booking.biaya)),
+                      'Rp. ' + currency.format(int.parse(booking.biaya)),
                       style: TextStyle(color: Colors.red),
                     ),
                   ),
@@ -230,65 +334,86 @@ class _BookingPageMuridState extends State<BookingPageMurid> {
         });
 
     //CHECK hasil dari pilihan 5:batal oleh siswa, 4:batal oleh guru, 3:selesai, 1:terima, 0:tutup, 10:chat
-    if(pilihan > 0 && pilihan < 6)
-      updateKelasRequest(booking.id, pilihan).then((task){
+    if (pilihan > 0 && pilihan < 6)
+      updateKelasRequest(booking.id, pilihan).then((task) {
         setState(() {
           bookingList.remove(booking);
-          if(pilihan == 3){
+          if (pilihan == 3) {
             booking.status_kelas = pilihan.toString();
             bookingList.add(booking);
           }
         });
-        getBookings().then((task2){
+        getBookings().then((task2) {
           ListBookingResponse listBookingResponse = task2;
           bookingList = listBookingResponse.data;
         });
       });
   }
 
-  List<Widget> bookingActions(BuildContext context, Booking booking){
+  List<Widget> bookingActions(BuildContext context, Booking booking) {
     List<Widget> actions = new List();
     actions.add(new ButtonTheme(
       minWidth: 130.0,
       child: RaisedButton(
-        onPressed: () => Navigator.of(context).pop(account_info.role=="murid" ? 5 : 4),
-        child: Text('BATALKAN', style: TextStyle(color: Colors.white),),
-        color: Colors.blue,),
+        onPressed: () =>
+            Navigator.of(context).pop(account_info.role == "murid" ? 5 : 4),
+        child: Text(
+          'BATALKAN',
+          style: TextStyle(color: Colors.white),
+        ),
+        color: Colors.blue,
+      ),
     ));
 
-    if(booking.status_kelas=="1")
+    if (booking.status_kelas == "1")
       actions.add(new ButtonTheme(
         minWidth: 130.0,
         child: RaisedButton(
           onPressed: () => Navigator.of(context).pop(10),
-          child: Text('CHAT', style: TextStyle(color: Colors.white),),
-          color: Colors.blue,),
+          child: Text(
+            'CHAT',
+            style: TextStyle(color: Colors.white),
+          ),
+          color: Colors.blue,
+        ),
       ));
 
-    if(booking.status_kelas=="1" && account_info.role == "guru")
+    if (booking.status_kelas == "1" && account_info.role == "guru")
       actions.add(new ButtonTheme(
         minWidth: 130.0,
         child: RaisedButton(
           onPressed: () => Navigator.of(context).pop(3),
-          child: Text('SELESAI', style: TextStyle(color: Colors.white),),
-          color: Colors.blue,),
+          child: Text(
+            'SELESAI',
+            style: TextStyle(color: Colors.white),
+          ),
+          color: Colors.blue,
+        ),
       ));
 
-    if(booking.status_kelas=="2" && account_info.role == "guru")
+    if (booking.status_kelas == "2" && account_info.role == "guru")
       actions.add(new ButtonTheme(
         minWidth: 130.0,
         child: RaisedButton(
           onPressed: () => Navigator.of(context).pop(1),
-          child: Text('TERIMA', style: TextStyle(color: Colors.white),),
-          color: Colors.blue,),
+          child: Text(
+            'TERIMA',
+            style: TextStyle(color: Colors.white),
+          ),
+          color: Colors.blue,
+        ),
       ));
 
     actions.add(new ButtonTheme(
       minWidth: 130.0,
       child: RaisedButton(
         onPressed: () => Navigator.of(context).pop(0),
-        child: Text('TUTUP',style: TextStyle(color: Colors.white),),
-        color: Colors.blue,),
+        child: Text(
+          'TUTUP',
+          style: TextStyle(color: Colors.white),
+        ),
+        color: Colors.blue,
+      ),
     ));
 
     List<Widget> row1 = new List();
@@ -296,10 +421,8 @@ class _BookingPageMuridState extends State<BookingPageMurid> {
     row1.add(actions[1]);
 
     List<Widget> row2 = new List();
-    if(actions.length>2)
-      row2.add(actions[2]);
-    if(actions.length>3)
-      row2.add(actions[3]);
+    if (actions.length > 2) row2.add(actions[2]);
+    if (actions.length > 3) row2.add(actions[3]);
 
     List<Widget> result = new List();
     result.add(Row(
@@ -308,7 +431,7 @@ class _BookingPageMuridState extends State<BookingPageMurid> {
       children: row1,
     ));
 
-    if(actions.length>2)
+    if (actions.length > 2)
       result.add(Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -318,9 +441,8 @@ class _BookingPageMuridState extends State<BookingPageMurid> {
     return result;
   }
 
-  Widget listBooking(){
-    if(bookingList.length == 0)
-      return emptyBooking();
+  Widget listBooking() {
+    if (bookingList.length == 0) return emptyBooking();
     return ListView.builder(
         itemCount: bookingList.length,
         itemBuilder: (BuildContext context, int index) {
@@ -346,7 +468,8 @@ class _BookingPageMuridState extends State<BookingPageMurid> {
                         ),
                         Container(
                           padding: const EdgeInsets.only(left: 8.0),
-                          child: Text(formatDate.format(bookingList[index].tgl)),
+                          child:
+                              Text(formatDate.format(bookingList[index].tgl)),
                         )
                       ],
                     ),
@@ -358,14 +481,17 @@ class _BookingPageMuridState extends State<BookingPageMurid> {
                           width: 150.0,
                           padding: const EdgeInsets.only(bottom: 4.0),
                           child: Text(
-                            bookingList[index].mapel + bookingList[index].tingkatan,
+                            bookingList[index].mapel +
+                                bookingList[index].tingkatan,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                         Container(
                           width: 150.0,
                           padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Text(account_info.role=="murid" ? bookingList[index].guru : bookingList[index].siswa),
+                          child: Text(account_info.role == "murid"
+                              ? bookingList[index].guru
+                              : bookingList[index].siswa),
                         )
                       ],
                     ),
@@ -376,7 +502,9 @@ class _BookingPageMuridState extends State<BookingPageMurid> {
                         Container(
                           width: 80.0,
                           child: Text(
-                            bookingList[index].status_kelas == "1" ? "Proses" : "Pending" ,
+                            bookingList[index].status_kelas == "1"
+                                ? "Proses"
+                                : "Pending",
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -384,7 +512,9 @@ class _BookingPageMuridState extends State<BookingPageMurid> {
                           width: 100.0,
                           padding: const EdgeInsets.only(bottom: 8.0),
                           child: Text(
-                            'Rp. '+ currency.format(int.parse(bookingList[index].biaya)),
+                            'Rp. ' +
+                                currency.format(
+                                    int.parse(bookingList[index].biaya)),
                             style: TextStyle(
                                 color: Colors.red, fontWeight: FontWeight.bold),
                           ),
@@ -399,7 +529,7 @@ class _BookingPageMuridState extends State<BookingPageMurid> {
         });
   }
 
-  Widget emptyBooking(){
+  Widget emptyBooking() {
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -426,65 +556,61 @@ class _BookingPageMuridState extends State<BookingPageMurid> {
   }
 
   Future<ListBookingResponse> getBookings() async {
-    String url = account_info.role == "murid" ?
-        account_info.api_url+"?r=v1/siswa/history-order" :
-        account_info.api_url+"?r=v1/guru/history-order";
+    String url = account_info.role == "murid"
+        ? account_info.api_url + "?r=v1/siswa/history-order"
+        : account_info.api_url + "?r=v1/guru/history-order";
     Dio dio = new Dio();
-    dio.interceptors.add(
-        InterceptorsWrapper(
-            onRequest: (RequestOptions options) async {
-              var customHeaders = {
-                'content-type': 'application/json',
-                'email': account_info.email,
-                'password': account_info.password,
-              };
-              options.headers.addAll(customHeaders);
-              return options;
-            }
-        )
-    );
+    dio.interceptors
+        .add(InterceptorsWrapper(onRequest: (RequestOptions options) async {
+      var customHeaders = {
+        'content-type': 'application/json',
+        'email': account_info.email,
+        'password': account_info.password,
+      };
+      options.headers.addAll(customHeaders);
+      return options;
+    }));
     Response response;
 
     response = await dio.get(url);
     print("Ini Response : " + response.toString());
-    print("Ini Response Stat : " + response.statusMessage );
+    print("Ini Response Stat : " + response.statusMessage);
 
     ListBookingResponse listBookingResponse =
-    listBookingResponseFromJson(response.toString());
+        listBookingResponseFromJson(response.toString());
 
     return listBookingResponse;
   }
 
   Future<GlobalResponse> updateKelasRequest(String id, int status) async {
-    String url = account_info.role == "murid" ?
-      account_info.api_url+"?r=v1/siswa/update-kelas" :
-      account_info.api_url+"?r=guru/update-kelas" ;
+    String url = account_info.role == "murid"
+        ? account_info.api_url + "?r=v1/siswa/update-kelas"
+        : account_info.api_url + "?r=guru/update-kelas";
     Dio dio = new Dio();
-    dio.interceptors.add(
-        InterceptorsWrapper(
-            onRequest: (RequestOptions options) async {
-              var customHeaders = {
-                'content-type': 'application/json',
-                'email': account_info.email,
-                'password': account_info.password,
-              };
-              options.headers.addAll(customHeaders);
-              return options;
-            }
-        )
-    );
+    dio.interceptors
+        .add(InterceptorsWrapper(onRequest: (RequestOptions options) async {
+      var customHeaders = {
+        'content-type': 'application/json',
+        'email': account_info.email,
+        'password': account_info.password,
+      };
+      options.headers.addAll(customHeaders);
+      return options;
+    }));
     Response response;
-    FormData formData = account_info.role == "murid" ?
-      new FormData.fromMap({"id": id, "status_kelas": status}) :
-      new FormData.fromMap({"id": id, "status_kelas": status, "tb_guru_id": account_info.loginGuruResponse.data.id});
+    FormData formData = account_info.role == "murid"
+        ? new FormData.fromMap({"id": id, "status_kelas": status})
+        : new FormData.fromMap({
+            "id": id,
+            "status_kelas": status,
+            "tb_guru_id": account_info.loginGuruResponse.data.id
+          });
 
     response = await dio.post(url, data: formData);
     print(response.toString());
 
-    GlobalResponse globalResponse =
-    globalResponseFromJson(response.toString());
+    GlobalResponse globalResponse = globalResponseFromJson(response.toString());
 
     return globalResponse;
   }
 }
-
