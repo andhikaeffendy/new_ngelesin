@@ -13,6 +13,7 @@ import 'api_response_model/profile_guru_v2_response.dart';
 import 'lupa_password_guru.dart';
 import 'global_variable/temp_var.dart' as globalTemp;
 import 'global_variable/account_information.dart' as account_info;
+import 'global_variable/app_dialog.dart';
 
 
 class LoginGuru extends StatelessWidget {
@@ -76,8 +77,7 @@ class _LoginFormGuruState extends State<LoginFormGuru> {
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(16.0, 18.0, 16.0, 18.0),
         onPressed: () {
-          FutureBuilder(
-            future: loginGuruRequest(emailEditTextController.text,
+          loginGuruRequest(emailEditTextController.text,
                 passwordEditTextController.text)
                 .then((task) {
               if (task.status == "success") {
@@ -90,16 +90,14 @@ class _LoginFormGuruState extends State<LoginFormGuru> {
                 account_info.role = "guru";
                 account_info.email = emailEditTextController.text;
                 account_info.password = passwordEditTextController.text;
-                Navigator.of(context).push(new MaterialPageRoute(
-                    builder: (BuildContext context) => new MainApp(role: "guru")));
+                alerDialogLoginSucces(context, "Login", task.message).then((task){
+                  Navigator.of(context).push(new MaterialPageRoute(
+                      builder: (BuildContext context) => new MainApp(role: "guru")));
+                });
               } else {
-                print("masuk sini, salah");
+                alerDialogLoginFail(context, "Login", task.message);
               }
-            }),
-            builder: (context, snapshot) {
-              return null;
-            },
-          );
+            });
         },
         child: Text('Login',
             textAlign: TextAlign.center,
@@ -308,92 +306,6 @@ class _LoginFormGuruState extends State<LoginFormGuru> {
     biayaLesResponseFromJson(response.toString());
 
     globalTemp.biayaLesResponse = biayaLesResponse;
-  }
-
-
-  //AlertDialog jika login berhasil
-
-  void _alerDialogLoginSucces(){
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: Container(
-              height: 250.0,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  CircleAvatar(
-                    radius: 40.0,
-                    backgroundImage: NetworkImage('https://www.pngitem.com/pimgs/m/423-4236368_icon-ceklis-png-transparent-png.png'),
-                  ),SizedBox(
-                    height: 16.0,
-                  ),
-                  Text('Login', style: TextStyle(fontSize: 24.0),),
-                  SizedBox(
-                    height: 16.0,
-                  ),
-                  Container(
-                    child: Text('Login Berhasil'),
-                  ),SizedBox(
-                    height: 16.0,
-                  ),ButtonTheme(
-                    minWidth: 50.0,
-                    child: RaisedButton(
-                      onPressed: () => Navigator.pop(context),
-                      color: Colors.green,
-                      child: Text('OK', style: TextStyle(color: Colors.white),),
-                    ),
-                  )
-                ],
-              ),
-            ),
-          );
-        });
-  }
-  //AlertDialog jika login Gagal
-
-  void _alerDialogLoginFail(){
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: Container(
-              height: 250.0,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  CircleAvatar(
-                    radius: 40.0,
-                    backgroundImage: NetworkImage('http://getdrawings.com/free-icon/fail-icon-65.png'),
-                  ),SizedBox(
-                    height: 16.0,
-                  ),
-                  Text('Login', style: TextStyle(fontSize: 24.0),),
-                  SizedBox(
-                    height: 16.0,
-                  ),
-                  Container(
-                    child: Text('Password Salah'),
-                  ),SizedBox(
-                    height: 16.0,
-                  ),ButtonTheme(
-                    minWidth: 50.0,
-                    child: RaisedButton(
-                      onPressed: () => Navigator.pop(context),
-                      color: Colors.green,
-                      child: Text('OK', style: TextStyle(color: Colors.white),),
-                    ),
-                  )
-                ],
-              ),
-            ),
-          );
-        });
   }
 
 }

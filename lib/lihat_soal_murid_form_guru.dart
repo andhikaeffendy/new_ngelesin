@@ -1,23 +1,77 @@
 import 'package:flutter/material.dart';
+import 'package:new_ngelesin/api_response_model/list_soal_murid_response.dart';
+import 'package:intl/intl.dart';
+import 'api_response_model/global_response.dart';
+import 'global_variable/account_information.dart' as account_info;
+import 'package:dio/dio.dart';
+
 class LihatSoalMuridFormGuru extends StatefulWidget {
   @override
   _LihatSoalMuridFormGuruState createState() => _LihatSoalMuridFormGuruState();
 }
 
 class _LihatSoalMuridFormGuruState extends State<LihatSoalMuridFormGuru> {
-
-  final List<String> entries = <String>['A', 'B', 'C'];
+  final formatDate = new DateFormat("dd-MMM-yyyy");
+  final currency = new NumberFormat("###,###,###.#");
+  List<SoalMurid> soalMurids = new List();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Soal Murid'),
-      ),body: ListView.builder(
-        itemCount: entries.length,
+      ),
+      body: FutureBuilder(
+        future: getSoals(),
+        builder: (context, snapshot){
+          if (snapshot.connectionState == ConnectionState.done) {
+            ListSoalMuridResponse listSoalMuridResponse = snapshot.data;
+            soalMurids = listSoalMuridResponse.data;
+            return getWidgetSoal();
+          } else {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      ),
+    );
+  }
+
+  Widget emptyBooking(){
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Icon(
+            Icons.unarchive,
+            size: 80.0,
+          ),
+          Padding(
+            padding: EdgeInsets.all(12.0),
+          ),
+          Text(
+            "Oops No Data",
+            style: new TextStyle(
+                fontWeight: FontWeight.w300,
+                color: Colors.blueGrey,
+                fontSize: 16.0),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget getWidgetSoal(){
+    if(soalMurids.length == 0)
+      return emptyBooking();
+    return ListView.builder(
+        itemCount: soalMurids.length,
         itemBuilder: (BuildContext context, int index){
           return GestureDetector(
-            onTap: _showAlertDialog,
+            onTap: () => _showAlertDialog(soalMurids[index]),
             child: Container(
               child: Card(
                 elevation: 1,
@@ -32,12 +86,12 @@ class _LihatSoalMuridFormGuruState extends State<LihatSoalMuridFormGuru> {
                         Container(
                           width: 250.0,
                           padding: const EdgeInsets.only(left: 8.0),
-                          child: Text('eysd', style: TextStyle(fontWeight: FontWeight.bold),),
+                          child: Text(soalMurids[index].kode_soal, style: TextStyle(fontWeight: FontWeight.bold),),
                         ),
                         Container(
                           width: 250.0,
                           padding: const EdgeInsets.only(left: 8.0),
-                          child: Text('FERA NANDA ACHIR SAPUTRI'),
+                          child: Text(soalMurids[index].nama),
                         )
                       ],
                     ),Column(
@@ -47,14 +101,14 @@ class _LihatSoalMuridFormGuruState extends State<LihatSoalMuridFormGuru> {
                         Container(
                           width: 120.0,
                           child: Text(
-                              '04-Okt-2018'
+                              formatDate.format(soalMurids[index].tgl)
                           ),
                         ),
                         Container(
                           width: 120.0,
                           padding: const EdgeInsets.only(bottom: 8.0),
                           child: Text(
-                            'Rp. 20.000', style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
+                            'Rp. '+currency.format(int.parse(soalMurids[index].biaya)), style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
                           ),
                         ),
                       ],
@@ -64,12 +118,11 @@ class _LihatSoalMuridFormGuruState extends State<LihatSoalMuridFormGuru> {
               ),
             ),
           );
-        }),
-    );
+        });
   }
 
-  void _showAlertDialog() {
-    showDialog(
+  void _showAlertDialog(SoalMurid soalMurid) async {
+    bool take = await showDialog(
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
@@ -91,20 +144,16 @@ class _LihatSoalMuridFormGuruState extends State<LihatSoalMuridFormGuru> {
                             maxHeight: 200,
                           ),
                           child: Image.network(
-                            'https://1.bp.blogspot.com/-HWkGNHZImAI/Xkvwo-IcyTI/AAAAAAAACQM/4gzZQeZpdeUMuUU89xCQlK1KHnDqhXeOACLcBGAsYHQ/s1600/gambar%2Bkartun%2Bkeren%2Babis%2B3d.jpg',
+                            soalMurid.gambar,
                           )
                       ),
                     ),Text(
-                        'Nama Guru : '
+                        'Nama Murid : '
                     ),Text(
-                      'Tedi Guru',
+                      soalMurid.nama,
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),SizedBox(
                       height: 16.0,
-                    ),Text(
-                        'No Handphone: '
-                    ),Text(
-                      '082198113362', style: TextStyle(fontWeight: FontWeight.bold),
                     ),SizedBox(
                       height: 16.0,
                     ),Row(
@@ -114,13 +163,13 @@ class _LihatSoalMuridFormGuruState extends State<LihatSoalMuridFormGuru> {
                         ButtonTheme(
                           minWidth: 100.0,
                           child: RaisedButton(
-                            onPressed: () => Navigator.of(context).pop(),
+                            onPressed: () => Navigator.of(context).pop(true),
                             child: Text('AMBIL', style: TextStyle(color: Colors.white),),
                             color: Colors.blue,),
                         ),ButtonTheme(
                           minWidth: 100.0,
                           child: RaisedButton(
-                            onPressed: () => Navigator.of(context).pop(),
+                            onPressed: () => Navigator.of(context).pop(false),
                             child: Text('TUTUP', style: TextStyle(color: Colors.white),),
                             color: Colors.blue,),
                         )
@@ -132,6 +181,73 @@ class _LihatSoalMuridFormGuruState extends State<LihatSoalMuridFormGuru> {
             ),
           );
         });
+    if(take)
+      updateSoalMuridRequest(soalMurid.id).then((task){
+        setState(() {
+          soalMurids.remove(soalMurid);
+        });
+        getSoals().then((task2){
+          ListSoalMuridResponse listSoalMuridResponse = task2;
+          soalMurids = listSoalMuridResponse.data;
+        });
+      });
+  }
+
+  Future<ListSoalMuridResponse> getSoals() async {
+    String url = account_info.api_url+"?r=soal/guru-lihat-soal-murid";
+    Dio dio = new Dio();
+    dio.interceptors.add(
+        InterceptorsWrapper(
+            onRequest: (RequestOptions options) async {
+              var customHeaders = {
+                'content-type': 'application/json',
+                'email': account_info.email,
+                'password': account_info.password,
+              };
+              options.headers.addAll(customHeaders);
+              return options;
+            }
+        )
+    );
+    Response response;
+
+    response = await dio.get(url);
+    print("Ini Response : " + response.toString());
+    print("Ini Response Stat : " + response.statusMessage );
+
+    ListSoalMuridResponse listSoalMuridResponse =
+    listSoalMuridResponseFromJson(response.toString());
+
+    return listSoalMuridResponse;
+  }
+
+  Future<GlobalResponse> updateSoalMuridRequest(String id) async {
+    String url = account_info.api_url+"?r=soal/guru-ambil-soal" ;
+    Dio dio = new Dio();
+    dio.interceptors.add(
+        InterceptorsWrapper(
+            onRequest: (RequestOptions options) async {
+              var customHeaders = {
+                'content-type': 'application/json',
+                'email': account_info.email,
+                'password': account_info.password,
+              };
+              options.headers.addAll(customHeaders);
+              return options;
+            }
+        )
+    );
+    Response response;
+
+    response = await dio.get(url, queryParameters: {
+      "id": id,
+    });
+    print(response.toString());
+
+    GlobalResponse globalResponse =
+    globalResponseFromJson(response.toString());
+
+    return globalResponse;
   }
 
 }

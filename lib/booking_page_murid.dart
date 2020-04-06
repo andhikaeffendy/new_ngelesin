@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:new_ngelesin/api_response_model/global_response.dart';
 import 'package:new_ngelesin/api_response_model/list_booking_response.dart';
 import 'package:intl/intl.dart';
+import 'package:new_ngelesin/chat_message.dart';
 import 'package:shimmer/shimmer.dart';
 import 'global_variable/account_information.dart' as account_info;
 
@@ -348,6 +349,11 @@ class _BookingPageMuridState extends State<BookingPageMurid> {
           bookingList = listBookingResponse.data;
         });
       });
+    if (pilihan == 10)
+      Navigator.of(context, rootNavigator: true).push(
+          MaterialPageRoute(
+              builder: (BuildContext) =>
+              new ChatMessage(id: booking.id, booking: booking)));
   }
 
   List<Widget> bookingActions(BuildContext context, Booking booking) {

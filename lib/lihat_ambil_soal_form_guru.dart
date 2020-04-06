@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:new_ngelesin/api_response_model/list_ambil_soal_response.dart';
+import 'package:intl/intl.dart';
+import 'api_response_model/global_response.dart';
+import 'global_variable/account_information.dart' as account_info;
+import 'package:dio/dio.dart';
 
 class LihatAmbilSoalFormGuru extends StatefulWidget {
   @override
@@ -6,19 +11,73 @@ class LihatAmbilSoalFormGuru extends StatefulWidget {
 }
 
 class _LihatAmbilSoalFormGuruState extends State<LihatAmbilSoalFormGuru> {
-
-  final List<String> entries = <String>['A', 'B', 'C'];
+  final formatDate = new DateFormat("dd-MMM-yyyy");
+  final currency = new NumberFormat("###,###,###.#");
+  List<AmbilSoal> ambilSoals = new List();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Soal Murid'),
-      ),body: ListView.builder(
-        itemCount: entries.length,
+        title: Text('Ambil Soal'),
+      ),
+      body: FutureBuilder(
+        future: getSoals(),
+        builder: (context, snapshot){
+          if (snapshot.connectionState == ConnectionState.done) {
+            ListAmbilSoalResponse listAmbilSoalResponse = snapshot.data;
+            ambilSoals = listAmbilSoalResponse.data;
+            return getWidgetSoal();
+          } else {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      ),
+    );
+  }
+
+  Widget emptyBooking(){
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Icon(
+            Icons.unarchive,
+            size: 80.0,
+          ),
+          Padding(
+            padding: EdgeInsets.all(12.0),
+          ),
+          Text(
+            "Oops No Data",
+            style: new TextStyle(
+                fontWeight: FontWeight.w300,
+                color: Colors.blueGrey,
+                fontSize: 16.0),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget getWidgetSoal(){
+    if(ambilSoals.length == 0)
+      return emptyBooking();
+    return ListView.builder(
+        itemCount: ambilSoals.length,
         itemBuilder: (BuildContext context, int index){
           return GestureDetector(
-            onTap: _showAlertDialog,
+            onTap: () {
+              getSoalDetail(ambilSoals[index].id).then((task){
+                if(task.status == true) {
+                  _showAlertDialog(task.data[0]);
+                }
+              });
+            },
             child: Container(
               child: Card(
                 elevation: 1,
@@ -33,12 +92,12 @@ class _LihatAmbilSoalFormGuruState extends State<LihatAmbilSoalFormGuru> {
                         Container(
                           width: 250.0,
                           padding: const EdgeInsets.only(left: 8.0),
-                          child: Text('eysd', style: TextStyle(fontWeight: FontWeight.bold),),
+                          child: Text(ambilSoals[index].kode_soal, style: TextStyle(fontWeight: FontWeight.bold),),
                         ),
                         Container(
                           width: 250.0,
                           padding: const EdgeInsets.only(left: 8.0),
-                          child: Text('FERA NANDA ACHIR SAPUTRI'),
+                          child: Text(ambilSoals[index].nama),
                         )
                       ],
                     ),Column(
@@ -48,14 +107,14 @@ class _LihatAmbilSoalFormGuruState extends State<LihatAmbilSoalFormGuru> {
                         Container(
                           width: 120.0,
                           child: Text(
-                              '04-Okt-2018'
+                              formatDate.format(ambilSoals[index].tgl)
                           ),
                         ),
                         Container(
                           width: 120.0,
                           padding: const EdgeInsets.only(bottom: 8.0),
                           child: Text(
-                            'Rp. 20.000', style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
+                            'Rp. '+currency.format(int.parse(ambilSoals[index].biaya)), style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
                           ),
                         ),
                       ],
@@ -65,12 +124,11 @@ class _LihatAmbilSoalFormGuruState extends State<LihatAmbilSoalFormGuru> {
               ),
             ),
           );
-        }),
-    );
+        });
   }
 
-  void _showAlertDialog() {
-    showDialog(
+  void _showAlertDialog(AmbilSoal ambilSoal) async {
+    bool chat = await showDialog(
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
@@ -92,20 +150,20 @@ class _LihatAmbilSoalFormGuruState extends State<LihatAmbilSoalFormGuru> {
                             maxHeight: 200,
                           ),
                           child: Image.network(
-                            'https://1.bp.blogspot.com/-HWkGNHZImAI/Xkvwo-IcyTI/AAAAAAAACQM/4gzZQeZpdeUMuUU89xCQlK1KHnDqhXeOACLcBGAsYHQ/s1600/gambar%2Bkartun%2Bkeren%2Babis%2B3d.jpg',
+                            ambilSoal.gambar,
                           )
                       ),
                     ),Text(
-                        'Nama Guru : '
+                        'Nama Siswa : '
                     ),Text(
-                      'Tedi Guru',
+                      ambilSoal.nama,
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),SizedBox(
                       height: 16.0,
                     ),Text(
                         'No Handphone: '
                     ),Text(
-                      '082198113362', style: TextStyle(fontWeight: FontWeight.bold),
+                      ambilSoal.hp_siswa, style: TextStyle(fontWeight: FontWeight.bold),
                     ),SizedBox(
                       height: 16.0,
                     ),Row(
@@ -115,14 +173,14 @@ class _LihatAmbilSoalFormGuruState extends State<LihatAmbilSoalFormGuru> {
                         ButtonTheme(
                           minWidth: 100.0,
                           child: RaisedButton(
-                            onPressed: () => Navigator.of(context).pop(),
+                            onPressed: () => Navigator.of(context).pop(false),
                             child: Text('TUTUP', style: TextStyle(color: Colors.white),),
                             color: Colors.blue,),
                         ),ButtonTheme(
                           minWidth: 100.0,
                           child: RaisedButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            child: Text('KIRIM JAWABAN', style: TextStyle(color: Colors.white),),
+                            onPressed: () => Navigator.of(context).pop(true),
+                            child: Text(ambilSoal.status == "1" ? 'KIRIM JAWABAN' : 'HISTORY' , style: TextStyle(color: Colors.white),),
                             color: Colors.blue,),
                         )
                       ],
@@ -133,5 +191,66 @@ class _LihatAmbilSoalFormGuruState extends State<LihatAmbilSoalFormGuru> {
             ),
           );
         });
+//    SHOWING CHAT
+//    if(chat)
   }
+
+  Future<ListAmbilSoalResponse> getSoals() async {
+    String url = account_info.api_url+"?r=soal/guru-lihat-ambil-soal";
+    Dio dio = new Dio();
+    dio.interceptors.add(
+        InterceptorsWrapper(
+            onRequest: (RequestOptions options) async {
+              var customHeaders = {
+                'content-type': 'application/json',
+                'email': account_info.email,
+                'password': account_info.password,
+              };
+              options.headers.addAll(customHeaders);
+              return options;
+            }
+        )
+    );
+    Response response;
+
+    response = await dio.get(url);
+    print("Ini Response : " + response.toString());
+    print("Ini Response Stat : " + response.statusMessage );
+
+    ListAmbilSoalResponse listAmbilSoalResponse =
+    listAmbilSoalResponseFromJson(response.toString());
+
+    return listAmbilSoalResponse;
+  }
+
+  Future<ListAmbilSoalResponse> getSoalDetail(String id) async {
+    String url = account_info.api_url+"?r=soal/guru-lihat-detail-ambil-soal";
+    Dio dio = new Dio();
+    dio.interceptors.add(
+        InterceptorsWrapper(
+            onRequest: (RequestOptions options) async {
+              var customHeaders = {
+                'content-type': 'application/json',
+                'email': account_info.email,
+                'password': account_info.password,
+              };
+              options.headers.addAll(customHeaders);
+              return options;
+            }
+        )
+    );
+    Response response;
+
+    response = await dio.get(url, queryParameters: {
+      "id": id,
+    });
+    print("Ini Response : " + response.toString());
+    print("Ini Response Stat : " + response.statusMessage );
+
+    ListAmbilSoalResponse listAmbilSoalResponse =
+    listAmbilSoalResponseFromJson(response.toString());
+
+    return listAmbilSoalResponse;
+  }
+
 }

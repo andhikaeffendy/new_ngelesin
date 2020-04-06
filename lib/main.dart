@@ -31,7 +31,7 @@ class MainApp extends StatefulWidget {
     if(role == "guru") {
       pageOptions = [
         HomePage(),
-        BookingPageGuru(),
+        BookingPageMurid(),
         AkunPage(),
         SettingGuru(),
       ];

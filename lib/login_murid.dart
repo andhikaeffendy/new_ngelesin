@@ -9,6 +9,7 @@ import 'package:new_ngelesin/register.dart';
 import 'api_response_model/jwt_login_siswa_response.dart';
 import 'global_variable/account_information.dart' as account_info;
 import 'global_variable/temp_var.dart' as globalTemp;
+import 'global_variable/app_dialog.dart';
 
 import 'login_guru.dart';
 import 'lupa_password_siswa.dart';
@@ -88,12 +89,12 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
                 account_info.email = emailEditTextController.text;
                 account_info.password = passwordEditTextController.text;
 
-
-
-                Navigator.of(context).push(new MaterialPageRoute(
-                    builder: (BuildContext context) => new MainApp(role: "murid")));
+                alerDialogLoginSucces(context, "Login", task.message).then((task){
+                  Navigator.of(context).push(new MaterialPageRoute(
+                      builder: (BuildContext context) => new MainApp(role: "murid")));
+                });
               } else {
-                print("masuk sini, salah");
+                alerDialogLoginFail(context, "Login", task.message);
               }
             }),
             builder: (context, snapshot) {
@@ -276,93 +277,6 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
     jwtLoginSiswaResponseFromJson(response.toString());
     print("jwt token = " + jwtLoginSiswaResponse.data.token);
     account_info.jwtLoginSiswaResponse = jwtLoginSiswaResponse;
-  }
-
-  //AlertDialog untuk Login berhasil
-
-  void _alerDialogLoginSucces(){
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: Container(
-              height: 250.0,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  CircleAvatar(
-                    radius: 40.0,
-                    backgroundImage: NetworkImage('https://www.pngitem.com/pimgs/m/423-4236368_icon-ceklis-png-transparent-png.png'),
-                  ),SizedBox(
-                    height: 16.0,
-                  ),
-                  Text('Login', style: TextStyle(fontSize: 24.0),),
-                  SizedBox(
-                    height: 16.0,
-                  ),
-                  Container(
-                    child: Text('Login Berhasil'),
-                  ),SizedBox(
-                    height: 16.0,
-                  ),ButtonTheme(
-                    minWidth: 50.0,
-                    child: RaisedButton(
-                      onPressed: () => Navigator.pop(context),
-                      color: Colors.green,
-                      child: Text('OK', style: TextStyle(color: Colors.white),),
-                    ),
-                  )
-                ],
-              ),
-            ),
-          );
-        });
-  }
-
-
-  //AlertDialog jika login gagal
-
-  void _alerDialogLoginFail(){
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: Container(
-              height: 250.0,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  CircleAvatar(
-                    radius: 40.0,
-                    backgroundImage: NetworkImage('http://getdrawings.com/free-icon/fail-icon-65.png'),
-                  ),SizedBox(
-                    height: 16.0,
-                  ),
-                  Text('Login', style: TextStyle(fontSize: 24.0),),
-                  SizedBox(
-                    height: 16.0,
-                  ),
-                  Container(
-                    child: Text('Password Salah'),
-                  ),SizedBox(
-                    height: 16.0,
-                  ),ButtonTheme(
-                    minWidth: 50.0,
-                    child: RaisedButton(
-                      onPressed: () => Navigator.pop(context),
-                      color: Colors.green,
-                      child: Text('OK', style: TextStyle(color: Colors.white),),
-                    ),
-                  )
-                ],
-              ),
-            ),
-          );
-        });
   }
 
 }

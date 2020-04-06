@@ -364,7 +364,7 @@ class AkunPage extends StatelessWidget {
                   new Text('Pengalaman Bekerja:',
                       style: new TextStyle(color: Colors.black, fontSize: 16.0),
                       textAlign: TextAlign.start),
-                  new Text(data.pengalaman_organisasi,
+                  new Text(data.pekerjaan,
                       style: new TextStyle(
                           color: Colors.black,
                           fontSize: 16.0,
