@@ -83,3 +83,36 @@ Future<bool> alerDialogLoginFail(BuildContext context, String title, String mess
       });
   return result;
 }
+
+void alerDialogProgress(BuildContext context) {
+  showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Container(
+            height: 250.0,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(
+                  child: CircularProgressIndicator(),
+                  height: 60.0,
+                  width: 60.0,
+                ),
+                SizedBox(
+                  height: 16.0,
+                ),
+                SizedBox(
+                  height: 16.0,
+                ),
+                SizedBox(
+                  height: 16.0,
+                ),
+              ],
+            ),
+          ),
+        );
+      });
+}

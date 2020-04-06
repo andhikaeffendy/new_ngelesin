@@ -75,10 +75,12 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(16.0, 18.0, 16.0, 18.0),
         onPressed: () {
+          alerDialogProgress(context);
           FutureBuilder(
             future: loginSiswaRequest(emailEditTextController.text,
                     passwordEditTextController.text)
                 .then((task) {
+              Navigator.of(context).pop();
               if (task.status == "success") {
                 print("masuk sukses");
                 getMapelRequest();

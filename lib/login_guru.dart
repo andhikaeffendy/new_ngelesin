@@ -77,9 +77,11 @@ class _LoginFormGuruState extends State<LoginFormGuru> {
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(16.0, 18.0, 16.0, 18.0),
         onPressed: () {
+          alerDialogProgress(context);
           loginGuruRequest(emailEditTextController.text,
                 passwordEditTextController.text)
                 .then((task) {
+                  Navigator.of(context).pop();
               if (task.status == "success") {
                 print("masuk sukses");
                 getProfileRequest("token", task.data.email, passwordEditTextController.text);
