@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:new_ngelesin/api_response_model/tagihan_response.dart';
 import 'global_variable/account_information.dart' as account_info;
 
@@ -12,6 +13,7 @@ class TagihanMurid extends StatefulWidget {
 class _TagihanMuridState extends State<TagihanMurid> {
 
   final List<String> kode = <String> ['M14296','2]JFK98','MPOD3','EIRKD4'];
+  final f = new DateFormat('yyyy-MM-dd');
 
   @override
   Widget build(BuildContext context) {
@@ -19,78 +21,95 @@ class _TagihanMuridState extends State<TagihanMurid> {
       appBar: AppBar(
         title: Text('Tagihan'),
       ),
-        body: ListView.builder(
-            itemCount: kode.length,
-            itemBuilder: (BuildContext context, int index){
-              return GestureDetector(
-                onTap: _showAlertDialog,
-                child: Container(
-                  child: Card(
-                    elevation: 1,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Container(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: Text('5LD237', style: TextStyle(fontWeight: FontWeight.bold),),
+        body: FutureBuilder(
+          future: getTagihanRequest(),
+          builder: (context, snapshot){
+            if(snapshot.data == null){
+              return Container();
+            }else{
+              TagihanResponse tagihanResponse = snapshot.data;
+              if(tagihanResponse.code == "404"){
+                return Container(
+                  child: Text(tagihanResponse.message, style: TextStyle(fontWeight: FontWeight.bold)) ,
+                );
+              }else{
+                List<Datum> listTagihan = tagihanResponse.data;
+                return ListView.builder(
+                    itemCount: listTagihan.length,
+                    itemBuilder: (BuildContext context, int index){
+                      return GestureDetector(
+                        onTap: () => _showAlertDialog(listTagihan[index]),
+                        child: Container(
+                          child: Card(
+                            elevation: 1,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Container(
+                                      padding: const EdgeInsets.only(left: 8.0),
+                                      child: Text(listTagihan[index].kodeKelas, style: TextStyle(fontWeight: FontWeight.bold),),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.only(left: 8.0),
+                                      child: Text(f.format(listTagihan[index].tgl)),
+                                    )
+                                  ],
+                                ),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Container(
+                                      width: 150.0,
+                                      padding: const EdgeInsets.only(bottom: 4.0),
+                                      child: Text(listTagihan[index].mapel, style: TextStyle(fontWeight: FontWeight.bold),),
+                                    ),
+                                    Container(
+                                      width: 150.0,
+                                      padding: const EdgeInsets.only(bottom: 8.0),
+                                      child: Text(listTagihan[index].guru),
+                                    )
+                                  ],
+                                ),Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: <Widget>[
+                                    Container(
+                                      width: 120.0,
+                                      child: Text(
+                                        'CASH'
+                                        ,style: TextStyle(fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 120.0,
+                                      padding: const EdgeInsets.only(bottom: 8.0),
+                                      child: Text(
+                                        'Rp.'+listTagihan[index].biaya, style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
                             ),
-                            Container(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: Text('21-Apr-2020'),
-                            )
-                          ],
+                          ),
                         ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                              width: 150.0,
-                              padding: const EdgeInsets.only(bottom: 4.0),
-                              child: Text('Mengaji (Lain-Lain)', style: TextStyle(fontWeight: FontWeight.bold),),
-                            ),
-                            Container(
-                              width: 150.0,
-                              padding: const EdgeInsets.only(bottom: 8.0),
-                              child: Text('Tedi Guru'),
-                            )
-                          ],
-                        ),Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: <Widget>[
-                            Container(
-                              width: 120.0,
-                              child: Text(
-                                'CASH'
-                                ,style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            Container(
-                              width: 120.0,
-                              padding: const EdgeInsets.only(bottom: 8.0),
-                              child: Text(
-                                'Rp. 200.000', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            })
+                      );
+                    });
+              }
+            }
+          },
+        )
     );
   }
 
   Future<TagihanResponse> getTagihanRequest() async{
-    String url = account_info.api_url+"?r=v1/siswa/tagihan&siswa_id=1692";
+    String url = account_info.api_url+"?r=v1/siswa/tagihan&siswa_id="+account_info.loginSiswaResponseData.data.id.toString();
 
     var dio = Dio();
     dio.interceptors.add(
@@ -117,7 +136,7 @@ class _TagihanMuridState extends State<TagihanMurid> {
 
   }
 
-  void _showAlertDialog() {
+  void _showAlertDialog(Datum dataTagihan) {
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -145,7 +164,7 @@ class _TagihanMuridState extends State<TagihanMurid> {
                             ),
                           ),
                           Container(
-                            child: Text('YOPESO'),
+                            child: Text(dataTagihan.kodeKelas),
                           )
                         ],
                       ),
@@ -160,7 +179,7 @@ class _TagihanMuridState extends State<TagihanMurid> {
                             ),
                           ),
                           Container(
-                            child: Text('Saldo'),
+                            child: Text(dataTagihan.discount),
                           )
                         ],
                       ),
@@ -184,7 +203,7 @@ class _TagihanMuridState extends State<TagihanMurid> {
                             ),
                           ),
                           Container(
-                            child: Text('Matermatika SD'),
+                            child: Text(dataTagihan.mapel),
                           )
                         ],
                       ),
@@ -199,7 +218,7 @@ class _TagihanMuridState extends State<TagihanMurid> {
                             ),
                           ),
                           Container(
-                            child: Text('1'),
+                            child: Text(dataTagihan.jumlahSiswa),
                           )
                         ],
                       ),
@@ -215,7 +234,7 @@ class _TagihanMuridState extends State<TagihanMurid> {
                     ),
                   ),
                   Container(
-                    child: Text('30-Mar-2020 08:00:00 - 10:00:00'),
+                    child: Text(f.format(dataTagihan.tgl)),
                   ),
                   SizedBox(
                     height: 12.0,
@@ -227,7 +246,7 @@ class _TagihanMuridState extends State<TagihanMurid> {
                     ),
                   ),
                   Container(
-                    child: Text('Rizky Akbar'),
+                    child: Text(dataTagihan.guru),
                   ),
                   SizedBox(
                     height: 12.0,
@@ -239,7 +258,7 @@ class _TagihanMuridState extends State<TagihanMurid> {
                     ),
                   ),
                   Container(
-                    child: Text('rumah saya,'),
+                    child: Text(dataTagihan.lokasi),
                   ),
                   SizedBox(
                     height: 12.0,
@@ -252,7 +271,7 @@ class _TagihanMuridState extends State<TagihanMurid> {
                   ),
                   Container(
                     child: Text(
-                      'Rp. 75.000',
+                      'Rp. ' + dataTagihan.biaya,
                       style: TextStyle(color: Colors.red),
                     ),
                   ),
