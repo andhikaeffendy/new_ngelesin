@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:new_ngelesin/api_response_model/simpan_jadwal_mengajar_response.dart';
 import 'package:new_ngelesin/list_mapel_guru.dart';
 
+import 'api_response_model/kelola_wilayah_les_guru_reponse.dart';
 import 'global_variable/account_information.dart' as account_info;
 import 'global_variable/temp_var.dart' as globalTemp;
 
@@ -466,6 +467,17 @@ class _KelolaJadwalState extends State<KelolaJadwal> {
         ));
   }
 
+  Future<KelolaWilayahLesGuruResponse> getWilayah() async{
+    String url = account_info.api_url + "?r=v1/home/wilayah&email="+account_info.email;
+    var dio = Dio();
+    Response response = await dio.get(url);
+    print("Wilayah Reponse : " + response.data.toString());
+    KelolaWilayahLesGuruResponse kelolaWilayahLesGuruResponse;
+    kelolaWilayahLesGuruResponse = kelolaWilayahLesGuruResponseFromJson(response.toString());
+
+    return kelolaWilayahLesGuruResponse;
+  }
+
   Future<SimpanJadwalMengajarResponse> makeRequest() async {
     String url = account_info.api_url + "?r=/jadwal2/simpan-jadwal";
 
@@ -492,14 +504,16 @@ class _KelolaJadwalState extends State<KelolaJadwal> {
       "area_list[2]": "",
     });
 
-    Response response = await dio.get(url);
-    print("GET PROFILE REQUEST : " + response.data.toString());
+    Response response = await dio.post(url, data: formData);
+    print("SIMPAN KELOLA JADWAL RESPONSE : " + response.data.toString());
     SimpanJadwalMengajarResponse simpanJadwalMengajarResponse;
     simpanJadwalMengajarResponse =
         simpanJadwalMengajarResponseFromJson(response.toString());
 
     return simpanJadwalMengajarResponse;
   }
+
+
 }
 
 class listDropDown {

@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:new_ngelesin/akun_page.dart';
 import 'package:new_ngelesin/api_response_model/update_profile_siswa_reponse.dart';
 import 'api_response_model/profile_siswa_response.dart';
 import 'global_variable/account_information.dart' as account_info;
@@ -103,6 +102,11 @@ class _EditProfileMuridState extends State<EditProfileMurid> {
 
   @override
   Widget build(BuildContext context) {
+
+    valueProvinsi.text = txtProvinsi;
+    valueKota.text = txtKota;
+    valueKecamatan.text = txtKecamatan;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Profile Siswa'),
@@ -390,20 +394,8 @@ class _EditProfileMuridState extends State<EditProfileMurid> {
 
     });
 
-    FormData formData2 =
-    new FormData.fromMap({
-      "nama_lengkap": valueNama.text,
-      "alamat": valueAlamatLengkap.text,
-      "hp": valueHP.text,
-      "master_provinsi_id": 1,
-      "master_kota_id": 2,
-      "master_kecamatan_id": 1,
-      "tb_kategori_id": selectedSekolah.index,
-      "jenis_kelamin": selectedJK.index,
 
-    });
-
-    Response response = await dio.post(url, data: formData2);
+    Response response = await dio.post(url, data: formData);
     print("Update Response : " + response.data.toString());
 
     UpdateProfileSiswaResponse updateProfileSiswaResponse =

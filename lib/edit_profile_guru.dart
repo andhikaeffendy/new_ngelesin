@@ -4,12 +4,10 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
-import 'package:new_ngelesin/akun_page.dart';
 import 'api_response_model/update_profile_guru2_response.dart';
 import 'global_variable/account_information.dart' as account_info;
 
 
-import 'api_response_model/update_profile_guru_response.dart';
 
 class EditProfileGuru extends StatefulWidget {
   @override
@@ -88,6 +86,7 @@ class _EditProfileGuruState extends State<EditProfileGuru> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Profile Guru'),
