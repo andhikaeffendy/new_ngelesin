@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:new_ngelesin/api_response_model/list_soal_murid_response.dart';
 import 'package:intl/intl.dart';
+import 'package:new_ngelesin/global_variable/app_dialog.dart';
 import 'api_response_model/global_response.dart';
 import 'global_variable/account_information.dart' as account_info;
 import 'package:dio/dio.dart';
@@ -30,36 +31,10 @@ class _LihatSoalMuridFormGuruState extends State<LihatSoalMuridFormGuru> {
             return getWidgetSoal();
           } else {
             return Center(
-              child: CircularProgressIndicator(),
+              child: listViewShimmer(),
             );
           }
         },
-      ),
-    );
-  }
-
-  Widget emptyBooking(){
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Icon(
-            Icons.unarchive,
-            size: 80.0,
-          ),
-          Padding(
-            padding: EdgeInsets.all(12.0),
-          ),
-          Text(
-            "Oops No Data",
-            style: new TextStyle(
-                fontWeight: FontWeight.w300,
-                color: Colors.blueGrey,
-                fontSize: 16.0),
-            textAlign: TextAlign.center,
-          ),
-        ],
       ),
     );
   }
@@ -181,16 +156,26 @@ class _LihatSoalMuridFormGuruState extends State<LihatSoalMuridFormGuru> {
             ),
           );
         });
-    if(take)
-      updateSoalMuridRequest(soalMurid.id).then((task){
-        setState(() {
-          soalMurids.remove(soalMurid);
-        });
-        getSoals().then((task2){
-          ListSoalMuridResponse listSoalMuridResponse = task2;
-          soalMurids = listSoalMuridResponse.data;
-        });
+    if(take) {
+      alerDialogProgress(context);
+      updateSoalMuridRequest(soalMurid.id).then((task) {
+        dismissAlerDialogProgress(context);
+        if(task.status=="success") {
+          alerDialogLoginSucces(context, "Ambil Soal", task.message);
+          setState(() {
+            soalMurids.remove(soalMurid);
+          });
+          getSoals().then((task2) {
+            if(task2.status==true) {
+              ListSoalMuridResponse listSoalMuridResponse = task2;
+              soalMurids = listSoalMuridResponse.data;
+            }
+          });
+        } else {
+          alerDialogLoginFail(context, "Ambil Soal", task.message);
+        }
       });
+    }
   }
 
   Future<ListSoalMuridResponse> getSoals() async {

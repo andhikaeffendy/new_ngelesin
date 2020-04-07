@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 Future<bool> alerDialogLoginSucces(BuildContext context, String title, String message) async {
   bool result = await showDialog(
@@ -115,4 +116,121 @@ void alerDialogProgress(BuildContext context) {
           ),
         );
       });
+}
+
+void dismissAlerDialogProgress(BuildContext context) {
+  Navigator.of(context, rootNavigator: true).pop();
+}
+
+Widget listViewShimmer(){
+  final List<String> entries = <String>[
+    'A',
+    'B',
+    'C',
+    'C',
+    'C',
+    'C',
+    'C',
+    'C',
+    'C',
+  ];
+
+  return Shimmer.fromColors(
+    child: Container(
+      padding: const EdgeInsets.all(16.0),
+      child: ListView.builder(
+          itemCount: entries.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    Container(
+                      width: 120.0,
+                      height: 20.0,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(
+                      height: 12.0,
+                    ),
+                    Container(
+                      width: 120.0,
+                      height: 20.0,
+                      color: Colors.grey,
+                    ),
+                  ],
+                ),
+                Column(
+                  children: <Widget>[
+                    Container(
+                      width: 120.0,
+                      height: 20.0,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(
+                      height: 12.0,
+                    ),
+                    Container(
+                      width: 120.0,
+                      height: 20.0,
+                      color: Colors.grey,
+                    ),
+                  ],
+                ),
+                Column(
+                  children: <Widget>[
+                    Container(
+                      width: 120.0,
+                      height: 20.0,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(
+                      height: 12.0,
+                    ),
+                    Container(
+                      width: 120.0,
+                      height: 20.0,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(
+                      height: 24.0,
+                    )
+                  ],
+                ),
+              ],
+            );
+          }),
+    ),
+    baseColor: Colors.grey[700],
+    highlightColor: Colors.grey[100],
+    direction: ShimmerDirection.rtl,
+  );
+}
+
+Widget emptyBooking(){
+  return Container(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Icon(
+          Icons.unarchive,
+          size: 80.0,
+        ),
+        Padding(
+          padding: EdgeInsets.all(12.0),
+        ),
+        Text(
+          "Oops No Data",
+          style: new TextStyle(
+              fontWeight: FontWeight.w300,
+              color: Colors.blueGrey,
+              fontSize: 16.0),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    ),
+  );
 }
