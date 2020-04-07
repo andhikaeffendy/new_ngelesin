@@ -80,7 +80,7 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
             future: loginSiswaRequest(emailEditTextController.text,
                     passwordEditTextController.text)
                 .then((task) {
-              Navigator.of(context).pop();
+              dismissAlerDialogProgress(context);
               if (task.status == "success") {
                 print("masuk sukses");
                 getMapelRequest();

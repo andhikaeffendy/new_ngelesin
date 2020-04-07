@@ -81,7 +81,7 @@ class _LoginFormGuruState extends State<LoginFormGuru> {
           loginGuruRequest(emailEditTextController.text,
                 passwordEditTextController.text)
                 .then((task) {
-                  Navigator.of(context).pop();
+                  dismissAlerDialogProgress(context);
               if (task.status == "success") {
                 print("masuk sukses");
                 getProfileRequest("token", task.data.email, passwordEditTextController.text);
