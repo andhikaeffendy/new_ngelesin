@@ -1,7 +1,12 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:new_ngelesin/akun_page.dart';
+import 'package:new_ngelesin/api_response_model/update_profile_siswa_reponse.dart';
+import 'api_response_model/profile_siswa_response.dart';
+import 'global_variable/account_information.dart' as account_info;
+
 
 import 'list_kecamatan.dart';
 import 'list_kota.dart';
@@ -35,20 +40,20 @@ class _EditProfileMuridState extends State<EditProfileMurid> {
   listDropDown selectedJK;
   listDropDown selectedNgelesin;
   List<listDropDown> jenisKelamin = <listDropDown>[
-    const listDropDown('Pria'),
-    const listDropDown('Wanita')
+    const listDropDown('Pria',0),
+    const listDropDown('Wanita',1)
   ];
   List<listDropDown> sekolah = <listDropDown>[
-    const listDropDown('SD'),
-    const listDropDown('SMP'),
-    const listDropDown('SMA'),
-    const listDropDown('SMK')
+    const listDropDown('SD',0),
+    const listDropDown('SMP',1),
+    const listDropDown('SMA',2),
+    const listDropDown('SMK',3)
   ];
   List<listDropDown> ngelesin = <listDropDown>[
-    const listDropDown('Teman'),
-    const listDropDown('Keluarga'),
-    const listDropDown('Orang Lain'),
-    const listDropDown('Lain-lain')
+    const listDropDown('Teman',0),
+    const listDropDown('Keluarga',1),
+    const listDropDown('Orang Lain',2),
+    const listDropDown('Lain-lain',3)
   ];
 
   _openGallery(BuildContext context) async{
@@ -254,7 +259,15 @@ class _EditProfileMuridState extends State<EditProfileMurid> {
                 child: RaisedButton(
                   padding: const EdgeInsets.all(12.0),
                   color: Colors.indigo,
-                  onPressed: _alerDialogUpdateProfile,
+                  onPressed:() => makeRequest().then((task){
+                    if (task.status == "success") {
+                      getProfileRequest(account_info.loginSiswaResponseData.data.token, account_info.email, account_info.password);
+                      return _alerDialogUpdateProfile();
+                    } else {
+
+                    }
+                  }
+                  ) ,
                   child: Text('EDIT PROFILE',style: TextStyle(color: Colors.white,fontSize: 16.0),),
                 ),
               )
@@ -346,11 +359,97 @@ class _EditProfileMuridState extends State<EditProfileMurid> {
         });
   }
 
+  Future<UpdateProfileSiswaResponse> makeRequest() async{
+    String url = account_info.api_url+"?r=v1/siswa/update-profile";
+
+    var dio = Dio();
+    dio.interceptors.add(
+        InterceptorsWrapper(
+            onRequest: (RequestOptions options) async {
+              var customHeaders = {
+                'content-type': 'application/json',
+                'email': account_info.email,
+                'password': account_info.password,
+              };
+              options.headers.addAll(customHeaders);
+              return options;
+            }
+        )
+    );
+
+    FormData formData =
+    new FormData.fromMap({
+      "nama_lengkap": valueNama.text,
+      "alamat": valueAlamatLengkap.text,
+      "hp": valueHP.text,
+      "master_provinsi_id": valueProvinsi,
+      "master_kota_id": valueKota.text,
+      "master_kecamatan_id": valueKecamatan.text,
+      "tb_kategori_id": selectedSekolah.index,
+      "jenis_kelamin": selectedJK.index,
+
+    });
+
+    FormData formData2 =
+    new FormData.fromMap({
+      "nama_lengkap": valueNama.text,
+      "alamat": valueAlamatLengkap.text,
+      "hp": valueHP.text,
+      "master_provinsi_id": 1,
+      "master_kota_id": 2,
+      "master_kecamatan_id": 1,
+      "tb_kategori_id": selectedSekolah.index,
+      "jenis_kelamin": selectedJK.index,
+
+    });
+
+    Response response = await dio.post(url, data: formData2);
+    print("Update Response : " + response.data.toString());
+
+    UpdateProfileSiswaResponse updateProfileSiswaResponse =
+    updateProfileSiswaResponseFromJson(response.toString());
+
+    return updateProfileSiswaResponse;
+  }
+
+  getProfileRequest(String token, String email, String password) async {
+    String url = account_info.api_url+"?r=v1/siswa/profile";
+
+    var dio = Dio();
+    dio.interceptors.add(
+        InterceptorsWrapper(
+            onRequest: (RequestOptions options) async {
+              var customHeaders = {
+                'content-type': 'application/json',
+                'email': email,
+                'password': password,
+              };
+              options.headers.addAll(customHeaders);
+              return options;
+            }
+        )
+    );
+
+
+
+    Response response = await dio.get(url);
+    print("GET PROFILE REQUEST : " + response.data.toString());
+    ProfileSiswaResponse profileSiswaResponse;
+    profileSiswaResponse = profileSiswaResponseFromJson(response.toString());
+
+    account_info.email = email;
+    account_info.password = password;
+
+    account_info.profileSiswaResponse = profileSiswaResponse;
+  }
+
 }
 
 
+// ignore: camel_case_types
 class listDropDown {
-  const listDropDown(this.name);
+  const listDropDown(this.name, this.index);
 
   final String name;
+  final int index;
 }
