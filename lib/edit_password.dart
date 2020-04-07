@@ -1,5 +1,7 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-
+import 'package:new_ngelesin/api_response_model/update_password_guru_response.dart';
+import 'global_variable/account_information.dart' as account_info;
 import 'akun_page.dart';
 
 class EditPassword extends StatefulWidget {
@@ -8,8 +10,17 @@ class EditPassword extends StatefulWidget {
 }
 
 class _EditPasswordState extends State<EditPassword> {
+
+
+  final TextEditingController valueOld = TextEditingController();
+  final TextEditingController valueNew = TextEditingController();
+  final TextEditingController valueConfirm = TextEditingController();
+
+
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Password'),
@@ -18,16 +29,19 @@ class _EditPasswordState extends State<EditPassword> {
       child: Column(
         children: <Widget>[
           TextField(
+            controller: valueOld,
             keyboardType: TextInputType.text,
             decoration: InputDecoration(labelText: 'Password Lama'),
           ),SizedBox(
             height: 8.0,
           ),TextField(
+            controller: valueNew,
             keyboardType: TextInputType.text,
             decoration: InputDecoration(labelText: 'Password Baru'),
           ),SizedBox(
             height: 8.0,
           ),TextField(
+            controller: valueConfirm,
             keyboardType: TextInputType.text,
             decoration: InputDecoration(labelText: 'Ulang Password'),
           ),SizedBox(
@@ -37,7 +51,14 @@ class _EditPasswordState extends State<EditPassword> {
             child: RaisedButton(
               padding: const EdgeInsets.all(12.0),
               color: Colors.indigo,
-              onPressed: _alerDialogUpdatePassword,
+              onPressed: () => makeRequest().then((task){
+                if (task.status == "success") {
+                  //getProfileRequest(account_info.loginSiswaResponseData.data.token, account_info.email, account_info.password);
+                  return _alerDialogUpdatePassword();
+                } else {
+
+                }
+              }),
               child: Text('EDIT PASSWORD',style: TextStyle(color: Colors.white,fontSize: 16.0),),
             ),
           )
@@ -86,6 +107,48 @@ class _EditPasswordState extends State<EditPassword> {
             ),
           );
         });
+  }
+
+  Future<UpdatePasswordGuruResponse> makeRequest() async{
+    String url;
+    if(account_info.role=="guru"){
+      url = account_info.api_url+"?r=v1/guru/update-password";
+    }else{
+      url = account_info.api_url+"?r=v1/siswa/update-password";
+    }
+
+    var dio = Dio();
+    dio.interceptors.add(
+        InterceptorsWrapper(
+            onRequest: (RequestOptions options) async {
+              var customHeaders = {
+                'content-type': 'application/json',
+                'email': account_info.email,
+                'password': account_info.password,
+              };
+              options.headers.addAll(customHeaders);
+              return options;
+            }
+        )
+    );
+
+    FormData formData =
+    new FormData.fromMap({
+      "old_password": valueOld.text,
+      "new_password": valueNew.text,
+      "confirm_password": valueConfirm.text,
+    });
+
+
+
+
+    Response response = await dio.post(url, data: formData);
+    print("Change pass Response : " + response.data.toString());
+
+    UpdatePasswordGuruResponse updatePasswordGuruResponse =
+    updatePasswordGuruResponseFromJson(response.toString());
+
+    return updatePasswordGuruResponse;
   }
 
 }
