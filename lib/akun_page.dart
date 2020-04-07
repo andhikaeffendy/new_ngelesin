@@ -23,11 +23,11 @@ class AkunPage extends StatelessWidget {
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(20.0),
-              child: Shimmer.fromColors(
-                direction: ShimmerDirection.rtl,
-                period: Duration(seconds: 3),
-                baseColor: Colors.grey[700],
-                highlightColor: Colors.grey[100],
+//              child: Shimmer.fromColors(
+//                direction: ShimmerDirection.rtl,
+//                period: Duration(seconds: 3),
+//                baseColor: Colors.grey[700],
+//                highlightColor: Colors.grey[100],
                 child: new Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -193,7 +193,7 @@ class AkunPage extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
+//              ),
             ),
           ),
         ),
