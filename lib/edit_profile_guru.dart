@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
+import 'api_response_model/profile_guru_v2_response.dart';
 import 'api_response_model/update_profile_guru2_response.dart';
+import 'api_response_model/update_profile_guru_response.dart';
 import 'global_variable/account_information.dart' as account_info;
 
 
@@ -215,7 +217,7 @@ class _EditProfileGuruState extends State<EditProfileGuru> {
                 color: Colors.indigo,
                 onPressed: () => makeRequest().then((task){
                   if (task.status == "success") {
-                    //getProfileRequest(account_info.loginSiswaResponseData.data.token, account_info.email, account_info.password);
+                    getProfileRequest( account_info.email, account_info.password);
                     return _alerDialogUpdateProfile();
                   } else {
 
@@ -272,7 +274,7 @@ class _EditProfileGuruState extends State<EditProfileGuru> {
         });
   }
 
-  Future<UpdateProfileGuru2Response> makeRequest() async{
+  Future<UpdateProfileGuruResponse> makeRequest() async{
     print("make jalan" + account_info.email + account_info.password);
     String url = account_info.api_url+"?r=v1/guru/update-profile";
 
@@ -301,38 +303,49 @@ class _EditProfileGuruState extends State<EditProfileGuru> {
       "pendidikan_terakhir": valuePendidikan.text,
       "pengalaman_organisasi": valuePengalamanOrganisas.text,
       "bank": valueBank.text,
-      "no_rekening": valueNomorRekening,
-      "nama_pemilik": valueAtasNamaRekening,
+      "no_rekening": valueNomorRekening.text,
+      "nama_pemilik": valueAtasNamaRekening.text,
 
     });
 
     print('valuenama' + valueNama.text);
 
-    FormData formData2 =
-    new FormData.fromMap({
-      "nama_lengkap": valueNama.text,
-      "alamat_lengkap": "Jl. Guru 123",
-      "hp": valueHandphone.text,
-      "jenis_kelamin": selectedJK.index,
-      "pekerjaan": valuePengalamanKerja.text,
-      "pendidikan_terakhir": valuePendidikan.text,
-      "pengalaman_organisasi": valuePengalamanOrganisas.text,
-      "bank": valueBank.text,
-      "no_rekening": valueNomorRekening,
-      "nama_pemilik": valueAtasNamaRekening,
-
-    });
-
-    Response response = await dio.post(url, data: formData2);
+    Response response = await dio.post(url, data: formData);
     print("Update Response : " + response.data.toString());
 
-    UpdateProfileGuru2Response updateProfileGuru2Response =
-    updateProfileGuru2ResponseFromJson(response.toString());
+    UpdateProfileGuruResponse updateProfileGuruResponse =
+    updateProfileGuruResponseFromJson(response.toString());
 
 
-    print("Update Response Mess: " + updateProfileGuru2Response.pesan);
-    return updateProfileGuru2Response;
+    print("Update Response Mess: " + updateProfileGuruResponse.message);
+    return updateProfileGuruResponse;
   }
+  getProfileRequest( String email, String password) async {
+    String url = account_info.api_url+"?r=v1/guru/profile&token&email&password";
+
+    var dio = Dio();
+    dio.interceptors.add(
+        InterceptorsWrapper(
+            onRequest: (RequestOptions options) async {
+              var customHeaders = {
+                'content-type': 'application/json',
+                'email': email,
+                'password': password,
+              };
+              options.headers.addAll(customHeaders);
+              return options;
+            }
+        )
+    );
+
+    Response response = await dio.get(url);
+    print("GET PROFILE REQUEST : " + response.data.toString());
+    ProfileGuruV2Response profileGuruV2Response;
+    profileGuruV2Response = profileGuruV2ResponseFromJson(response.toString());
+
+    account_info.profileGuruV2Response = profileGuruV2Response;
+  }
+
 }
 
 

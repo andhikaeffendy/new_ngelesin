@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:new_ngelesin/edit_password.dart';
 import 'package:new_ngelesin/edit_profile_guru.dart';
 import 'package:new_ngelesin/edit_profile_murid.dart';
@@ -87,7 +88,7 @@ class AkunPage extends StatelessWidget {
                     new Container(
                       margin: const EdgeInsets.only(bottom: 20.0),
                     ),
-                    new Text('Saldo Saya:',
+                    new Text('Saldo Saya:' + data.saldo,
                         style:
                             new TextStyle(color: Colors.black, fontSize: 16.0),
                         textAlign: TextAlign.start),
@@ -277,7 +278,7 @@ class AkunPage extends StatelessWidget {
                   new Container(
                     margin: const EdgeInsets.only(bottom: 20.0),
                   ),
-                  new Text('Saldo Saya:',
+                  new Text('Saldo Saya: ',
                       style: new TextStyle(color: Colors.black, fontSize: 16.0),
                       textAlign: TextAlign.start),
                   new Text(data.saldo,
