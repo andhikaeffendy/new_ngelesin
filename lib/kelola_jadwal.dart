@@ -15,6 +15,23 @@ class KelolaJadwal extends StatefulWidget {
 class _KelolaJadwalState extends State<KelolaJadwal> {
   bool _isChecked = false;
 
+  List<bool> inputs = new List<bool>();
+  @override
+  void initState() {
+    // TODO: implement initState
+    setState(() {
+      for(int i=0;i<20;i++){
+        inputs.add(true);
+      }
+    });
+  }
+
+  void ItemChange(bool val,int index){
+    setState(() {
+      inputs[index] = val;
+    });
+  }
+
   //Alert Dialog Pilih Hari
   _PilHari(BuildContext context) async {
     return showDialog(
@@ -271,65 +288,33 @@ class _KelolaJadwalState extends State<KelolaJadwal> {
             content: Container(
               height: 380.0,
               width: 300.0,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    StatefulBuilder(
-                        builder: (BuildContext context, StateSetter setState) {
-                          return Center(
-                            child: CheckboxListTile(
-                              title: const Text('Balendah'),
-                              value: _isChecked,
-                              onChanged: (bool value) {
-                                setState(() {
-                                  _isChecked = value;
-                                });
-                              },
-                            ),
-                          );
-                        }),StatefulBuilder(
-                        builder: (BuildContext context, StateSetter setState) {
-                          return Center(
-                            child: CheckboxListTile(
-                              title: const Text('Balendah'),
-                              value: _isChecked,
-                              onChanged: (bool value) {
-                                setState(() {
-                                  _isChecked = value;
-                                });
-                              },
-                            ),
-                          );
-                        }),StatefulBuilder(
-                        builder: (BuildContext context, StateSetter setState) {
-                          return Center(
-                            child: CheckboxListTile(
-                              title: const Text('Balendah'),
-                              value: _isChecked,
-                              onChanged: (bool value) {
-                                setState(() {
-                                  _isChecked = value;
-                                });
-                              },
-                            ),
-                          );
-                        }),StatefulBuilder(
-                        builder: (BuildContext context, StateSetter setState) {
-                          return Center(
-                            child: CheckboxListTile(
-                              title: const Text('Balendah'),
-                              value: _isChecked,
-                              onChanged: (bool value) {
-                                setState(() {
-                                  _isChecked = value;
-                                });
-                              },
-                            ),
-                          );
-                        }),
-                  ],
-                ),
-              ),
+              child: ListView.builder(
+                  itemCount: inputs.length,
+                  itemBuilder: (BuildContext context, int index){
+                    return new Card(
+                      child: Container(
+                        padding: EdgeInsets.all(4.0),
+                        child: Column(
+                          children: <Widget>[
+                            StatefulBuilder(
+                                builder: (BuildContext context, StateSetter setState) {
+                                  return Center(
+                                    child: CheckboxListTile(
+                                      title: const Text('Balendah'),
+                                      value: inputs[index],
+                                      onChanged: (bool value) {
+                                        setState(() {
+                                          inputs[index] = value;
+                                        });
+                                      },
+                                    ),
+                                  );
+                                })
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
             ),
             actions: <Widget>[
               new FlatButton(
