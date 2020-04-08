@@ -40,7 +40,7 @@ class MainApp extends StatefulWidget {
         HomePage(),
         BookingPageMurid(),
         AkunPage(),
-        SettingGuru(),
+        SettingsMurid(),
       ];
     }
     return MainAppState(pageOptions: pageOptions);
