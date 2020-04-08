@@ -170,7 +170,7 @@ class _LihatAmbilSoalFormGuruState extends State<LihatAmbilSoalFormGuru> {
 //    SHOWING CHAT
     if(chat)
       Navigator.push(context,
-          MaterialPageRoute(builder: (BuildContext) => new ChatSoalMessage()));
+          MaterialPageRoute(builder: (BuildContext) => new ChatSoalMessage(id: ambilSoal.id, ambilSoal: ambilSoal)));
   }
 
   Future<ListAmbilSoalResponse> getSoals() async {

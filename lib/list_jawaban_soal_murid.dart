@@ -150,7 +150,7 @@ class _ListJawabanSoalState extends State<ListJawabanSoal> {
 
     if(pilihan == 2)
       Navigator.push(context,
-          MaterialPageRoute(builder: (BuildContext) => new ChatSoalMessage()));
+          MaterialPageRoute(builder: (BuildContext) => new ChatSoalMessage(id: soal.id, soal: soal)));
 
     if(pilihan == 1) {
       alerDialogProgress(context);

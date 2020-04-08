@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:new_ngelesin/api_response_model/list_guru_response.dart';
 import 'package:new_ngelesin/api_response_model/list_jam_mapel_response.dart';
 import 'package:new_ngelesin/api_response_model/simpan_booking_response.dart';
+import 'package:new_ngelesin/global_variable/app_dialog.dart';
 import 'package:new_ngelesin/main.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'global_variable/account_information.dart' as account_info;
@@ -595,13 +596,21 @@ class _BookingPilihanState extends State<BookingPilihan> {
             ),
           );
         });
-    if(submit)
+    if(submit) {
+      alerDialogProgress(context);
       simpanBookingRequest().then((task) {
+        dismissAlerDialogProgress(context);
         if (task.status == "success") {
-          Navigator.of(context).push(new MaterialPageRoute(
-              builder: (BuildContext context) => new MainApp(role: account_info.role)));
+          alerDialogLoginSucces(context, "Booking", task.message).then((task2) {
+            Navigator.of(context).push(new MaterialPageRoute(
+                builder: (BuildContext context) =>
+                new MainApp(role: account_info.role)));
+          });
+        } else {
+          alerDialogLoginFail(context, "Booking", task.message);
         }
       });
+    }
   }
 
   void showJadwal(BuildContext context){
@@ -713,6 +722,7 @@ class _BookingPilihanState extends State<BookingPilihan> {
       "tgl": formatDate2.format(selectedDate),
       "alamat": alamat,
       "voucher": voucher.text,
+      "siswa_id": account_info.loginSiswaResponseData.data.id,
     });
 
     response = await dio.post(url, data: formData);

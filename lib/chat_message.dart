@@ -120,7 +120,7 @@ class _ChatMessageState extends State<ChatMessage> {
                     height: 8.0,
                   ),
                   Text(
-                    getTime(chat) +' - Read',
+                    getTime(chat) +' - Sent',
                     textAlign: TextAlign.end,
                   ),
                 ],
