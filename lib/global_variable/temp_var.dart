@@ -11,3 +11,9 @@ int idKelolaMapel;
 ListAllMapelResponse listAllMapel;
 GetKategoriMapel listKategoriMapel;
 BiayaLesResponse biayaLesResponse;
+
+destroyInfo(){
+  listAllMapel = null;
+  listKategoriMapel = null;
+  biayaLesResponse = null;
+}

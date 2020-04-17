@@ -34,6 +34,7 @@ dependencies:
   countdown: ^0.1.0
   url_launcher: ^5.4.2
   shimmer: ^1.0.0
+  shared_preferences: ^0.5.6+3
 
 dev_dependencies:
   flutter_test:

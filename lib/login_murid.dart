@@ -10,6 +10,7 @@ import 'api_response_model/jwt_login_siswa_response.dart';
 import 'global_variable/account_information.dart' as account_info;
 import 'global_variable/temp_var.dart' as globalTemp;
 import 'global_variable/app_dialog.dart';
+import 'global_variable/AppSession.dart';
 
 import 'login_guru.dart';
 import 'lupa_password_siswa.dart';
@@ -40,6 +41,11 @@ class LoginFormMurid extends StatefulWidget {
 class _LoginFormMuridState extends State<LoginFormMurid> {
   final emailEditTextController = TextEditingController();
   final passwordEditTextController = TextEditingController();
+
+  @override
+  void initState() {
+    reLogin();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +88,7 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
                 .then((task) {
               dismissAlerDialogProgress(context);
               if (task.status == "success") {
+                setSession(emailEditTextController.text, passwordEditTextController.text, "murid");
                 print("masuk sukses");
                 getMapelRequest();
                 getLoginJwt();
@@ -257,9 +264,6 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
     ProfileSiswaResponse profileSiswaResponse;
     profileSiswaResponse = profileSiswaResponseFromJson(response.toString());
 
-    account_info.email = email;
-    account_info.password = password;
-
     account_info.profileSiswaResponse = profileSiswaResponse;
   }
 
@@ -279,6 +283,26 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
     jwtLoginSiswaResponseFromJson(response.toString());
     print("jwt token = " + jwtLoginSiswaResponse.data.token);
     account_info.jwtLoginSiswaResponse = jwtLoginSiswaResponse;
+  }
+
+  reLogin() async {
+    String role = await inSession();
+    if(role == "")
+      return ;
+    alerDialogProgress(context);
+    loginSiswaRequest(account_info.email, account_info.password).then((loginRequest){
+      dismissAlerDialogProgress(context);
+      if(loginRequest.status=="success") {
+        account_info.loginSiswaResponseData = loginRequest;
+        getMapelRequest();
+        getLoginJwt();
+        getProfileRequest(loginRequest.data.token, account_info.email, account_info.password);
+        Navigator.of(context).push(new MaterialPageRoute(
+            builder: (BuildContext context) => new MainApp(role: "murid")));
+      } else {
+        destroySession();
+      }
+    });
   }
 
 }

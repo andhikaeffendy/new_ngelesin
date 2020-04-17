@@ -22,3 +22,11 @@ String app_url = base_url+"/app/api/web/index.php";
 String api_url = dev_url;
 
 JwtLoginSiswaResponse jwtLoginSiswaResponse;
+
+destroyInfo(){
+  loginSiswaResponseData = null;
+  loginGuruResponse = null;
+  profileSiswaResponse = null;
+  profileGuruV2Response = null;
+  jwtLoginSiswaResponse = null;
+}

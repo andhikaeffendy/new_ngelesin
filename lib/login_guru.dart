@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:new_ngelesin/api_response_model/get_kategori_response.dart';
+import 'package:new_ngelesin/global_variable/AppSession.dart';
 import 'package:new_ngelesin/login_murid.dart';
 import 'package:new_ngelesin/main.dart';
 import 'package:new_ngelesin/register.dart';
@@ -44,6 +45,11 @@ class _LoginFormGuruState extends State<LoginFormGuru> {
   final passwordEditTextController = TextEditingController();
 
   @override
+  void initState() {
+    reLogin();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final mEmail = TextField(
       obscureText: false,
@@ -83,6 +89,7 @@ class _LoginFormGuruState extends State<LoginFormGuru> {
                 .then((task) {
                   dismissAlerDialogProgress(context);
               if (task.status == "success") {
+                setSession(emailEditTextController.text, passwordEditTextController.text, "guru");
                 print("masuk sukses");
                 getProfileRequest("token", task.data.email, passwordEditTextController.text);
                 getMapelRequest();
@@ -214,8 +221,6 @@ class _LoginFormGuruState extends State<LoginFormGuru> {
     LoginGuruResponse loginGuruResponse =
     loginGuruResponseFromJson(response.toString());
 
-    account_info.email = email;
-    account_info.password = password;
 
     return loginGuruResponse;
   }
@@ -242,9 +247,6 @@ class _LoginFormGuruState extends State<LoginFormGuru> {
     print("GET PROFILE REQUEST : " + response.data.toString());
     ProfileGuruV2Response profileGuruV2Response;
     profileGuruV2Response = profileGuruV2ResponseFromJson(response.toString());
-
-    account_info.email = email;
-    account_info.password = password;
 
     account_info.profileGuruV2Response = profileGuruV2Response;
   }
@@ -308,6 +310,27 @@ class _LoginFormGuruState extends State<LoginFormGuru> {
     biayaLesResponseFromJson(response.toString());
 
     globalTemp.biayaLesResponse = biayaLesResponse;
+  }
+
+  reLogin() async {
+    String role = await inSession();
+    if(role == "")
+      return ;
+    alerDialogProgress(context);
+    loginGuruRequest(account_info.email, account_info.password).then((loginRequest){
+      dismissAlerDialogProgress(context);
+      if(loginRequest.status=="success") {
+        account_info.loginGuruResponse = loginRequest;
+        getProfileRequest("token", account_info.email, account_info.password);
+        getMapelRequest();
+        getKategori();
+        getBiayaMapel();
+        Navigator.of(context).push(new MaterialPageRoute(
+            builder: (BuildContext context) => new MainApp(role: "guru")));
+      } else {
+        destroySession();
+      }
+    });
   }
 
 }

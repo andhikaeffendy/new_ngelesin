@@ -8,6 +8,7 @@ import 'package:new_ngelesin/pendapatan_les.dart';
 import 'package:new_ngelesin/setting_biaya_les.dart';
 import 'package:new_ngelesin/syarat_dan_ketentuan.dart';
 import 'package:new_ngelesin/tentang_kami_murid.dart';
+import 'global_variable/AppSession.dart';
 
 class SettingGuru extends StatefulWidget {
   @override
@@ -73,6 +74,7 @@ class _SettingGuruState extends State<SettingGuru> {
                 title: Text("Keluar"),
                 onTap: (){
                   print('keluar guru');
+                  destroySession();
                   Navigator.of(context).push(new MaterialPageRoute(
                       builder: (BuildContext context) => new LoginGuru()));
                 },

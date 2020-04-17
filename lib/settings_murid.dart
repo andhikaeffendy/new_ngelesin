@@ -5,6 +5,7 @@ import 'package:new_ngelesin/syarat_dan_ketentuan.dart';
 import 'package:new_ngelesin/tagihan_murid.dart';
 import 'package:new_ngelesin/tentang_kami_murid.dart';
 import 'package:new_ngelesin/topup_saldo_murid.dart';
+import 'global_variable/AppSession.dart';
 
 import 'login_murid.dart';
 
@@ -61,6 +62,7 @@ class _SettingsMuridState extends State<SettingsMurid> {
               title: Text("Keluar"),
               onTap: (){
                 print('keluar murid');
+                destroySession();
                 Navigator.of(context).push(new MaterialPageRoute(
                   builder: (BuildContext context) => new LoginMurid()));
                 },

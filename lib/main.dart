@@ -1,20 +1,20 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:new_ngelesin/booking_page_guru.dart';
+import 'package:new_ngelesin/login_guru.dart';
 import 'package:new_ngelesin/setting_guru.dart';
 import 'package:new_ngelesin/settings_murid.dart';
 import 'akun_page.dart';
 import 'booking_page_murid.dart';
 import 'home_page.dart';
 import 'login_murid.dart';
-import 'global_variable/account_information.dart' as account_info;
+import 'global_variable/AppSession.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if(account_info.role != null && account_info.role == "guru"){
-    runApp(MainApp(role: "guru"));
-  } else if(account_info.role != null && account_info.role == "murid"){
-    runApp(MainApp(role: "murid"));
+  String role = await inSession();
+  loadSession();
+  if(role == "guru") {
+    runApp(LoginGuru());
   } else {
     runApp(LoginMurid());
   }
