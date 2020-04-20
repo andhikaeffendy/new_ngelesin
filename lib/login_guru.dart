@@ -45,11 +45,6 @@ class _LoginFormGuruState extends State<LoginFormGuru> {
   final passwordEditTextController = TextEditingController();
 
   @override
-  void initState() {
-    reLogin();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final mEmail = TextField(
       obscureText: false,
@@ -101,7 +96,7 @@ class _LoginFormGuruState extends State<LoginFormGuru> {
                 account_info.password = passwordEditTextController.text;
                 alerDialogLoginSucces(context, "Login", task.message).then((task){
                   Navigator.of(context).push(new MaterialPageRoute(
-                      builder: (BuildContext context) => new MainApp(role: "guru")));
+                      builder: (BuildContext context) => new MainApp()));
                 });
               } else {
                 alerDialogLoginFail(context, "Login", task.message);
@@ -310,27 +305,6 @@ class _LoginFormGuruState extends State<LoginFormGuru> {
     biayaLesResponseFromJson(response.toString());
 
     globalTemp.biayaLesResponse = biayaLesResponse;
-  }
-
-  reLogin() async {
-    String role = await inSession();
-    if(role == "")
-      return ;
-    alerDialogProgress(context);
-    loginGuruRequest(account_info.email, account_info.password).then((loginRequest){
-      dismissAlerDialogProgress(context);
-      if(loginRequest.status=="success") {
-        account_info.loginGuruResponse = loginRequest;
-        getProfileRequest("token", account_info.email, account_info.password);
-        getMapelRequest();
-        getKategori();
-        getBiayaMapel();
-        Navigator.of(context).push(new MaterialPageRoute(
-            builder: (BuildContext context) => new MainApp(role: "guru")));
-      } else {
-        destroySession();
-      }
-    });
   }
 
 }

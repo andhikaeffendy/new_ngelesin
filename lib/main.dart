@@ -8,27 +8,27 @@ import 'booking_page_murid.dart';
 import 'home_page.dart';
 import 'login_murid.dart';
 import 'global_variable/AppSession.dart';
+import 'global_variable/account_information.dart' as account_info;
+import 'global_variable/loginGuruSession.dart' as guruSession ;
+import 'global_variable/loginSiswaSession.dart' as siswaSession ;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   String role = await inSession();
   loadSession();
-  if(role == "guru") {
-    runApp(LoginGuru());
-  } else {
+  if(role == "") {
     runApp(LoginMurid());
+  } else {
+    runApp(MainApp());
   }
 }
 
 class MainApp extends StatefulWidget {
-  final String role;
-
-  MainApp({Key key, @required this.role}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
     var pageOptions;
-    if(role == "guru") {
+    if(account_info.role == "guru") {
       pageOptions = [
         HomePage(),
         BookingPageMurid(),
@@ -52,6 +52,16 @@ class MainAppState extends State<MainApp>{
   final pageOptions;
 
   MainAppState({@required this.pageOptions}) : super();
+
+  @override
+  void initState() {
+    if(!account_info.reLogin){
+      if(account_info.role == "guru")
+        guruSession.reLogin(context);
+      if(account_info.role == "murid")
+        siswaSession.reLogin(context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -604,7 +604,7 @@ class _BookingPilihanState extends State<BookingPilihan> {
           alerDialogLoginSucces(context, "Booking", task.message).then((task2) {
             Navigator.of(context).push(new MaterialPageRoute(
                 builder: (BuildContext context) =>
-                new MainApp(role: account_info.role)));
+                new MainApp()));
           });
         } else {
           alerDialogLoginFail(context, "Booking", task.message);

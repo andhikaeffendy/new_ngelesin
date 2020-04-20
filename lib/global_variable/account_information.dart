@@ -10,6 +10,7 @@ LoginGuruResponse loginGuruResponse;
 String email;
 String password;
 String role;
+bool reLogin = false;
 
 ProfileSiswaResponse profileSiswaResponse;
 ProfileGuruV2Response profileGuruV2Response;

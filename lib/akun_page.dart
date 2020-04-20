@@ -6,17 +6,20 @@ import 'package:new_ngelesin/edit_profile_murid.dart';
 import 'package:shimmer/shimmer.dart';
 import 'api_response_model/profile_siswa_response.dart';
 import 'api_response_model/profile_guru_v2_response.dart';
+import 'package:intl/intl.dart';
 import 'global_variable/account_information.dart' as accountInformation;
 
 class AkunPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
     return accountInformation.role == "murid"
         ? profileSiswa(context)
         : profileGuru(context);
   }
 
   Widget profileSiswa(BuildContext context) {
+    final currency = new NumberFormat("###,###,###.#");
     Data data = accountInformation.profileSiswaResponse.data;
     return MaterialApp(
       home: Scaffold(
@@ -88,11 +91,11 @@ class AkunPage extends StatelessWidget {
                     new Container(
                       margin: const EdgeInsets.only(bottom: 20.0),
                     ),
-                    new Text('Saldo Saya:' + data.saldo,
+                    new Text('Saldo Saya:',
                         style:
                             new TextStyle(color: Colors.black, fontSize: 16.0),
                         textAlign: TextAlign.start),
-                    new Text(data.saldo,
+                    new Text('Rp. '+currency.format(int.parse(data.saldo)),
                         style: new TextStyle(
                             color: Colors.black,
                             fontSize: 16.0,

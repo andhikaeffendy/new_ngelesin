@@ -14,6 +14,7 @@ setSession(String email, String password, String role) async {
   account_info.email = email;
   account_info.password = password;
   account_info.role = role;
+  account_info.reLogin = true;
 }
 
 destroySession() async {
@@ -39,5 +40,6 @@ loadSession() async {
     account_info.email = prefs.getString(emailKey);
     account_info.password = prefs.getString(passwordKey);
     account_info.role = prefs.getString(roleKey);
+    account_info.reLogin = false;
   }
 }

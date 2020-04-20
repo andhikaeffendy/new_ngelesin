@@ -43,11 +43,6 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
   final passwordEditTextController = TextEditingController();
 
   @override
-  void initState() {
-    reLogin();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final mEmail = TextField(
       obscureText: false,
@@ -100,7 +95,7 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
 
                 alerDialogLoginSucces(context, "Login", task.message).then((task){
                   Navigator.of(context).push(new MaterialPageRoute(
-                      builder: (BuildContext context) => new MainApp(role: "murid")));
+                      builder: (BuildContext context) => new MainApp()));
                 });
               } else {
                 alerDialogLoginFail(context, "Login", task.message);
@@ -283,26 +278,6 @@ class _LoginFormMuridState extends State<LoginFormMurid> {
     jwtLoginSiswaResponseFromJson(response.toString());
     print("jwt token = " + jwtLoginSiswaResponse.data.token);
     account_info.jwtLoginSiswaResponse = jwtLoginSiswaResponse;
-  }
-
-  reLogin() async {
-    String role = await inSession();
-    if(role == "")
-      return ;
-    alerDialogProgress(context);
-    loginSiswaRequest(account_info.email, account_info.password).then((loginRequest){
-      dismissAlerDialogProgress(context);
-      if(loginRequest.status=="success") {
-        account_info.loginSiswaResponseData = loginRequest;
-        getMapelRequest();
-        getLoginJwt();
-        getProfileRequest(loginRequest.data.token, account_info.email, account_info.password);
-        Navigator.of(context).push(new MaterialPageRoute(
-            builder: (BuildContext context) => new MainApp(role: "murid")));
-      } else {
-        destroySession();
-      }
-    });
   }
 
 }
